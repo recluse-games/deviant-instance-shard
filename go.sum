@@ -22,8 +22,8 @@ github.com/google/go-cmp v0.3.0/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMyw
 github.com/google/go-cmp v0.3.1/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=
 github.com/google/go-cmp v0.4.0/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4/go.mod h1:xMI15A0UPsDsEKsMN9yxemIoYk6Tm2C1GtYGdfGttqA=
-github.com/recluse-games/deviant-protobuf v0.0.0-20200501020410-57d0b36a7370 h1:JNKmmyveFcHJdHA3iddrwB3CMyEGYLTyEZ7Z4oCqYgM=
-github.com/recluse-games/deviant-protobuf v0.0.0-20200501020410-57d0b36a7370/go.mod h1:zqIrnUMUlHLsbZsfkvHdT0kYiwPDpph6Uu1NNu+vyk8=
+github.com/recluse-games/deviant-protobuf v0.0.0-20200501180211-013017ce849c h1:wTj0h66PAJby90NpDtF7VFliI4Q79RFy+P1JRAvJPoM=
+github.com/recluse-games/deviant-protobuf v0.0.0-20200501180211-013017ce849c/go.mod h1:zqIrnUMUlHLsbZsfkvHdT0kYiwPDpph6Uu1NNu+vyk8=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/exp v0.0.0-20190121172915-509febef88a4/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
 golang.org/x/lint v0.0.0-20181026193005-c67002cb31c3/go.mod h1:UVdnD1Gm6xHRNCYTkRU2/jEulfH38KcIWyp/GAMgvoE=
