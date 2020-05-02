@@ -8,10 +8,11 @@ import (
 
 // Process Processes all actions.
 func Process(selectedTurn *deviant.Turn, selectedEntity *deviant.Entity, entityActionName deviant.EntityActionNames) bool {
-	entityActions := map[deviant.EntityActionNames][]func(*deviant.Entity) bool{
-		deviant.EntityActionNames_PLAY:    {},
-		deviant.EntityActionNames_DISCARD: {},
-		deviant.EntityActionNames_NOTHING: {},
+	entityActions := map[deviant.EntityActionNames][]func(*deviant.Entity, *deviant.Turn) bool{
+		deviant.EntityActionNames_PLAY:         {},
+		deviant.EntityActionNames_DISCARD:      {},
+		deviant.EntityActionNames_NOTHING:      {},
+		deviant.EntityActionNames_CHANGE_PHASE: {turn.ChangePhase},
 	}
 
 	turnActions := map[deviant.TurnPhaseNames][]func(*deviant.Entity) bool{
@@ -26,7 +27,7 @@ func Process(selectedTurn *deviant.Turn, selectedEntity *deviant.Entity, entityA
 	if val, ok := entityActions[entityActionName]; ok {
 		if ok {
 			for _, entityActionFunction := range val {
-				if entityActionFunction(selectedEntity) == false {
+				if entityActionFunction(selectedEntity, selectedTurn) == false {
 					return false
 				}
 			}

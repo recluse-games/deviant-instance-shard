@@ -11,7 +11,7 @@ func removeCard(slice []*deviant.Card, s int) []*deviant.Card {
 		return append(slice[:s], slice[s+1:]...)
 	}
 
-	return nil
+	return []*deviant.Card{}
 }
 
 // DrawCard draws a card for entity.

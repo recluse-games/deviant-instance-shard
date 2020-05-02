@@ -70,6 +70,16 @@ func (w *IncomingWorker) StartIncoming() {
 				} else {
 					rules.Process(work.Request.Encounter.Turn.Phase, work.Request.Encounter.ActiveEntity, work.Request.EntityActionName)
 					actions.Process(work.Request.Encounter.Turn, work.Request.Encounter.ActiveEntity, work.Request.EntityActionName)
+
+					// Apply all state changes to entity in encounter as well as the activeEntity
+					for outerIndex, outerValue := range work.Request.Encounter.Board.Entities.Entities {
+						for innerIndex, innerValue := range outerValue.Entities {
+							if innerValue.Id == work.Request.Encounter.ActiveEntity.Id {
+								work.Request.Encounter.Board.Entities.Entities[outerIndex].Entities[innerIndex] = work.Request.Encounter.ActiveEntity
+							}
+						}
+					}
+
 					actionResponse = &deviant.EncounterResponse{
 						PlayerId:  "player_0000",
 						Encounter: work.Request.Encounter,
