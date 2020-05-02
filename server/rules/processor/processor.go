@@ -8,8 +8,8 @@ import (
 )
 
 // Process Processes all rules to determine validity.
-func Process(turnPhaseName deviant.TurnPhaseNames, entity *deviant.Entity, entityAction deviant.EntityActionNames) bool {
-	entityActionRules := map[deviant.EntityActionNames][]func(*deviant.Entity) bool{
+func Process(encounter *deviant.Encounter, entityAction deviant.EntityActionNames) bool {
+	entityActionRules := map[deviant.EntityActionNames][]func(*deviant.Encounter) bool{
 		deviant.EntityActionNames_PLAY:    {},
 		deviant.EntityActionNames_DRAW:    {hand.ValidateSize, deck.ValidateDraw},
 		deviant.EntityActionNames_DISCARD: {},
@@ -26,7 +26,7 @@ func Process(turnPhaseName deviant.TurnPhaseNames, entity *deviant.Entity, entit
 	if val, ok := entityActionRules[entityAction]; ok {
 		if ok {
 			for _, entityRuleFunction := range val {
-				if entityRuleFunction(entity) == false {
+				if entityRuleFunction(encounter) == false {
 					return false
 				}
 			}
@@ -35,10 +35,10 @@ func Process(turnPhaseName deviant.TurnPhaseNames, entity *deviant.Entity, entit
 		}
 	}
 
-	if val, ok := turnPhaseRules[turnPhaseName]; ok {
+	if val, ok := turnPhaseRules[encounter.Turn.Phase]; ok {
 		if ok {
 			for _, turnRuleFunction := range val {
-				if turnRuleFunction(entityAction, turnPhaseName) == false {
+				if turnRuleFunction(entityAction, encounter.Turn.Phase) == false {
 					return false
 				}
 			}

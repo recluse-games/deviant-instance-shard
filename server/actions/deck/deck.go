@@ -15,15 +15,15 @@ func removeCard(slice []*deviant.Card, s int) []*deviant.Card {
 }
 
 // DrawCard draws a card for entity.
-func DrawCard(entity *deviant.Entity) bool {
-	originalEntityDeckCards := entity.Deck.Cards
-	originalEntityHandCards := entity.Hand.Cards
+func DrawCard(encounter *deviant.Encounter) bool {
+	originalEntityDeckCards := encounter.ActiveEntity.Deck.Cards
+	originalEntityHandCards := encounter.ActiveEntity.Hand.Cards
 
 	updatedEntityHandCards := addCard(originalEntityHandCards, originalEntityDeckCards[0])
 	updatedEntityDeckCards := removeCard(originalEntityDeckCards, 1)
 
-	entity.Hand.Cards = updatedEntityHandCards
-	entity.Deck.Cards = updatedEntityDeckCards
+	encounter.ActiveEntity.Hand.Cards = updatedEntityHandCards
+	encounter.ActiveEntity.Deck.Cards = updatedEntityDeckCards
 
 	return true
 }

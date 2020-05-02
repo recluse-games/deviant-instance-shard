@@ -68,8 +68,8 @@ func (w *IncomingWorker) StartIncoming() {
 				if work.Request.Encounter == nil {
 					actionResponse = matchmaker.GenerateMatch()
 				} else {
-					rules.Process(work.Request.Encounter.Turn.Phase, work.Request.Encounter.ActiveEntity, work.Request.EntityActionName)
-					actions.Process(work.Request.Encounter.Turn, work.Request.Encounter.ActiveEntity, work.Request.EntityActionName)
+					rules.Process(work.Request.Encounter, work.Request.EntityActionName)
+					actions.Process(work.Request.Encounter, work.Request.EntityActionName)
 
 					// Apply all state changes to entity in encounter as well as the activeEntity
 					for outerIndex, outerValue := range work.Request.Encounter.Board.Entities.Entities {
