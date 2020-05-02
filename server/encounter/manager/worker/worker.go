@@ -2,11 +2,13 @@ package worker
 
 import (
 	"fmt"
+	"io/ioutil"
 
 	"github.com/recluse-games/deviant-instance-shard/server/encounter/manager/collector"
 	actions "github.com/recluse-games/deviant-instance-shard/server/rules/processor"
 	rules "github.com/recluse-games/deviant-instance-shard/server/rules/processor"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 // NewIncomingWorker creates, and returns a new Worker object.
@@ -90,6 +92,8 @@ func (w *OutgoingWorker) StartOutgoing() {
 
 			select {
 			case work := <-w.Work:
+				jsonResponse, _ := protojson.Marshal(work)
+				ioutil.WriteFile("test", jsonResponse, 0755)
 				// Receive a work request.
 				fmt.Printf("Recieved outgoing", work)
 			case <-w.QuitChan:
