@@ -36,8 +36,10 @@ func UpdateActiveEntity(encounter *deviant.Encounter) bool {
 	// Apply all state changes to entity in encounter as well as the activeEntity
 	for outerIndex, outerValue := range encounter.Board.Entities.Entities {
 		for innerIndex, innerValue := range outerValue.Entities {
-			if innerValue.Id == newActiveEntity.Id {
-				encounter.ActiveEntity = encounter.Board.Entities.Entities[outerIndex].Entities[innerIndex]
+			if innerValue != nil {
+				if innerValue.Id == newActiveEntity.Id {
+					encounter.ActiveEntity = encounter.Board.Entities.Entities[outerIndex].Entities[innerIndex]
+				}
 			}
 		}
 	}
