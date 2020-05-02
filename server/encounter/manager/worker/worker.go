@@ -4,19 +4,18 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/recluse-games/deviant-instance-shard/server/encounter/manager/collector"
-	actions "github.com/recluse-games/deviant-instance-shard/server/rules/processor"
-	rules "github.com/recluse-games/deviant-instance-shard/server/rules/processor"
+	model "github.com/recluse-games/deviant-instance-shard/server/encounter/manager/model"
+	"github.com/recluse-games/deviant-instance-shard/server/encounter/matchmaker"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
 // NewIncomingWorker creates, and returns a new Worker object.
-func NewIncomingWorker(id int, workerQueue chan chan *deviant.EncounterRequest) IncomingWorker {
+func NewIncomingWorker(id int, workerQueue chan chan *model.DeviantRequestResponse) IncomingWorker {
 	// Create, and return the worker.
 	worker := IncomingWorker{
 		ID:          id,
-		Work:        make(chan *deviant.EncounterRequest),
+		Work:        make(chan *model.DeviantRequestResponse),
 		WorkerQueue: workerQueue,
 		QuitChan:    make(chan bool)}
 
@@ -38,8 +37,8 @@ func NewOutgoingWorker(id int, workerQueue chan chan *deviant.EncounterResponse)
 // IncomingWorker A worker to process work.
 type IncomingWorker struct {
 	ID          int
-	Work        chan *deviant.EncounterRequest
-	WorkerQueue chan chan *deviant.EncounterRequest
+	Work        chan *model.DeviantRequestResponse
+	WorkerQueue chan chan *model.DeviantRequestResponse
 	QuitChan    chan bool
 }
 
@@ -60,20 +59,13 @@ func (w *IncomingWorker) StartIncoming() {
 
 			select {
 			case work := <-w.Work:
-				// Receive a work request.
-				validatedAction := rules.Process(work.Encounter.Turn.Phase, work.Encounter.ActiveEntity, work.ActionName)
+				// Implement Rules Engine and Matchingmaking integration here.
 
-				if validatedAction {
-					actionProcessed := actions.Process(work.Encounter.Turn.Phase, work.Encounter.ActiveEntity, work.ActionName)
-					if actionProcessed {
-						fmt.Printf("Action Processed\n")
-						actionResponse := &deviant.EncounterResponse{
-							PlayerId:  "0000",
-							Encounter: work.Encounter,
-						}
-						collector.OutgoingCollector(actionResponse)
-					}
-				}
+				fmt.Printf("Action Processed\n")
+				actionResponse := matchmaker.GenerateMatch()
+
+				work.ResponseChannel <- actionResponse
+
 			case <-w.QuitChan:
 				// We have been asked to stop.
 				fmt.Printf("worker%d stopping\n", w.ID)
