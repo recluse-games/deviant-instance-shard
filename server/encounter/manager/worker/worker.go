@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	actions "github.com/recluse-games/deviant-instance-shard/server/actions/processor"
 	model "github.com/recluse-games/deviant-instance-shard/server/encounter/manager/model"
 	"github.com/recluse-games/deviant-instance-shard/server/encounter/matchmaker"
+	rules "github.com/recluse-games/deviant-instance-shard/server/rules/processor"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto"
 	"google.golang.org/protobuf/encoding/protojson"
 )
@@ -59,10 +61,22 @@ func (w *IncomingWorker) StartIncoming() {
 
 			select {
 			case work := <-w.Work:
+
+				var actionResponse *deviant.EncounterResponse
+
 				// Implement Rules Engine and Matchingmaking integration here.
+				if work.Request.Encounter == nil {
+					actionResponse = matchmaker.GenerateMatch()
+				} else {
+					rules.Process(work.Request.Encounter.Turn.Phase, work.Request.Encounter.ActiveEntity, work.Request.EntityActionName)
+					actions.Process(work.Request.Encounter.Turn, work.Request.Encounter.ActiveEntity, work.Request.EntityActionName)
+					actionResponse = &deviant.EncounterResponse{
+						PlayerId:  "player_0000",
+						Encounter: work.Request.Encounter,
+					}
+				}
 
 				fmt.Printf("Action Processed\n")
-				actionResponse := matchmaker.GenerateMatch()
 
 				work.ResponseChannel <- actionResponse
 

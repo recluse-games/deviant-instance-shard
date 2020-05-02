@@ -16,7 +16,30 @@ import (
 type server struct {
 }
 
-func (s *server) StartEncounter(stream deviant.GetEncounter_StartEncounterServer) error {
+func (s *server) StartEncounter(stream deviant.EncounterService_StartEncounterServer) error {
+	for {
+		in, err := stream.Recv()
+		if err == io.EOF {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+
+		responseQueue := make(chan *deviant.EncounterResponse)
+
+		// Submit New Work Request from client to collector
+		collector.IncomingCollector(in, responseQueue)
+
+		response := <-responseQueue
+
+		if err := stream.Send(response); err != nil {
+			return err
+		}
+	}
+}
+
+func (s *server) UpdateEncounter(stream deviant.EncounterService_UpdateEncounterServer) error {
 	for {
 		in, err := stream.Recv()
 		if err == io.EOF {
@@ -56,7 +79,7 @@ func Start() {
 
 	opts := []grpc.ServerOption{}
 	s := grpc.NewServer(opts...)
-	deviant.RegisterGetEncounterServer(s, &server{})
+	deviant.RegisterEncounterServiceServer(s, &server{})
 
 	reflection.Register(s)
 
