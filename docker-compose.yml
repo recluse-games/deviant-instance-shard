@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  instance_shard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 50051:50051
