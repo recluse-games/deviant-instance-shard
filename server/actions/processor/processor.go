@@ -11,7 +11,7 @@ import (
 // Process Processes all actions.
 func Process(encounter *deviant.Encounter, entityActionName deviant.EntityActionNames) bool {
 	entityActions := map[deviant.EntityActionNames][]func(*deviant.Encounter) bool{
-		deviant.EntityActionNames_PLAY:         {encounterActions.ProcessWinConditions},
+		deviant.EntityActionNames_PLAY:         {},
 		deviant.EntityActionNames_DISCARD:      {},
 		deviant.EntityActionNames_NOTHING:      {},
 		deviant.EntityActionNames_CHANGE_PHASE: {turnActions.ChangePhase},
@@ -24,6 +24,10 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 		deviant.TurnPhaseNames_PHASE_ACTION:  {},
 		deviant.TurnPhaseNames_PHASE_DISCARD: {},
 		deviant.TurnPhaseNames_PHASE_END:     {turn.UpdateActiveEntity},
+	}
+
+	encounterActions := []func(*deviant.Encounter) bool{
+		encounterActions.ProcessWinConditions,
 	}
 
 	if val, ok := entityActions[entityActionName]; ok {
@@ -46,6 +50,12 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 				}
 			}
 		} else {
+			return false
+		}
+	}
+
+	for _, encounterActionFunction := range encounterActions {
+		if encounterActionFunction(encounter) == false {
 			return false
 		}
 	}
