@@ -68,14 +68,18 @@ func (w *IncomingWorker) StartIncoming() {
 				if work.Request.Encounter == nil {
 					actionResponse = matchmaker.GenerateMatch()
 				} else {
-					rules.Process(work.Request.Encounter, work.Request.EntityActionName)
-					actions.Process(work.Request.Encounter, work.Request.EntityActionName)
+					isActionValid := rules.Process(work.Request.Encounter, work.Request.EntityActionName)
 
-					// Apply all state changes to entity in encounter as well as the activeEntity
-					for outerIndex, outerValue := range work.Request.Encounter.Board.Entities.Entities {
-						for innerIndex, innerValue := range outerValue.Entities {
-							if innerValue.Id == work.Request.Encounter.ActiveEntity.Id {
-								work.Request.Encounter.Board.Entities.Entities[outerIndex].Entities[innerIndex] = work.Request.Encounter.ActiveEntity
+					if isActionValid == true {
+						actions.Process(work.Request.Encounter, work.Request.EntityActionName)
+
+						// Apply all state changes to entity in encounter as well as the activeEntity
+						for outerIndex, outerValue := range work.Request.Encounter.Board.Entities.Entities {
+							for innerIndex, innerValue := range outerValue.Entities {
+								if innerValue.Id == work.Request.Encounter.ActiveEntity.Id {
+									fmt.Printf("%+v\n", work.Request.Encounter.ActiveEntity)
+									work.Request.Encounter.Board.Entities.Entities[outerIndex].Entities[innerIndex] = work.Request.Encounter.ActiveEntity
+								}
 							}
 						}
 					}

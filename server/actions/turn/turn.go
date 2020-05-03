@@ -1,6 +1,10 @@
 package turn
 
-import deviant "github.com/recluse-games/deviant-protobuf/genproto"
+import (
+	"log"
+
+	deviant "github.com/recluse-games/deviant-protobuf/genproto"
+)
 
 // GrantAp grants some entity a default AP value of 5
 func GrantAp(encounter *deviant.Encounter) bool {
@@ -15,6 +19,10 @@ func ChangePhase(encounter *deviant.Encounter) bool {
 	turnOrder := []deviant.TurnPhaseNames{deviant.TurnPhaseNames_PHASE_POINT, deviant.TurnPhaseNames_PHASE_DRAW, deviant.TurnPhaseNames_PHASE_EFFECT, deviant.TurnPhaseNames_PHASE_ACTION, deviant.TurnPhaseNames_PHASE_DISCARD, deviant.TurnPhaseNames_PHASE_END}
 	for i, v := range turnOrder {
 		if v == encounter.Turn.Phase {
+			if encounter.Turn.Phase == deviant.TurnPhaseNames_PHASE_END {
+				encounter.Turn.Phase = turnOrder[0]
+				break
+			}
 			encounter.Turn.Phase = turnOrder[i+1]
 			break
 		}
@@ -25,24 +33,30 @@ func ChangePhase(encounter *deviant.Encounter) bool {
 
 // UpdateActiveEntity Updates the active entity to the next entity in the active entity order.
 func UpdateActiveEntity(encounter *deviant.Encounter) bool {
-	var newActiveEntity *deviant.Entity
+	var newActiveEntityId string
 
 	for index, entityID := range encounter.ActiveEntityOrder {
 		if entityID == encounter.ActiveEntity.Id {
-			newActiveEntity.Id = encounter.ActiveEntityOrder[index+1]
+			if len(encounter.ActiveEntityOrder) != index+1 {
+				newActiveEntityId = encounter.ActiveEntityOrder[index+1]
+			} else {
+				newActiveEntityId = encounter.ActiveEntityOrder[0]
+			}
 		}
 	}
 
 	// Apply all state changes to entity in encounter as well as the activeEntity
 	for outerIndex, outerValue := range encounter.Board.Entities.Entities {
 		for innerIndex, innerValue := range outerValue.Entities {
-			if innerValue != nil {
-				if innerValue.Id == newActiveEntity.Id {
-					encounter.ActiveEntity = encounter.Board.Entities.Entities[outerIndex].Entities[innerIndex]
-				}
+			log.Output(1, "Applying new active entity"+newActiveEntityId)
+
+			if innerValue.Id == newActiveEntityId {
+				encounter.ActiveEntity = encounter.Board.Entities.Entities[outerIndex].Entities[innerIndex]
 			}
 		}
 	}
+
+	//fmt.Printf("%+v\n", encounter.ActiveEntity)
 
 	return true
 }

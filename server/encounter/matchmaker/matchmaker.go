@@ -215,7 +215,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 				},
 			},
 			ActiveEntity: &deviant.Entity{
-				Id:         "00000",
+				Id:         "0001",
 				Hp:         10,
 				Ap:         5,
 				Alignment:  deviant.Alignment_FRIENDLY,
@@ -226,7 +226,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 				Initiative: 5,
 				OwnerId:    "0000",
 			},
-			ActiveEntityOrder: []string{"0000", "0001", "0002"},
+			ActiveEntityOrder: []string{"0001", "0002", "0003"},
 			Turn: &deviant.Turn{
 				Id:    "turn_0000",
 				Phase: deviant.TurnPhaseNames_PHASE_POINT,
