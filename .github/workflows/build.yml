@@ -35,11 +35,11 @@ jobs:
         token: ${{ secrets.CI_ROBOT }}
 
     - name: cd to deviant-instance-shard
-      run: cd deviant-instance-shard
+      run: cd $HOME/workflows/go/src/deviant-instance-shard
 
     - name: go get dependencies
       run: |
-        go get -v -t .
+        go get -v -t $HOME/workflows/go/src/deviant-instance-shard
         if [ -f Gopkg.toml ]; then
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
@@ -47,16 +47,16 @@ jobs:
 
     - name: Build deviant-instance-shard
       run: |
-        go build -v .
+        go build -v $HOME/workflows/go/src/deviant-instance-shard
 
     # Copy Build Artifact to Artifact Upload Directory
     # This just help verifies the artifact is a file
     - run: |
-       mkdir ./build 
-       cp deviant-instance-shard ./build/
+       mkdir -p $HOME/workflows/go/src/deviant-instance-shard/build
+       cp $HOME/workflows/go/src/deviant-instance-shard/deviant-instance-shard $HOME/workflows/go/src/deviant-instance-shard/build/
 
     # Publish Uploaded Artifact
     - uses: actions/upload-artifact@v2
       with:
         name: deviant-instance-shard
-        path: build
+        path: $HOME/workflows/go/src/deviant-instance-shard/build
