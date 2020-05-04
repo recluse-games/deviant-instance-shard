@@ -48,7 +48,7 @@ func generateCardLiterals(size int32) []*deviant.Card {
 				Pattern: []*deviant.Pattern{
 					{
 						Direction: deviant.Direction_DOWN,
-						Distance:  0,
+						Distance:  3,
 					},
 				},
 			},
