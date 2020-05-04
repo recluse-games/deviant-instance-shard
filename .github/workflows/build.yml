@@ -46,7 +46,7 @@ jobs:
 
     - name: Build deviant-instance-shard
       run: |
-       go build -v .
+       go build -v ./...
 
     # Copy Build Artifact to Artifact Upload Directory
     # This just help verifies the artifact is a file
