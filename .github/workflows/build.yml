@@ -49,11 +49,14 @@ jobs:
 
     - name: go get dependencies
       run: |
+		git config --global url."https://recluse-ci-robot:$CI_ROBOT_SECRET@github.com/".insteadOf "https://github.com/"
         go get -v -t ./...
         if [ -f Gopkg.toml ]; the
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
         fi
+	  env:
+        CI_ROBOT_SECRET: ${{ secrets.CI_ROBOT }}
 
     - name: Check for cloned directories
       run: |
