@@ -19,6 +19,7 @@ func ValidateEntityAction(encounter *deviant.Encounter, actionName deviant.Entit
 	validEntityTurnPhaseActionActions := map[deviant.EntityActionNames]bool{
 		deviant.EntityActionNames_NOTHING:      true,
 		deviant.EntityActionNames_PLAY:         true,
+		deviant.EntityActionNames_MOVE:         true,
 		deviant.EntityActionNames_CHANGE_PHASE: true,
 	}
 	validEntityTurnPhaseDiscardActions := map[deviant.EntityActionNames]bool{

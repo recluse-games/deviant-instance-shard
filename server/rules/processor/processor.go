@@ -11,6 +11,7 @@ import (
 func Process(encounter *deviant.Encounter, entityAction deviant.EntityActionNames) bool {
 	entityActionRules := map[deviant.EntityActionNames][]func(*deviant.Encounter) bool{
 		deviant.EntityActionNames_PLAY:         {},
+		deviant.EntityActionNames_MOVE:         {},
 		deviant.EntityActionNames_DISCARD:      {},
 		deviant.EntityActionNames_CHANGE_PHASE: {},
 	}
