@@ -57,8 +57,11 @@ jobs:
 
     - name: Build deviant-instance-shard
       run: |
-       cd $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard
-       go build -v .
+        export GOPATH=$GITHUB_WORKSPACE/go
+        export GOPRIVATE="github.com/recluse-games"
+
+        cd $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard
+        go build -v .
 
     # Copy Build Artifact to Artifact Upload Directory
     # This just help verifies the artifact is a file
