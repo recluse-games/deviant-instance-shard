@@ -28,6 +28,8 @@ jobs:
         repository: recluse-games/deviant-protobuf
         token: ${{ secrets.CI_ROBOT }}
 
+    - run: echo "PWD"; pwd; echo "LS"; ls; for dir in $(ls); do echo $dir && ls $dir; done
+
     - name: Get dependencies
       run: |
         go get -v -t -d ./...
@@ -38,7 +40,7 @@ jobs:
 
     - name: Build
       run: |
-        go build -v ./...
+        go build -v .
 
     - run: pwd && for dir in $(ls); do echo $dir && ls $dir; done
 
