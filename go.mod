@@ -3,6 +3,7 @@ module github.com/recluse-games/deviant-instance-shard
 go 1.14
 
 require (
+	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
 	github.com/golang/protobuf v1.4.0 // indirect
 	github.com/google/uuid v1.1.1
 	github.com/recluse-games/deviant-protobuf v0.0.0-20200504044024-86cbbf8ef1ab

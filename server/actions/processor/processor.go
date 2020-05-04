@@ -1,8 +1,9 @@
 package processor
 
 import (
-	"log"
+	"fmt"
 
+	"github.com/golang/glog"
 	deckActions "github.com/recluse-games/deviant-instance-shard/server/actions/deck"
 	encounterActions "github.com/recluse-games/deviant-instance-shard/server/actions/encounter"
 	moveActions "github.com/recluse-games/deviant-instance-shard/server/actions/move"
@@ -37,7 +38,7 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 
 	if val, ok := entityActions[entityActionName]; ok {
 		if ok {
-			for actionName, entityActionFunction := range val {
+			for _, entityActionFunction := range val {
 				switch entityActionName {
 				case deviant.EntityActionNames_MOVE:
 					if entityActionFunction.(func(*deviant.Encounter, *deviant.EntityMoveAction) bool)(encounter, entityMoveAction) == false {
@@ -48,10 +49,13 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 						return false
 					}
 				default:
-					log.Output(1, deviant.EntityActionNames_name[int32(actionName)])
+					message := fmt.Sprintf("No actions implemented for EntityActionName: %s", entityActionName.String())
+					glog.Error(message)
 				}
 			}
 		} else {
+			message := fmt.Sprintf("Invalid EntityActionName: %s", entityActionName)
+			glog.Error(message)
 			return false
 		}
 	}
@@ -92,7 +96,8 @@ ProcessTurnActions:
 							return false
 						}
 					default:
-						log.Fatal("Request TurnPhaseName is not implemented.")
+						message := fmt.Sprintf("No actions implemented for EntityActionName: %s", entityActionName.String())
+						glog.Error(message)
 					}
 
 					// If one of our previously executed action processors incremented the phase we should loop.
@@ -103,6 +108,8 @@ ProcessTurnActions:
 
 				break ProcessTurnActions
 			} else {
+				message := fmt.Sprintf("Invalid EntityActionName: %s", entityActionName)
+				glog.Error(message)
 				return false
 			}
 		}
