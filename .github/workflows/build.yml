@@ -30,7 +30,8 @@ jobs:
 
     - name: Check out Protobuf into Go module directory
       uses: actions/checkout@v2
-      repository: recluse-games/deviant-protobuf
+      with:
+        repository: recluse-games/deviant-protobuf
 
     - name: Get dependencies
       run: |
