@@ -14,16 +14,16 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 		deviant.EntityActionNames_PLAY:         {},
 		deviant.EntityActionNames_DISCARD:      {},
 		deviant.EntityActionNames_NOTHING:      {},
-		deviant.EntityActionNames_CHANGE_PHASE: {turnActions.ChangePhase},
+		deviant.EntityActionNames_CHANGE_PHASE: {turn.ChangePhase},
 	}
 
 	turnActions := map[deviant.TurnPhaseNames][]func(*deviant.Encounter) bool{
-		deviant.TurnPhaseNames_PHASE_POINT:   {turnActions.GrantAp},
+		deviant.TurnPhaseNames_PHASE_POINT:   {turnActions.GrantAp, turn.ChangePhase},
 		deviant.TurnPhaseNames_PHASE_DRAW:    {deckActions.DrawCard},
 		deviant.TurnPhaseNames_PHASE_EFFECT:  {},
 		deviant.TurnPhaseNames_PHASE_ACTION:  {},
 		deviant.TurnPhaseNames_PHASE_DISCARD: {},
-		deviant.TurnPhaseNames_PHASE_END:     {turn.UpdateActiveEntity},
+		deviant.TurnPhaseNames_PHASE_END:     {turn.UpdateActiveEntity, turn.ChangePhase},
 	}
 
 	encounterActions := []func(*deviant.Encounter) bool{
@@ -42,16 +42,26 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 		}
 	}
 
-	if val, ok := turnActions[encounter.Turn.Phase]; ok {
-		if ok {
-			for _, turnActionFunction := range val {
-				if turnActionFunction(encounter) == false {
-					return false
+	// Wrapped loop always turnphases to change from other actions to skip certain phases.
+	for {
+		if val, ok := turnActions[encounter.Turn.Phase]; ok {
+			if ok {
+				for turnPhaseName, turnActionFunction := range val {
+					if turnActionFunction(encounter) == false {
+						return false
+					}
+
+					if deviant.TurnPhaseNames(turnPhaseName) != encounter.Turn.Phase {
+						continue
+					}
 				}
+
+				break
+			} else {
+				return false
 			}
-		} else {
-			return false
 		}
+		break
 	}
 
 	for _, encounterActionFunction := range encounterActions {

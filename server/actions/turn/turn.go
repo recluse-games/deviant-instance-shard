@@ -33,14 +33,14 @@ func ChangePhase(encounter *deviant.Encounter) bool {
 
 // UpdateActiveEntity Updates the active entity to the next entity in the active entity order.
 func UpdateActiveEntity(encounter *deviant.Encounter) bool {
-	var newActiveEntityId string
+	var newActiveEntityID string
 
 	for index, entityID := range encounter.ActiveEntityOrder {
 		if entityID == encounter.ActiveEntity.Id {
 			if len(encounter.ActiveEntityOrder) != index+1 {
-				newActiveEntityId = encounter.ActiveEntityOrder[index+1]
+				newActiveEntityID = encounter.ActiveEntityOrder[index+1]
 			} else {
-				newActiveEntityId = encounter.ActiveEntityOrder[0]
+				newActiveEntityID = encounter.ActiveEntityOrder[0]
 			}
 		}
 	}
@@ -48,15 +48,15 @@ func UpdateActiveEntity(encounter *deviant.Encounter) bool {
 	// Apply all state changes to entity in encounter as well as the activeEntity
 	for outerIndex, outerValue := range encounter.Board.Entities.Entities {
 		for innerIndex, innerValue := range outerValue.Entities {
-			log.Output(1, "Applying new active entity"+newActiveEntityId)
+			log.Output(1, "Applying new active entity"+newActiveEntityID)
 
-			if innerValue.Id == newActiveEntityId {
+			if innerValue.Id == newActiveEntityID {
 				encounter.ActiveEntity = encounter.Board.Entities.Entities[outerIndex].Entities[innerIndex]
 			}
 		}
 	}
 
-	//fmt.Printf("%+v\n", encounter.ActiveEntity)
+	ChangePhase(encounter)
 
 	return true
 }

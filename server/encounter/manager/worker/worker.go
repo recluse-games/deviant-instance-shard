@@ -67,19 +67,24 @@ func (w *IncomingWorker) StartIncoming() {
 				// Implement Rules Engine and Matchingmaking integration here.
 				if work.Request.Encounter == nil {
 					actionResponse = matchmaker.GenerateMatch()
+					actions.Process(actionResponse.Encounter, deviant.EntityActionNames_NOTHING)
 				} else {
-					isActionValid := rules.Process(work.Request.Encounter, work.Request.EntityActionName)
-					if isActionValid == true {
-						actions.Process(work.Request.Encounter, work.Request.EntityActionName)
+					// AuthZ the Player <- This should be migrated to a different layer of the codebase
+					if work.Request.PlayerId == work.Request.Encounter.ActiveEntity.OwnerId {
+						isActionValid := rules.Process(work.Request.Encounter, work.Request.EntityActionName)
+						if isActionValid == true {
+							actions.Process(work.Request.Encounter, work.Request.EntityActionName)
 
-						// Apply all state changes to entity in encounter as well as the activeEntity
-						for outerIndex, outerValue := range work.Request.Encounter.Board.Entities.Entities {
-							for innerIndex, innerValue := range outerValue.Entities {
-								if innerValue.Id == work.Request.Encounter.ActiveEntity.Id {
-									work.Request.Encounter.Board.Entities.Entities[outerIndex].Entities[innerIndex] = work.Request.Encounter.ActiveEntity
+							// Apply all state changes to entity in encounter as well as the activeEntity
+							for outerIndex, outerValue := range work.Request.Encounter.Board.Entities.Entities {
+								for innerIndex, innerValue := range outerValue.Entities {
+									if innerValue.Id == work.Request.Encounter.ActiveEntity.Id {
+										work.Request.Encounter.Board.Entities.Entities[outerIndex].Entities[innerIndex] = work.Request.Encounter.ActiveEntity
+									}
 								}
 							}
 						}
+
 					}
 
 					actionResponse = &deviant.EncounterResponse{
