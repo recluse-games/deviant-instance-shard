@@ -78,4 +78,4 @@ jobs:
     # Publish Uploaded Artifact
     - uses: actions/upload-artifact@v2
       with:
-        path: $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard/build/deviant-instance-shard
+        path: go/src/github.com/deviant-instance-shard/build/deviant-instance-shard
