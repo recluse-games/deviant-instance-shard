@@ -3,6 +3,7 @@ package dispatcher
 import (
 	"fmt"
 
+	"github.com/golang/glog"
 	"github.com/recluse-games/deviant-instance-shard/server/encounter/manager/collector"
 	model "github.com/recluse-games/deviant-instance-shard/server/encounter/manager/model"
 	"github.com/recluse-games/deviant-instance-shard/server/encounter/manager/worker"
@@ -32,19 +33,19 @@ func StartDispatcher(nworkers int) {
 		for {
 			select {
 			case incomingWork := <-collector.IncomingWorkQueue:
-				fmt.Println("Received incoming work requeust")
+				glog.Info("Received incoming work request")
 				go func() {
 					worker := <-IncomingWorkerQueue
 
-					fmt.Println("Dispatching work request")
+					glog.Info("Dispatching work request")
 					worker <- incomingWork
 				}()
 			case outgoingWork := <-collector.OutgoingWorkQueue:
-				fmt.Println("Received outgoing work requeust")
+				glog.Info("Received incoming work request")
 				go func() {
 					worker := <-OutgoingWorkerQueue
 
-					fmt.Println("Dispatching work request")
+					glog.Info("Dispatching work request")
 					worker <- outgoingWork
 				}()
 			}

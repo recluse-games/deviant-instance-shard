@@ -66,7 +66,7 @@ func (s *server) UpdateEncounter(stream deviant.EncounterService_UpdateEncounter
 func Start() {
 	// Start the message dispatcher.
 	fmt.Println("Starting the dispatcher")
-	dispatcher.StartDispatcher(100)
+	dispatcher.StartDispatcher(10)
 
 	socket := "0.0.0.0:50051"
 	fmt.Printf("starting deviant-instance-shard on %v", socket)

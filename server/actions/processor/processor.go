@@ -65,9 +65,16 @@ ProcessTurnActions:
 	for {
 		if val, ok := turnActions[encounter.Turn.Phase]; ok {
 			if ok {
-				for _, turnActionFunction := range val {
-					nextTurnPhaseName := encounter.Turn.Phase + 1
+				var nextTurnPhaseName deviant.TurnPhaseNames
 
+				// If we're on the end phase we need to loop back to PHASE_POINT in the TurnPhaseActionNames.
+				if encounter.Turn.Phase < 5 {
+					nextTurnPhaseName = encounter.Turn.Phase + 1
+				} else {
+					nextTurnPhaseName = deviant.TurnPhaseNames_PHASE_POINT
+				}
+
+				for _, turnActionFunction := range val {
 					switch encounter.Turn.Phase {
 					case deviant.TurnPhaseNames_PHASE_POINT:
 						if turnActionFunction.(func(*deviant.Encounter) bool)(encounter) == false {
@@ -86,11 +93,6 @@ ProcessTurnActions:
 							return false
 						}
 					case deviant.TurnPhaseNames_PHASE_DISCARD:
-						// If we're not above the maximum hand size we should skip processing.
-						if len(encounter.ActiveEntity.Hand.Cards) < 6 {
-							turn.ChangePhase(encounter)
-							continue ProcessTurnActions
-						}
 					case deviant.TurnPhaseNames_PHASE_END:
 						if turnActionFunction.(func(*deviant.Encounter) bool)(encounter) == false {
 							return false
@@ -104,6 +106,12 @@ ProcessTurnActions:
 					if encounter.Turn.Phase == nextTurnPhaseName {
 						continue ProcessTurnActions
 					}
+				}
+
+				// If we're not above the maximum hand size we should skip processing.
+				if len(encounter.ActiveEntity.Hand.Cards) < 6 && encounter.Turn.Phase == deviant.TurnPhaseNames_PHASE_DISCARD {
+					turn.ChangePhase(encounter)
+					continue ProcessTurnActions
 				}
 
 				break ProcessTurnActions

@@ -1,8 +1,9 @@
 package turn
 
 import (
-	"log"
+	"fmt"
 
+	"github.com/golang/glog"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
@@ -49,13 +50,14 @@ func UpdateActiveEntity(encounter *deviant.Encounter) bool {
 	// Apply all state changes to entity in encounter as well as the activeEntity
 	for outerIndex, outerValue := range encounter.Board.Entities.Entities {
 		for innerIndex, innerValue := range outerValue.Entities {
-			log.Output(1, "Applying new active entity"+newActiveEntityID)
-
 			if innerValue.Id == newActiveEntityID {
 				encounter.ActiveEntity = encounter.Board.Entities.Entities[outerIndex].Entities[innerIndex]
 			}
 		}
 	}
+
+	message := fmt.Sprintf("Updated Active Entity: %s", encounter.ActiveEntity.Id)
+	glog.Info(message)
 
 	return true
 }

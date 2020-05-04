@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	"github.com/golang/glog"
 	actions "github.com/recluse-games/deviant-instance-shard/server/actions/processor"
 	model "github.com/recluse-games/deviant-instance-shard/server/encounter/manager/model"
 	"github.com/recluse-games/deviant-instance-shard/server/encounter/matchmaker"
@@ -88,12 +89,13 @@ func (w *IncomingWorker) StartIncoming() {
 					}
 
 					actionResponse = &deviant.EncounterResponse{
-						PlayerId:  "player_0000",
+						PlayerId:  work.Request.PlayerId,
 						Encounter: work.Request.Encounter,
 					}
 				}
 
-				fmt.Printf("Action Processed\n")
+				message := fmt.Sprintf("Actions Processed: %s\n", work.Request.EntityActionName)
+				glog.Info(message)
 
 				work.ResponseChannel <- actionResponse
 
