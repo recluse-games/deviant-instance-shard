@@ -55,7 +55,7 @@ jobs:
 
         cd $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard
         rm go.mod go.sum
-        go mod init
+        go mod init server
         go get -v -t 
         if [ -f Gopkg.toml ]; the
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
