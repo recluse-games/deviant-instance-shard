@@ -8,7 +8,7 @@ import (
 
 	"github.com/recluse-games/deviant-instance-shard/server/encounter/manager/collector"
 	"github.com/recluse-games/deviant-instance-shard/server/encounter/manager/dispatcher"
-	deviant "github.com/recluse-games/deviant-protobuf/genproto"
+	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )

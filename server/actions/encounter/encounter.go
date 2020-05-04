@@ -1,6 +1,6 @@
 package encounter
 
-import deviant "github.com/recluse-games/deviant-protobuf/genproto"
+import deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 
 // ProcessWinConditions Validates if any enemies remain if they don't the encounter will be set to completed.
 func ProcessWinConditions(encounter *deviant.Encounter) bool {

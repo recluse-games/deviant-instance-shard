@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"testing"
 
-	deviant "github.com/recluse-games/deviant-protobuf/genproto"
+	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
 func GenerateHandLiteral(size int32) *deviant.Hand {

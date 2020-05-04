@@ -4,7 +4,7 @@ import (
 	"github.com/recluse-games/deviant-instance-shard/server/rules/deck"
 	"github.com/recluse-games/deviant-instance-shard/server/rules/hand"
 	"github.com/recluse-games/deviant-instance-shard/server/rules/turn"
-	deviant "github.com/recluse-games/deviant-protobuf/genproto"
+	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
 // Process Processes all rules to determine validity.

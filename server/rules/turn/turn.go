@@ -1,6 +1,6 @@
 package turn
 
-import deviant "github.com/recluse-games/deviant-protobuf/genproto"
+import deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 
 // ValidateEntityAction Determines if the action an entity is trying to perform is valid for the current turnPhase
 func ValidateEntityAction(encounter *deviant.Encounter, actionName deviant.EntityActionNames, turnPhaseName deviant.TurnPhaseNames) bool {
