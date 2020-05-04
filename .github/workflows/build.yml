@@ -72,7 +72,8 @@ jobs:
     # This just help verifies the artifact is a file
     - run: |
        mkdir -p $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard/build
-       cp $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard/deviant-instance-shard $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard/build/
+       cp $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard/deviant-instance-shard $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard/build/deviant-instance-shard
+       ls $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard/build/
 
     # Publish Uploaded Artifact
     - uses: actions/upload-artifact@v2
