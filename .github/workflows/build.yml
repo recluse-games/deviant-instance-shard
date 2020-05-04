@@ -57,10 +57,6 @@ jobs:
         rm go.mod go.sum
         go mod init server
         go get -v -t -d .
-        if [ -f Gopkg.toml ]; the
-            curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-            dep ensure
-        fi
       env:
         CI_ROBOT_SECRET: ${{ secrets.CI_ROBOT }}
 
