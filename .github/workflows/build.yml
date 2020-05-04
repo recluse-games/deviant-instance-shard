@@ -37,9 +37,12 @@ jobs:
         fi
 
     - name: Build
+      env:
+        GOPROXY: "https://proxy.golang.org"
       run: go build -v .
 
     - name: Test
+        GOPROXY: "https://proxy.golang.org"
       run: go test -v .
     
     # Create Artifact Upload Directory
