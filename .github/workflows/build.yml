@@ -38,7 +38,7 @@ jobs:
 
     - name: go get dependencies
       run: |
-        go get -v -t $GITHUB_WORKSPACE/go/src/deviant-instance-shard
+        go get -v -t ./...
         if [ -f Gopkg.toml ]; then
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
