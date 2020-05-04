@@ -40,7 +40,8 @@ jobs:
       run: |
         go build -v ./...
 
-    - run: ls deviant-instance-shard
+    - run: pwd && for dir in $(ls); do echo $dir && ls $dir; done
+
     #Create Artifact Upload Directory
     #
     - run: mkdir -p recluse-games/deviant-instance-shard/build
