@@ -48,11 +48,14 @@ jobs:
       run: |
        go build -v ./...
 
+    - name: Where is it
+      run: find . -iname deviant-instance-shard
+
     # Copy Build Artifact to Artifact Upload Directory
     # This just help verifies the artifact is a file
     - run: |
        mkdir -p $GITHUB_WORKSPACE/go/src/deviant-instance-shard/build
-       cp $GITHUB_WORKSPACE/go/src/deviant-instance-shard/deviant-instance-shard $GITHUB_WORKSPACE/go/src/deviant-instance-shard/build/
+       cp deviant-instance-shard/deviant-instance-shard $GITHUB_WORKSPACE/go/src/deviant-instance-shard/build/
 
     # Publish Uploaded Artifact
     - uses: actions/upload-artifact@v2
