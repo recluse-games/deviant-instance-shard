@@ -21,31 +21,33 @@ jobs:
 
     - name: Configure workflows GOPATH and change working dir
       run: |
-        mkdir -p $GITHUB_WORKSPACE/go/src
+        mkdir -p $GITHUB_WORKSPACE/go/src/deviant-instance-shard
+        mkdir -p $GITHUB_WORKSPACE/go/src/deviant-protobuf
+
         export GOPATH=$GITHUB_WORKSPACE/go
 
     - name: Check out Instance Shard into the Go module directory
       uses: actions/checkout@v2
       with:
-        path: go/src
+        path: go/src/deviant-instance-shard
 
     - name: Check out Protobuf into Go module directory
       uses: actions/checkout@v2
       with:
         repository: recluse-games/deviant-protobuf
         token: ${{ secrets.CI_ROBOT }}
-        path: go/src
+        path: go/src/deviant-protobuf
 
     - name: go get dependencies
       run: |
-        go get -v -t ./...
-        if [ -f Gopkg.toml ]; then
+        go get -v -t 
+        if [ -f Gopkg.toml ]; the
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
         fi
 
     - name: Where is it
-      run: ls $GITHUB_WORKSPACE/go/src
+      run: ls $GITHUB_WORKSPACE
 
     - name: Build deviant-instance-shard
       run: |
