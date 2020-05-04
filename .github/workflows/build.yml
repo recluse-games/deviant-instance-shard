@@ -21,7 +21,7 @@ jobs:
 
     - name: Configure Github Actor and Token 
       run: |
-          git config --global url.'https://recluse-ci-robot:$CI_ROBOT_SECRET@github.com/'.insteadOf "https://github.com/"
+          git config --global url."https://recluse-ci-robot:$CI_ROBOT_SECRET@github.com/".insteadOf "https://github.com/"
       env: 
         CI_ROBOT_SECRET: ${{ secrets.CI_ROBOT }}
 
