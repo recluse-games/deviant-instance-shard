@@ -44,12 +44,12 @@ jobs:
             dep ensure
         fi
 
+    - name: Where is it
+      run: ls $GITHUB_WORKSPACE/go/src
+
     - name: Build deviant-instance-shard
       run: |
        go build -v ./...
-
-    - name: Where is it
-      run: ls $GITHUB_WORKSPACE/go/src
 
     # Copy Build Artifact to Artifact Upload Directory
     # This just help verifies the artifact is a file
