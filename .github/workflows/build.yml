@@ -47,9 +47,6 @@ jobs:
 
     - name: go get dependencies
       run: |
-        echo "THE NUMBERS MASON"
-        ls /home/runner/work/deviant-instance-shard/deviant-instance-shard/go/src/github.com/deviant-instance-shard
-        echo "WHAT DO THEY MEAN"
         export GOPATH=$GITHUB_WORKSPACE/go
         export GOPRIVATE="github.com/recluse-games"
 
@@ -57,21 +54,11 @@ jobs:
         rm go.mod go.sum
         go mod init server
         go get -v -t -d .
-      env:
-        CI_ROBOT_SECRET: ${{ secrets.CI_ROBOT }}
-
-    - name: Check for cloned directories
-      run: |
-        echo "!! LS"
-        ls
-        echo "!! SHARD"
-        ls $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard
-        echo "!! PROTOBUFF"
-        ls $GITHUB_WORKSPACE/go/src/github.com/deviant-protobuf
 
     - name: Build deviant-instance-shard
       run: |
-       go build -v $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard
+       cd $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard
+       go build -v .
 
     # Copy Build Artifact to Artifact Upload Directory
     # This just help verifies the artifact is a file
