@@ -22,7 +22,7 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 		deviant.EntityActionNames_CHANGE_PHASE: {turn.ChangePhase},
 	}
 
-	turnActions := map[deviant.TurnPhaseNames][]func(*deviant.Encounter) bool{
+	turnActions := map[deviant.TurnPhaseNames][]interface{}{
 		deviant.TurnPhaseNames_PHASE_POINT:   {turnActions.GrantAp, turn.ChangePhase},
 		deviant.TurnPhaseNames_PHASE_EFFECT:  {turn.ChangePhase},
 		deviant.TurnPhaseNames_PHASE_DRAW:    {deckActions.DrawCard, turn.ChangePhase},
@@ -56,38 +56,59 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 		}
 	}
 
-ProcessTurns:
-	// Wrapped loop always turnphases to change from other actions to skip certain phases.
+ProcessTurnActions:
+	// Wrapped forever loop allows for server-side phase skipping/processing.
 	for {
 		if val, ok := turnActions[encounter.Turn.Phase]; ok {
 			if ok {
 				for _, turnActionFunction := range val {
-					var nextTurnName = encounter.Turn.Phase + 1
+					nextTurnPhaseName := encounter.Turn.Phase + 1
 
-					if turnActionFunction(encounter) == false {
-						return false
+					switch encounter.Turn.Phase {
+					case deviant.TurnPhaseNames_PHASE_POINT:
+						if turnActionFunction.(func(*deviant.Encounter) bool)(encounter) == false {
+							return false
+						}
+					case deviant.TurnPhaseNames_PHASE_EFFECT:
+						if turnActionFunction.(func(*deviant.Encounter) bool)(encounter) == false {
+							return false
+						}
+					case deviant.TurnPhaseNames_PHASE_DRAW:
+						if turnActionFunction.(func(*deviant.Encounter) bool)(encounter) == false {
+							return false
+						}
+					case deviant.TurnPhaseNames_PHASE_ACTION:
+						if turnActionFunction.(func(*deviant.Encounter) bool)(encounter) == false {
+							return false
+						}
+					case deviant.TurnPhaseNames_PHASE_DISCARD:
+						// If we're not above the maximum hand size we should skip processing.
+						if len(encounter.ActiveEntity.Hand.Cards) < 6 {
+							turn.ChangePhase(encounter)
+							continue ProcessTurnActions
+						}
+					case deviant.TurnPhaseNames_PHASE_END:
+						if turnActionFunction.(func(*deviant.Encounter) bool)(encounter) == false {
+							return false
+						}
+					default:
+						log.Fatal("Request TurnPhaseName is not implemented.")
 					}
 
-					if encounter.Turn.Phase == nextTurnName {
-						continue ProcessTurns
-					}
-
-					// Edge Case skip discard phase if not neccisary
-					if len(encounter.ActiveEntity.Hand.Cards) < 6 {
-						turn.ChangePhase(encounter)
-						continue ProcessTurns
+					// If one of our previously executed action processors incremented the phase we should loop.
+					if encounter.Turn.Phase == nextTurnPhaseName {
+						continue ProcessTurnActions
 					}
 				}
 
-				break ProcessTurns
+				break ProcessTurnActions
 			} else {
 				return false
 			}
 		}
-
-		break ProcessTurns
 	}
 
+	// Verify all actions were completed succesfully.
 	for _, encounterActionFunction := range encounterActions {
 		if encounterActionFunction(encounter) == false {
 			return false

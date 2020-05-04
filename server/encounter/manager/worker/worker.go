@@ -71,7 +71,7 @@ func (w *IncomingWorker) StartIncoming() {
 				} else {
 					// AuthZ the Player <- This should be migrated to a different layer of the codebase
 					if work.Request.PlayerId == work.Request.Encounter.ActiveEntity.OwnerId {
-						isActionValid := rules.Process(work.Request.Encounter, work.Request.EntityActionName)
+						isActionValid := rules.Process(work.Request.Encounter, work.Request.EntityActionName, work.Request.EntityMoveAction)
 						if isActionValid == true {
 							actions.Process(work.Request.Encounter, work.Request.EntityActionName, work.Request.EntityMoveAction)
 
