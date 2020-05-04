@@ -19,9 +19,6 @@ jobs:
         go-version: ^1.13
       id: go
 
-    - name: WhereAmI?
-      run: pwd && ls .. && ls ../..
-
     - name: Configure Github Actor and Token 
       run: |
           git config --global url."https://recluse-ci-robot:$CI_ROBOT_SECRET@github.com/".insteadOf "https://github.com/"
@@ -30,6 +27,10 @@ jobs:
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
+
+    - name: Check out Protobuf into Go module directory
+      uses: actions/checkout@v2
+      repository: recluse-games/deviant-protobuf
 
     - name: Get dependencies
       run: |
@@ -40,13 +41,9 @@ jobs:
         fi
 
     - name: Build
-      env:
-        GOPROXY: "https://proxy.golang.org"
       run: go build -v .
 
     - name: Test
-      env:
-        GOPROXY: "https://proxy.golang.org"
       run: go test -v .
     
     # Create Artifact Upload Directory
