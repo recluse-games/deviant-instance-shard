@@ -16,7 +16,8 @@ func GrantAp(encounter *deviant.Encounter) bool {
 
 // ChangePhase updates the current turn phase.
 func ChangePhase(encounter *deviant.Encounter) bool {
-	turnOrder := []deviant.TurnPhaseNames{deviant.TurnPhaseNames_PHASE_POINT, deviant.TurnPhaseNames_PHASE_DRAW, deviant.TurnPhaseNames_PHASE_EFFECT, deviant.TurnPhaseNames_PHASE_ACTION, deviant.TurnPhaseNames_PHASE_DISCARD, deviant.TurnPhaseNames_PHASE_END}
+	turnOrder := []deviant.TurnPhaseNames{deviant.TurnPhaseNames_PHASE_POINT, deviant.TurnPhaseNames_PHASE_EFFECT, deviant.TurnPhaseNames_PHASE_DRAW, deviant.TurnPhaseNames_PHASE_ACTION, deviant.TurnPhaseNames_PHASE_DISCARD, deviant.TurnPhaseNames_PHASE_END}
+
 	for i, v := range turnOrder {
 		if v == encounter.Turn.Phase {
 			if encounter.Turn.Phase == deviant.TurnPhaseNames_PHASE_END {
@@ -55,8 +56,6 @@ func UpdateActiveEntity(encounter *deviant.Encounter) bool {
 			}
 		}
 	}
-
-	ChangePhase(encounter)
 
 	return true
 }
