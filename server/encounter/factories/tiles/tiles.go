@@ -1,6 +1,6 @@
 package tiles
 
-import deviant "github.com/recluse-games/deviant-protobuf/genproto"
+import deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 
 // CreateTiles Creates a deviant.Tiles from a set of tileIds
 func CreateTiles(tileIds [][]string) *deviant.Tiles {

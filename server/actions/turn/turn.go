@@ -3,7 +3,7 @@ package turn
 import (
 	"log"
 
-	deviant "github.com/recluse-games/deviant-protobuf/genproto"
+	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
 // GrantAp grants some entity a default AP value of 5

@@ -3,7 +3,7 @@ package turn
 import (
 	"testing"
 
-	deviant "github.com/recluse-games/deviant-protobuf/genproto"
+	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
 func TestValidateEntityAction(t *testing.T) {

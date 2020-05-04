@@ -2,7 +2,7 @@ package matchmaker
 
 import (
 	"github.com/google/uuid"
-	deviant "github.com/recluse-games/deviant-protobuf/genproto"
+	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
 func generateHandLiterals(size int32) *deviant.Hand {

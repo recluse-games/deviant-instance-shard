@@ -6,7 +6,7 @@ import (
 	"github.com/recluse-games/deviant-instance-shard/server/encounter/manager/collector"
 	model "github.com/recluse-games/deviant-instance-shard/server/encounter/manager/model"
 	"github.com/recluse-games/deviant-instance-shard/server/encounter/manager/worker"
-	deviant "github.com/recluse-games/deviant-protobuf/genproto"
+	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
 // WorkerQueue holds all work requests

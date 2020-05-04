@@ -8,7 +8,7 @@ import (
 	model "github.com/recluse-games/deviant-instance-shard/server/encounter/manager/model"
 	"github.com/recluse-games/deviant-instance-shard/server/encounter/matchmaker"
 	rules "github.com/recluse-games/deviant-instance-shard/server/rules/processor"
-	deviant "github.com/recluse-games/deviant-protobuf/genproto"
+	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 

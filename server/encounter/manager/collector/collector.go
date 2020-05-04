@@ -2,7 +2,7 @@ package collector
 
 import (
 	model "github.com/recluse-games/deviant-instance-shard/server/encounter/manager/model"
-	deviant "github.com/recluse-games/deviant-protobuf/genproto"
+	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
 // IncomingWorkQueue manages workers for outgoing messages.

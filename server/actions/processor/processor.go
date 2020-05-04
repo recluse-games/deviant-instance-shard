@@ -5,7 +5,7 @@ import (
 	encounterActions "github.com/recluse-games/deviant-instance-shard/server/actions/encounter"
 	"github.com/recluse-games/deviant-instance-shard/server/actions/turn"
 	turnActions "github.com/recluse-games/deviant-instance-shard/server/actions/turn"
-	deviant "github.com/recluse-games/deviant-protobuf/genproto"
+	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
 // Process Processes all actions.

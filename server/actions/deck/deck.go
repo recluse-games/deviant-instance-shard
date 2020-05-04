@@ -1,7 +1,7 @@
 package deck
 
 import (
-	deviant "github.com/recluse-games/deviant-protobuf/genproto"
+	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
 func addCard(slice []*deviant.Card, card *deviant.Card) []*deviant.Card {
