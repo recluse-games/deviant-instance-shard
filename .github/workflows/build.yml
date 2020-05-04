@@ -19,6 +19,9 @@ jobs:
         go-version: ^1.13
       id: go
 
+    - name: WhereAmI?
+      run: pwd && ls .. && ls ../..
+
     - name: Configure Github Actor and Token 
       run: |
           git config --global url."https://recluse-ci-robot:$CI_ROBOT_SECRET@github.com/".insteadOf "https://github.com/"
