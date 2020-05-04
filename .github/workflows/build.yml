@@ -19,6 +19,12 @@ jobs:
         go-version: ^1.13
       id: go
 
+    - name: Configure workflows GOPATH and change working dir
+      run: |
+        mkdir -p $HOME/workflows/go/src
+        export GOPATH=$HOME/workflows/go
+        cd $HOME/workflows/go/src
+
     - name: Check out Instance Shard into the Go module directory
       uses: actions/checkout@v2
 
@@ -28,31 +34,29 @@ jobs:
         repository: recluse-games/deviant-protobuf
         token: ${{ secrets.CI_ROBOT }}
 
-    - run: echo "PWD"; pwd; echo "LS"; ls; for dir in $(ls); do echo $dir && ls $dir; done
+    - name: cd to deviant-instance-shard
+      run: cd deviant-instance-shard
 
-    - name: Get dependencies
+    - name: go get dependencies
       run: |
-        go get -v -t -d ./...
+        go get -v -t .
         if [ -f Gopkg.toml ]; then
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
         fi
 
-    - name: Build
+    - name: Build deviant-instance-shard
       run: |
         go build -v .
 
-    - run: pwd && for dir in $(ls); do echo $dir && ls $dir; done
-
-    #Create Artifact Upload Directory
-    #
-    - run: mkdir -p recluse-games/deviant-instance-shard/build
-
     # Copy Build Artifact to Artifact Upload Directory
-    - run: cp deviant-instance-shard recluse-games/deviant-instance-shard/build/deviant-instance-shard
+    # This just help verifies the artifact is a file
+    - run: |
+       mkdir ./build 
+       cp deviant-instance-shard ./build/
 
     # Publish Uploaded Artifact
     - uses: actions/upload-artifact@v2
       with:
         name: deviant-instance-shard
-        path: recluse-games/deviant-instance-shard/build
+        path: build
