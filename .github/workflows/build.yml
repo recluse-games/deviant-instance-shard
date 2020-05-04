@@ -38,6 +38,15 @@ jobs:
         token: ${{ secrets.CI_ROBOT }}
         path: go/src/deviant-protobuf
 
+    - name: Check for cloned directories
+      run: |
+        echo "ls"
+        ls
+        echo "shard"
+        ls $GITHUB_WORKSPACE/go/src/deviant-instance-shard
+        echo "protobuf"
+        ls $GITHUB_WORKSPACE/go/src/deviant-protobuf
+
     - name: go get dependencies
       run: |
         go get -v -t -d $GITHUB_WORKSPACE/go/src/deviant-instance-shard
