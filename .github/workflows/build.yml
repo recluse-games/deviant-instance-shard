@@ -21,9 +21,7 @@ jobs:
 
     - name: Configure Github Actor and Token 
       run: |
-        git config --global url.'https://$CI_ROBOT_EMAIL:${{ secrets.CI_ROBOT }}@github.com/'.insteadOf "https://github.com/"
-      env:
-        CI_ROBOT_EMAIL: 'opensource@recluse-games.com'
+        git config --global url.'https://${{ secrets.CI_ROBOT }}@github.com/'.insteadOf "https://github.com/"
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
