@@ -40,20 +40,29 @@ jobs:
 
     - name: Check for cloned directories
       run: |
-        echo "ls"
+        echo "!! LS"
         ls
-        echo "shard"
+        echo "!! SHARD"
         ls $GITHUB_WORKSPACE/go/src/deviant-instance-shard
-        echo "protobuf"
+        echo "!! PROTOBUFF"
         ls $GITHUB_WORKSPACE/go/src/deviant-protobuf
 
     - name: go get dependencies
       run: |
-        go get -v -t -d $GITHUB_WORKSPACE/go/src/deviant-instance-shard
+        go get -v -t -d ./...
         if [ -f Gopkg.toml ]; the
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
         fi
+
+    - name: Check for cloned directories
+      run: |
+        echo "!! LS"
+        ls
+        echo "!! SHARD"
+        ls $GITHUB_WORKSPACE/go/src/deviant-instance-shard
+        echo "!! PROTOBUFF"
+        ls $GITHUB_WORKSPACE/go/src/deviant-protobuf
 
     - name: Build deviant-instance-shard
       run: |
