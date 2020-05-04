@@ -46,6 +46,8 @@ jobs:
     # Create Artifact Upload Directory
     - run: mkdir -p recluse-games/deviant-instance-shard/build
 
+    - run: pwd && ls && ls ..
+
     # Copy Build Artifact to Artifact Upload Directory
     - run: cp deviant-instance-shard recluse-games/deviant-instance-shard/build/deviant-instance-shard
   
