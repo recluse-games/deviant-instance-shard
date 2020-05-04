@@ -25,6 +25,7 @@ jobs:
         mkdir -p $GITHUB_WORKSPACE/go/src/deviant-protobuf
 
         export GOPATH=$GITHUB_WORKSPACE/go
+        export GOPRIVATE="github.com/recluse-games"
 
     - name: Check out Instance Shard into the Go module directory
       uses: actions/checkout@v2
@@ -49,8 +50,8 @@ jobs:
 
     - name: go get dependencies
       run: |
-        git config --global url."https://recluse-ci-robot:$CI_ROBOT_SECRET@github.com/".insteadOf "https://github.com/"
-        go get -v -t ./...
+        go mod init $GITHUB_WORKSPACE/go/src/deviant-instance-shard
+        go get -v -t -d $GITHUB_WORKSPACE/go/src/deviant-instance-shard
         if [ -f Gopkg.toml ]; the
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
