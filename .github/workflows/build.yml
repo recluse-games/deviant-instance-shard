@@ -52,7 +52,7 @@ jobs:
 
         cd $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard
         rm go.mod go.sum
-        go mod init server
+        go mod init
         go get -v -t -d .
 
     - name: Build deviant-instance-shard
