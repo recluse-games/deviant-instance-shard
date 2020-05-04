@@ -47,6 +47,9 @@ jobs:
 
     - name: go get dependencies
       run: |
+        echo "THE NUMBERS MASON"
+        ls /home/runner/work/deviant-instance-shard/deviant-instance-shard/go/src/github.com/deviant-instance-shard
+        echo "WHAT DO THEY MEAN"
         export GOPATH=$GITHUB_WORKSPACE/go
         export GOPRIVATE="github.com/recluse-games"
 
