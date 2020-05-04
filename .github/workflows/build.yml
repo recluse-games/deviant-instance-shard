@@ -49,7 +49,7 @@ jobs:
        go build -v ./...
 
     - name: Where is it
-      run: for dir in $(ls $GITHUB_WORKSPACE/go/src); do echo "$dir: "; ls $dir; done
+      run: for dir in $(ls $GITHUB_WORKSPACE/go/src); do echo "$dir: " && ls $dir; done
 
     # Copy Build Artifact to Artifact Upload Directory
     # This just help verifies the artifact is a file
