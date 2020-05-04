@@ -13,6 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+    - name: Set up .netrc file
+      run: echo "machine github.com login recluse-ci-robot password $CI_ROBOT_SECRET"
+      env:
+        CI_ROBOT_SECRET: ${{ secrets.CI_ROBOT }}
+
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
       with:
