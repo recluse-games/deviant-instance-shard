@@ -1,8 +1,7 @@
 package matchmaker
 
 import (
-	"strconv"
-
+	"github.com/google/uuid"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto"
 )
 
@@ -38,7 +37,7 @@ func generateCardLiterals(size int32) []*deviant.Card {
 
 	for i := int32(0); i < size; i++ {
 		card := &deviant.Card{
-			Id:          strconv.FormatInt(int64(i), 10),
+			Id:          uuid.New().String(),
 			Cost:        0,
 			Title:       "Test Title",
 			Flavor:      "Test Flavor",
@@ -193,7 +192,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 									Class:      deviant.Classes_WARRIOR,
 									Hand:       generateHandLiterals(0),
 									Deck:       generateDeckLiterals(2),
-									Discard:    generateDiscardLiteral(2),
+									Discard:    generateDiscardLiteral(0),
 									Initiative: 5,
 									OwnerId:    "0002",
 								},
@@ -205,7 +204,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 									Class:      deviant.Classes_WARRIOR,
 									Hand:       generateHandLiterals(0),
 									Deck:       generateDeckLiterals(2),
-									Discard:    generateDiscardLiteral(2),
+									Discard:    generateDiscardLiteral(0),
 									Initiative: 3,
 									OwnerId:    "0003",
 								},
@@ -222,7 +221,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 				Class:      deviant.Classes_WARRIOR,
 				Hand:       generateHandLiterals(0),
 				Deck:       generateDeckLiterals(2),
-				Discard:    generateDiscardLiteral(2),
+				Discard:    generateDiscardLiteral(0),
 				Initiative: 5,
 				OwnerId:    "0000",
 			},

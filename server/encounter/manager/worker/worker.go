@@ -69,7 +69,6 @@ func (w *IncomingWorker) StartIncoming() {
 					actionResponse = matchmaker.GenerateMatch()
 				} else {
 					isActionValid := rules.Process(work.Request.Encounter, work.Request.EntityActionName)
-
 					if isActionValid == true {
 						actions.Process(work.Request.Encounter, work.Request.EntityActionName)
 
@@ -77,7 +76,6 @@ func (w *IncomingWorker) StartIncoming() {
 						for outerIndex, outerValue := range work.Request.Encounter.Board.Entities.Entities {
 							for innerIndex, innerValue := range outerValue.Entities {
 								if innerValue.Id == work.Request.Encounter.ActiveEntity.Id {
-									fmt.Printf("%+v\n", work.Request.Encounter.ActiveEntity)
 									work.Request.Encounter.Board.Entities.Entities[outerIndex].Entities[innerIndex] = work.Request.Encounter.ActiveEntity
 								}
 							}

@@ -54,37 +54,53 @@ func GenerateCardLiterals(size int32) []*deviant.Card {
 }
 
 func TestDrawCard(t *testing.T) {
-	entityWithOneCardInDeckAndHand := &deviant.Entity{
-		Deck: GenerateDeckLiteral(1),
-		Hand: GenerateHandLiteral(1),
+	entityWithOneCardInDeckAndHand := &deviant.Encounter{
+		ActiveEntity: &deviant.Entity{
+			Deck: GenerateDeckLiteral(1),
+			Hand: GenerateHandLiteral(1),
+		},
 	}
 
 	if DrawCard(entityWithOneCardInDeckAndHand) != true {
 		t.Fail()
 	}
 
-	if len(entityWithOneCardInDeckAndHand.Deck.Cards) != 0 {
+	if len(entityWithOneCardInDeckAndHand.ActiveEntity.Deck.Cards) != 0 {
 		t.Fail()
 	}
 
-	if len(entityWithOneCardInDeckAndHand.Hand.Cards) != 2 {
+	if len(entityWithOneCardInDeckAndHand.ActiveEntity.Hand.Cards) != 2 {
 		t.Fail()
 	}
 
-	entityWithTwoCardsInDeckAndNoneInHand := &deviant.Entity{
-		Deck: GenerateDeckLiteral(2),
-		Hand: GenerateHandLiteral(0),
+	entityWithTwoCardsInDeckAndNoneInHand := &deviant.Encounter{
+		ActiveEntity: &deviant.Entity{
+			Deck: GenerateDeckLiteral(2),
+			Hand: GenerateHandLiteral(0),
+		},
 	}
 
 	if DrawCard(entityWithTwoCardsInDeckAndNoneInHand) != true {
 		t.Fail()
 	}
 
-	if len(entityWithTwoCardsInDeckAndNoneInHand.Deck.Cards) != 1 {
+	if len(entityWithTwoCardsInDeckAndNoneInHand.ActiveEntity.Deck.Cards) != 1 {
 		t.Fail()
 	}
 
-	if len(entityWithTwoCardsInDeckAndNoneInHand.Hand.Cards) != 1 {
+	if len(entityWithTwoCardsInDeckAndNoneInHand.ActiveEntity.Hand.Cards) != 1 {
+		t.Fail()
+	}
+
+	if DrawCard(entityWithTwoCardsInDeckAndNoneInHand) != true {
+		t.Fail()
+	}
+
+	if len(entityWithTwoCardsInDeckAndNoneInHand.ActiveEntity.Deck.Cards) != 0 {
+		t.Fail()
+	}
+
+	if len(entityWithTwoCardsInDeckAndNoneInHand.ActiveEntity.Hand.Cards) != 2 {
 		t.Fail()
 	}
 }
