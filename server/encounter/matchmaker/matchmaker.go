@@ -37,14 +37,16 @@ func generateCardLiterals(size int32) []*deviant.Card {
 
 	for i := int32(0); i < size; i++ {
 		card := &deviant.Card{
-			Id:          uuid.New().String(),
+			Id:          "attack_slash_0000",
+			BackId:      "back_0000",
+			InstanceId:  uuid.New().String(),
 			Cost:        0,
 			Title:       "Test Title",
 			Flavor:      "Test Flavor",
 			Description: "Test Description",
 			Type:        deviant.CardType_ATTACK,
 			Action: &deviant.CardAction{
-				Id: "grass_0000",
+				Id: uuid.New().String(),
 				Pattern: []*deviant.Pattern{
 					{
 						Direction: deviant.Direction_DOWN,
@@ -313,7 +315,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 				Deck:       generateDeckLiterals(2),
 				Discard:    generateDiscardLiteral(0),
 				Initiative: 5,
-				OwnerId:    "0000",
+				OwnerId:    "0001",
 			},
 			ActiveEntityOrder: []string{"0001", "0002", "0003"},
 			Turn: &deviant.Turn{
