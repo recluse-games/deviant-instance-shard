@@ -1,19 +1,31 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"log"
 	"net"
+	"time"
 
 	"github.com/recluse-games/deviant-instance-shard/server/encounter/manager/collector"
 	"github.com/recluse-games/deviant-instance-shard/server/encounter/manager/dispatcher"
+	"github.com/recluse-games/deviant-instance-shard/server/encounter/matchmaker"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
 
-type server struct {
+type server struct{}
+
+func (s *server) FindEncounter(ctx context.Context, req *deviant.FindEncounterRequest) (*deviant.FindEncounterResponse, error) {
+	mm := matchmaker.NewEngine(matchmaker.EngineOptions{MaxUsers: 2, WaitPeriod: time.Duration(time.Second * 2)})
+	p := <-mm.JoinPool(req.GetPlayerID())
+	res := &deviant.FindEncounterResponse{
+		PoolID: p.PoolID,
+	}
+
+	return res, nil
 }
 
 func (s *server) StartEncounter(stream deviant.EncounterService_StartEncounterServer) error {

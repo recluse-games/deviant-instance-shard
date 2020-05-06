@@ -18,7 +18,7 @@ func Test_engine(t *testing.T) {
 	// Required number of pools
 	expectedNumOfPool := numOfUsers / maxUsers
 
-	e := New(EngineOptions{MaxUsers: maxUsers})
+	e := NewEngine(EngineOptions{MaxUsers: maxUsers})
 	fmt.Printf("Engine: %v\n", e)
 	for i := 0; i < numOfUsers; i++ {
 		e.JoinPool(i)

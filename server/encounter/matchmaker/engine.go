@@ -24,8 +24,8 @@ type EngineOptions struct {
 	WaitPeriod time.Duration
 }
 
-// New function factory for Engines
-func New(opt EngineOptions) *Engine {
+// NewEngine function factory for Engines
+func NewEngine(opt EngineOptions) *Engine {
 	return &Engine{
 		maxUsers:     opt.MaxUsers,
 		waitPeriod:   time.Second * 2,
@@ -59,6 +59,7 @@ func (e *Engine) getAvailablePool() *pool {
 		}
 	}
 
+	// Default to creating a new pool
 	return e.createPool(sID)
 }
 
