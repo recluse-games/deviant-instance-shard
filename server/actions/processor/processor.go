@@ -28,7 +28,7 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 		deviant.TurnPhaseNames_PHASE_EFFECT:  {turn.ChangePhase},
 		deviant.TurnPhaseNames_PHASE_DRAW:    {deckActions.DrawCard, turn.ChangePhase},
 		deviant.TurnPhaseNames_PHASE_ACTION:  {},
-		deviant.TurnPhaseNames_PHASE_DISCARD: {},
+		deviant.TurnPhaseNames_PHASE_DISCARD: {turn.ChangePhase},
 		deviant.TurnPhaseNames_PHASE_END:     {turn.UpdateActiveEntity, turn.ChangePhase},
 	}
 
