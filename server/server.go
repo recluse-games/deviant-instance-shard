@@ -1,11 +1,11 @@
 package server
 
 import (
-	"context"
 	"fmt"
 	"io"
 	"log"
 	"net"
+	"sync"
 	"time"
 
 	"github.com/recluse-games/deviant-instance-shard/server/encounter/manager/collector"
@@ -18,14 +18,31 @@ import (
 
 type server struct{}
 
-func (s *server) FindEncounter(ctx context.Context, req *deviant.FindEncounterRequest) (*deviant.FindEncounterResponse, error) {
-	mm := matchmaker.NewEngine(matchmaker.EngineOptions{MaxUsers: 2, WaitPeriod: time.Duration(time.Second * 2)})
-	p := <-mm.JoinPool(req.GetPlayerID())
-	res := &deviant.FindEncounterResponse{
-		PoolID: p.PoolID,
-	}
+var wg sync.WaitGroup
+var mm = matchmaker.NewEngine(matchmaker.EngineOptions{MaxUsers: 2, WaitPeriod: time.Duration(time.Second * 10)})
 
-	return res, nil
+func (s *server) FindEncounter(req *deviant.FindEncounterRequest, stream deviant.EncounterService_FindEncounterServer) error {
+	p := mm.JoinPool(req.GetPlayerID())
+
+	wg.Add(1)
+	go func() {
+		select {
+		case pool := <-p:
+			if pool.IsFull {
+				log.Printf("Success - Filled pool: %v with users: %v", pool.PoolID, pool.Users)
+				res := &deviant.FindEncounterResponse{PoolID: pool.PoolID}
+				stream.Send(res)
+			}
+			if pool.TimedOut {
+				log.Printf("Timed out attempting to fill pool: %v | Users in pool: %v", pool.PoolID, pool.Users)
+				res := &deviant.FindEncounterResponse{PoolID: "null"}
+				stream.Send(res)
+			}
+		}
+	}()
+	wg.Wait()
+
+	return nil
 }
 
 func (s *server) StartEncounter(stream deviant.EncounterService_StartEncounterServer) error {

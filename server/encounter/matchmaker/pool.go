@@ -6,7 +6,7 @@ import (
 
 type (
 	// Pool of users that will be commited to the same in game match
-	pool struct {
+	Pool struct {
 		expireWaitCount int
 		id              string
 		users           []interface{}
@@ -25,8 +25,8 @@ type (
 )
 
 // NewPool func create new pool
-func newPool(id string, maxUsers int) *pool {
-	return &pool{
+func newPool(id string, maxUsers int) *Pool {
+	return &Pool{
 		id:       id,
 		maxUsers: maxUsers,
 		respChan: make(chan PoolResp, maxUsers),
@@ -34,7 +34,7 @@ func newPool(id string, maxUsers int) *pool {
 }
 
 // Check is a user is able to join a pool
-func (p *pool) ableToJoin() bool {
+func (p *Pool) ableToJoin() bool {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
 
@@ -42,7 +42,7 @@ func (p *pool) ableToJoin() bool {
 }
 
 // Add a user to the pool
-func (p *pool) add(user interface{}) chan PoolResp {
+func (p *Pool) add(user interface{}) chan PoolResp {
 	p.mutex.Lock()
 	defer func() {
 		// The pool is successfully filled

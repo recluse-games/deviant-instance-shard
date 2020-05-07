@@ -14,7 +14,7 @@ type Engine struct {
 	maxUsers     int
 	waitPeriod   time.Duration
 	mutex        sync.Mutex
-	pools        []*pool
+	pools        []*Pool
 	expiredPools map[string]struct{}
 }
 
@@ -42,7 +42,7 @@ func (e *Engine) getNumberOfPools() int {
 }
 
 // Return an available pool
-func (e *Engine) getAvailablePool() *pool {
+func (e *Engine) getAvailablePool() *Pool {
 	numOfPools := e.getNumberOfPools()
 	id := uuid.New().ID()
 	sID := fmt.Sprintf("%d", id)
@@ -64,7 +64,7 @@ func (e *Engine) getAvailablePool() *pool {
 }
 
 // Create a pool for users to join
-func (e *Engine) createPool(id string) *pool {
+func (e *Engine) createPool(id string) *Pool {
 	pool := newPool(id, e.maxUsers)
 
 	e.mutex.Lock()

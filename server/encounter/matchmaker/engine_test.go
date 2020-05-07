@@ -29,10 +29,10 @@ func Test_engine(t *testing.T) {
 }
 
 func TestEngine_getNumberOfPools(t *testing.T) {
-	var singlePool []*pool
-	var severalPools []*pool
+	var singlePool []*Pool
+	var severalPools []*Pool
 
-	singlePool = []*pool{newPool(guuid.New().String(), 5)}
+	singlePool = []*Pool{newPool(guuid.New().String(), 5)}
 	for i := 0; i < 10; i++ {
 		severalPools = append(severalPools, newPool(guuid.New().String(), 5))
 	}
@@ -41,7 +41,7 @@ func TestEngine_getNumberOfPools(t *testing.T) {
 		maxUsers     int
 		waitPeriod   time.Duration
 		mutex        sync.Mutex
-		pools        []*pool
+		pools        []*Pool
 		expiredPools map[string]struct{}
 	}
 	tests := []struct {
