@@ -7,15 +7,16 @@ import (
 	deckActions "github.com/recluse-games/deviant-instance-shard/server/actions/deck"
 	encounterActions "github.com/recluse-games/deviant-instance-shard/server/actions/encounter"
 	moveActions "github.com/recluse-games/deviant-instance-shard/server/actions/move"
+	playActions "github.com/recluse-games/deviant-instance-shard/server/actions/play"
 	"github.com/recluse-games/deviant-instance-shard/server/actions/turn"
 	turnActions "github.com/recluse-games/deviant-instance-shard/server/actions/turn"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
 // Process Processes all actions.
-func Process(encounter *deviant.Encounter, entityActionName deviant.EntityActionNames, entityMoveAction *deviant.EntityMoveAction) bool {
+func Process(encounter *deviant.Encounter, entityActionName deviant.EntityActionNames, entityMoveAction *deviant.EntityMoveAction, entityPlayAction *deviant.EntityPlayAction) bool {
 	entityActions := map[deviant.EntityActionNames][]interface{}{
-		deviant.EntityActionNames_PLAY:         {},
+		deviant.EntityActionNames_PLAY:         {playActions.Play},
 		deviant.EntityActionNames_MOVE:         {moveActions.Move},
 		deviant.EntityActionNames_DRAW:         {},
 		deviant.EntityActionNames_DISCARD:      {},
@@ -40,6 +41,10 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 		if ok {
 			for _, entityActionFunction := range val {
 				switch entityActionName {
+				case deviant.EntityActionNames_PLAY:
+					if entityActionFunction.(func(*deviant.Encounter, *deviant.EntityPlayAction) bool)(encounter, entityPlayAction) == false {
+						return false
+					}
 				case deviant.EntityActionNames_MOVE:
 					if entityActionFunction.(func(*deviant.Encounter, *deviant.EntityMoveAction) bool)(encounter, entityMoveAction) == false {
 						return false

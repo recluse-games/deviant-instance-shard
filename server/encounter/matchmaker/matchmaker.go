@@ -41,6 +41,7 @@ func generateCardLiterals(size int32) []*deviant.Card {
 			BackId:      "back_0000",
 			InstanceId:  uuid.New().String(),
 			Cost:        0,
+			Damage:      5,
 			Title:       "Test Title",
 			Flavor:      "Test Flavor",
 			Description: "Test Description",
