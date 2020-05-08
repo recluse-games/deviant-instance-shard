@@ -15,12 +15,17 @@ func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction) bo
 			for _, playPair := range playAction.Plays {
 				//CAUTION: HACK - This logic should be moved into rules
 				if playPair.X >= 0 && playPair.Y >= 0 && playPair.X <= 7 && playPair.Y <= 7 {
-					log.Output(1, "Dealing Damage")
-					encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp = encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp - card.Damage
+					var xycoord = fmt.Sprintf("%d,%d", playPair.X, playPair.Y)
+					log.Output(1, "Dealing Damage"+xycoord)
+					if encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp < card.Damage {
+						encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp = 0
+					} else {
+						encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp = encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp - card.Damage
+					}
 
-					var test = fmt.Sprintf("%v", encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y])
-
-					log.Output(1, test)
+					if encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp == 0 {
+						encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y] = &deviant.Entity{}
+					}
 				}
 			}
 		}
