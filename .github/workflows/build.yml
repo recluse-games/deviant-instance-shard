@@ -67,7 +67,23 @@ jobs:
 
         cd $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard
         go build -v .
+        
+    - name: Get Windows Dependencies
+      run: |
+        export GOPATH=$GITHUB_WORKSPACE/go
+        export GOPRIVATE="github.com/recluse-games"
+        export GOOS=windows 
+        export GOARCH=amd64 
+        go install
+        
+    - name: Build For Windows
+      run: |
+        export GOPATH=$GITHUB_WORKSPACE/go
+        export GOPRIVATE="github.com/recluse-games"
 
+        cd $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard
+        go build -v .
+        
     # Copy Build Artifact to Artifact Upload Directory
     # This just help verifies the artifact is a file
     - run: |
@@ -79,3 +95,8 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         path: go/src/github.com/deviant-instance-shard/build/deviant-instance-shard
+        
+    # Publish Uploaded Windows Artifact
+    - uses: actions/upload-artifact@v2
+      with:
+        path: go/src/github.com/deviant-instance-shard/build/deviant-instance-shard.exe
