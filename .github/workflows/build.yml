@@ -59,22 +59,17 @@ jobs:
         rm go.mod go.sum
         go mod init
         go get -v -t -d .
-
-    - name: Build deviant-instance-shard
-      run: |
-        export GOPATH=$GITHUB_WORKSPACE/go
-        export GOPRIVATE="github.com/recluse-games"
-
-        cd $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard
-        go build -v .
-        
+  
     - name: Get Windows Dependencies
       run: |
-        export GOPATH=$GITHUB_WORKSPACE/go
-        export GOPRIVATE="github.com/recluse-games"
         export GOOS=windows 
         export GOARCH=amd64 
         go install
+
+    - name: Build deviant-instance-shard
+      run: |
+        cd $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard
+        go build -v .
         
     - name: Build For Windows
       run: |
