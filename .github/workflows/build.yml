@@ -83,6 +83,7 @@ jobs:
     - run: |
        mkdir -p $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard/build
        cp $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard/deviant-instance-shard $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard/build/deviant-instance-shard
+       cp $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard/deviant-instance-shard.exe $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard/build/deviant-instance-shard.exe
        ls $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard/build/
 
     # Publish Uploaded Artifact
