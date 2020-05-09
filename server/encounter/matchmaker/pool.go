@@ -45,11 +45,16 @@ func (p *Pool) ableToJoin() bool {
 func (p *Pool) add(user interface{}) chan PoolResp {
 	p.mutex.Lock()
 	defer func() {
-		// The pool is successfully filled
 		if len(p.users) == p.maxUsers {
 			p.respChan <- PoolResp{
 				PoolID: p.id,
 				IsFull: true,
+				Users:  p.users,
+			}
+		} else {
+			p.respChan <- PoolResp{
+				PoolID: p.id,
+				IsFull: false,
 				Users:  p.users,
 			}
 		}

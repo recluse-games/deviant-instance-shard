@@ -16,10 +16,22 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-type server struct{}
+type (
+	server struct{}
 
-var wg sync.WaitGroup
-var mm = matchmaker.NewEngine(matchmaker.EngineOptions{MaxUsers: 2, WaitPeriod: time.Duration(time.Second * 10)})
+	// Map client connections to a potential pool
+	ctxMap struct {
+		streams map[string][]*deviant.EncounterService_FindEncounterServer
+		m       sync.Mutex
+	}
+)
+
+var (
+	cm       = ctxMap{streams: make(map[string][]*deviant.EncounterService_FindEncounterServer)}
+	maxUsers = 2
+	mm       = matchmaker.NewEngine(matchmaker.EngineOptions{MaxUsers: maxUsers, WaitPeriod: time.Duration(time.Second * 10)})
+	wg       sync.WaitGroup
+)
 
 func (s *server) FindEncounter(req *deviant.FindEncounterRequest, stream deviant.EncounterService_FindEncounterServer) error {
 	p := mm.JoinPool(req.GetPlayerID())
@@ -28,15 +40,39 @@ func (s *server) FindEncounter(req *deviant.FindEncounterRequest, stream deviant
 	go func() {
 		select {
 		case pool := <-p:
+			if !pool.IsFull {
+				cm.m.Lock()
+				// Add the context to the map until the pool is full or timed out
+				cm.streams[pool.PoolID] = append(cm.streams[pool.PoolID], &stream)
+				cm.m.Unlock()
+			}
 			if pool.IsFull {
-				log.Printf("Success - Filled pool: %v with users: %v", pool.PoolID, pool.Users)
-				res := &deviant.FindEncounterResponse{PoolID: pool.PoolID}
-				stream.Send(res)
+				log.Printf("Filled pool: %v, with users: %v", pool.PoolID, pool.Users)
+				cm.m.Lock()
+				cm.streams[pool.PoolID] = append(cm.streams[pool.PoolID], &stream)
+
+				// Push a message to all members of the full pool
+				for _, st := range cm.streams[pool.PoolID] {
+					res := &deviant.FindEncounterResponse{PoolID: pool.PoolID}
+					stream := *st
+					if err := stream.Send(res); err != nil {
+						// Delete the pool from the map once full
+						delete(cm.streams, pool.PoolID)
+					}
+				}
+				cm.m.Unlock()
 			}
 			if pool.TimedOut {
 				log.Printf("Timed out attempting to fill pool: %v | Users in pool: %v", pool.PoolID, pool.Users)
-				res := &deviant.FindEncounterResponse{PoolID: "null"}
-				stream.Send(res)
+				// Push messages to all members of the full pool
+				for _, st := range cm.streams[pool.PoolID] {
+					res := &deviant.FindEncounterResponse{PoolID: "null"}
+					stream := *st
+					if err := stream.Send(res); err != nil {
+						// Delete the timed out pool
+						delete(cm.streams, pool.PoolID)
+					}
+				}
 			}
 		}
 	}()
@@ -98,12 +134,12 @@ func Start() {
 	dispatcher.StartDispatcher(10)
 
 	socket := "0.0.0.0:50051"
-	fmt.Printf("starting deviant-instance-shard on %v", socket)
+	fmt.Printf("starting deviant-instance-shard on %v\n", socket)
 
 	protocol := "tcp"
 	lis, err := net.Listen(protocol, socket)
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		log.Fatalf("failed to listen: %v\n", err)
 	}
 
 	opts := []grpc.ServerOption{}
@@ -113,6 +149,6 @@ func Start() {
 	reflection.Register(s)
 
 	if err := s.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
+		log.Fatalf("failed to serve: %v\n", err)
 	}
 }
