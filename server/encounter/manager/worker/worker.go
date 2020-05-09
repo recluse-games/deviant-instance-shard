@@ -68,13 +68,13 @@ func (w *IncomingWorker) StartIncoming() {
 				// Implement Rules Engine and Matchingmaking integration here.
 				if work.Request.Encounter == nil {
 					actionResponse = matchmaker.GenerateMatch()
-					actions.Process(actionResponse.Encounter, deviant.EntityActionNames_NOTHING, nil)
+					actions.Process(actionResponse.Encounter, deviant.EntityActionNames_NOTHING, nil, nil)
 				} else {
 					// AuthZ the Player <- This should be migrated to a different layer of the codebase
 					if work.Request.PlayerId == work.Request.Encounter.ActiveEntity.OwnerId {
 						isActionValid := rules.Process(work.Request.Encounter, work.Request.EntityActionName, work.Request.EntityMoveAction)
 						if isActionValid == true {
-							actions.Process(work.Request.Encounter, work.Request.EntityActionName, work.Request.EntityMoveAction)
+							actions.Process(work.Request.Encounter, work.Request.EntityActionName, work.Request.EntityMoveAction, work.Request.EntityPlayAction)
 
 							// Apply all state changes to entity in encounter as well as the activeEntity
 							for outerIndex, outerValue := range work.Request.Encounter.Board.Entities.Entities {
