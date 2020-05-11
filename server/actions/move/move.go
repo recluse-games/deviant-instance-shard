@@ -1,6 +1,9 @@
 package move
 
 import (
+	"fmt"
+	"log"
+
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
@@ -11,21 +14,27 @@ func Move(encounter *deviant.Encounter, moveAction *deviant.EntityMoveAction) bo
 
 	if moveAction.StartXPosition > moveAction.FinalXPosition {
 		apCostX = moveAction.StartXPosition - moveAction.FinalXPosition
-	} else {
+	} else if moveAction.StartXPosition < moveAction.FinalXPosition {
 		apCostX = moveAction.FinalXPosition - moveAction.StartXPosition
+	} else {
+		apCostX = 0
 	}
 
 	if moveAction.StartYPosition > moveAction.FinalYPosition {
 		apCostY = moveAction.StartYPosition - moveAction.FinalYPosition
-	} else {
+	} else if moveAction.StartYPosition < moveAction.FinalYPosition {
 		apCostY = moveAction.FinalYPosition - moveAction.StartYPosition
+	} else {
+		apCostY = 0
 	}
+
+	encounter.ActiveEntity.Ap = encounter.ActiveEntity.Ap - apCostX
+	encounter.ActiveEntity.Ap = encounter.ActiveEntity.Ap - apCostY
 
 	// Apply all state changes to entity in encounter as well as the activeEntity.
 	encounter.Board.Entities.Entities[moveAction.FinalXPosition].Entities[moveAction.FinalYPosition] = encounter.ActiveEntity
 	encounter.Board.Entities.Entities[moveAction.StartXPosition].Entities[moveAction.StartYPosition] = &deviant.Entity{}
-	encounter.ActiveEntity.Ap = encounter.ActiveEntity.Ap - apCostX
-	encounter.ActiveEntity.Ap = encounter.ActiveEntity.Ap - apCostY
 
+	log.Output(1, fmt.Sprintf("%v", encounter.ActiveEntity))
 	return true
 }

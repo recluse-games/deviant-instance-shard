@@ -10,7 +10,7 @@ import (
 // ValidateApCost Determines that the entity has the correct amount of AP to perform the requested move.
 func ValidateApCost(activeEntity *deviant.Entity, requestedMoveAction *deviant.EntityMoveAction, encounter *deviant.Encounter) bool {
 	totalApCost := requestedMoveAction.FinalXPosition - requestedMoveAction.StartXPosition + requestedMoveAction.FinalYPosition - requestedMoveAction.StartYPosition
-	if totalApCost < activeEntity.Ap {
+	if totalApCost <= activeEntity.Ap {
 		return true
 	}
 
