@@ -98,9 +98,12 @@ func (w *IncomingWorker) StartIncoming() {
 						panic(err)
 					}
 
-					unmarshalerror := protojson.Unmarshal(in, encounterFromDisk)
+					var unmarshalOptions = protojson.UnmarshalOptions{
+						AllowPartial: true,
+					}
+					unmarshalerror := protojson.UnmarshalOptions(unmarshalOptions).Unmarshal(in, encounterFromDisk)
 					if unmarshalerror != nil {
-						panic(err)
+						panic(unmarshalerror)
 					}
 
 					// AuthZ the Player <- This should be migrated to a different layer of the codebase
@@ -120,10 +123,18 @@ func (w *IncomingWorker) StartIncoming() {
 						}
 					}
 
-					result, _ := protojson.Marshal(encounterFromDisk)
+					var marshalOptions = protojson.MarshalOptions{
+						AllowPartial:    true,
+						EmitUnpopulated: true,
+					}
+
+					result, marshallerror := protojson.MarshalOptions(marshalOptions).Marshal(encounterFromDisk)
+					if marshallerror != nil {
+						panic(marshallerror)
+					}
 					writerror := ioutil.WriteFile(work.Request.Encounter.Id+".json", result, 0644)
 					if writerror != nil {
-						panic(err)
+						panic(writerror)
 					}
 
 					actionResponse = &deviant.EncounterResponse{

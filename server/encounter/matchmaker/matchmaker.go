@@ -224,136 +224,100 @@ func GenerateMatch() *deviant.EncounterResponse {
 									Initiative: 5,
 									OwnerId:    "0001",
 								},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+							},
+						},
+						{
+							Entities: []*deviant.Entity{
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+							},
+						},
+						{
+							Entities: []*deviant.Entity{
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+							},
+						},
+						{
+							Entities: []*deviant.Entity{
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+							},
+						},
+						{
+							Entities: []*deviant.Entity{
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+							},
+						},
+						{
+							Entities: []*deviant.Entity{
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+							},
+						},
+						{
+							Entities: []*deviant.Entity{
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+							},
+						},
+						{
+							Entities: []*deviant.Entity{
 								{
 									Id:         "0002",
 									Hp:         10,
 									Ap:         4,
-									Alignment:  deviant.Alignment_FRIENDLY,
+									Alignment:  deviant.Alignment_UNFRIENDLY,
 									Class:      deviant.Classes_WARRIOR,
 									Hand:       generateHandLiterals(0),
 									Deck:       generateDeckLiterals(2),
 									Discard:    generateDiscardLiteral(0),
 									Initiative: 5,
 									OwnerId:    "0002",
-								},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-							},
-						},
-						{
-							Entities: []*deviant.Entity{
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-							},
-						},
-						{
-							Entities: []*deviant.Entity{
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-							},
-						},
-						{
-							Entities: []*deviant.Entity{
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-							},
-						},
-						{
-							Entities: []*deviant.Entity{
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-							},
-						},
-						{
-							Entities: []*deviant.Entity{
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-							},
-						},
-						{
-							Entities: []*deviant.Entity{
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-							},
-						},
-						{
-							Entities: []*deviant.Entity{
-								{
-									Id:         "0004",
-									Hp:         10,
-									Ap:         5,
-									Alignment:  deviant.Alignment_UNFRIENDLY,
-									Class:      deviant.Classes_WARRIOR,
-									Hand:       generateHandLiterals(0),
-									Deck:       generateDeckLiterals(2),
-									Discard:    generateDiscardLiteral(0),
-									Initiative: 3,
-									OwnerId:    "0004",
-								},
-								{
-									Id:         "0005",
-									Hp:         10,
-									Ap:         5,
-									Alignment:  deviant.Alignment_UNFRIENDLY,
-									Class:      deviant.Classes_WARRIOR,
-									Hand:       generateHandLiterals(0),
-									Deck:       generateDeckLiterals(2),
-									Discard:    generateDiscardLiteral(0),
-									Initiative: 3,
-									OwnerId:    "0005",
-								},
-								{
-									Id:         "0006",
-									Hp:         10,
-									Ap:         5,
-									Alignment:  deviant.Alignment_UNFRIENDLY,
-									Class:      deviant.Classes_WARRIOR,
-									Hand:       generateHandLiterals(0),
-									Deck:       generateDeckLiterals(2),
-									Discard:    generateDiscardLiteral(0),
-									Initiative: 3,
-									OwnerId:    "0006",
 								},
 								{},
 								{},
@@ -377,7 +341,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 				Initiative: 5,
 				OwnerId:    "0001",
 			},
-			ActiveEntityOrder: []string{"0001", "0002", "0003", "0004", "0005", "0006"},
+			ActiveEntityOrder: []string{"0001", "0002"},
 			Turn: &deviant.Turn{
 				Id:    "turn_0000",
 				Phase: deviant.TurnPhaseNames_PHASE_POINT,
@@ -385,8 +349,16 @@ func GenerateMatch() *deviant.EncounterResponse {
 		},
 	}
 
-	result, _ := protojson.Marshal(test)
-	ioutil.WriteFile(test.Encounter.Id+".json", result, 0644)
+	var marshalOptions = protojson.MarshalOptions{
+		AllowPartial:    true,
+		EmitUnpopulated: true,
+	}
+
+	result, _ := protojson.MarshalOptions(marshalOptions).Marshal(test)
+	writerror := ioutil.WriteFile(test.Encounter.Id+".json", result, 0644)
+	if writerror != nil {
+		panic(writerror)
+	}
 
 	return test
 }
