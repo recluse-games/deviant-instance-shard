@@ -62,13 +62,34 @@ func (w *IncomingWorker) StartIncoming() {
 
 			select {
 			case work := <-w.Work:
-
 				var actionResponse *deviant.EncounterResponse
 
 				// Implement Rules Engine and Matchingmaking integration here.
-				if work.Request.Encounter == nil {
+				if work.Request.Encounter == nil && work.Request.GetEncounterState == false {
 					actionResponse = matchmaker.GenerateMatch()
 					actions.Process(actionResponse.Encounter, deviant.EntityActionNames_NOTHING, nil, nil)
+				} else if work.Request.GetEncounterState == true {
+					encounterFromDisk := &deviant.EncounterResponse{}
+
+					in, err := ioutil.ReadFile("encounter_0000.json")
+
+					if err != nil {
+						actionResponse = matchmaker.GenerateMatch()
+						actions.Process(actionResponse.Encounter, deviant.EntityActionNames_NOTHING, nil, nil)
+					}
+
+					var unmarshalOptions = protojson.UnmarshalOptions{
+						AllowPartial: true,
+					}
+					unmarshalerror := protojson.UnmarshalOptions(unmarshalOptions).Unmarshal(in, encounterFromDisk)
+					if unmarshalerror != nil {
+						panic(unmarshalerror)
+					}
+
+					actionResponse = &deviant.EncounterResponse{
+						PlayerId:  work.Request.PlayerId,
+						Encounter: encounterFromDisk.Encounter,
+					}
 				} else {
 					encounterFromDisk := &deviant.EncounterResponse{}
 
