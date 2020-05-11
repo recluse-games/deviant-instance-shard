@@ -7,6 +7,34 @@ import (
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
+func find(a []string, x string) int {
+	for i, n := range a {
+		if x == n {
+			return i
+		}
+	}
+	return len(a)
+}
+
+func removeEntityFromOrder(entityID string, slice []string) []string {
+	var entityIDIndex = find(slice, entityID)
+
+	log.Output(1, fmt.Sprintf("%d", entityIDIndex))
+
+	if len(slice) > entityIDIndex+1 {
+		return slice[:entityIDIndex+copy(slice[entityIDIndex:], slice[entityIDIndex+1:])]
+	} else if len(slice) == entityIDIndex {
+		return slice[:entityIDIndex+copy(slice[entityIDIndex:], slice[entityIDIndex-1:])]
+	}
+	if 0 > entityIDIndex-1 {
+		return slice[:0+copy(slice[(entityIDIndex-1):], slice[entityIDIndex:])]
+	} else if len(slice) > 1 {
+		return slice[:len(slice)-1]
+	} else {
+		return []string{}
+	}
+}
+
 //Play Applys a play action
 func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction) bool {
 
@@ -24,6 +52,7 @@ func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction) bo
 					}
 
 					if encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp == 0 {
+						encounter.ActiveEntityOrder = removeEntityFromOrder(encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Id, encounter.ActiveEntityOrder)
 						encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y] = &deviant.Entity{}
 					}
 				}

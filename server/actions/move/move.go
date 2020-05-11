@@ -3,23 +3,38 @@ package move
 import (
 	"fmt"
 	"log"
-	"math"
 
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
 // Move draws a card for entity.
 func Move(encounter *deviant.Encounter, moveAction *deviant.EntityMoveAction) bool {
-	// Get the absolute value of the difference between all of our positions on the board.
-	totalApCost := math.Abs(float64(moveAction.FinalXPosition - moveAction.StartXPosition + moveAction.FinalYPosition - moveAction.StartYPosition))
+	var apCostX int32
+	var apCostY int32
 
-	log.Output(1, fmt.Sprintf("%d", moveAction.FinalYPosition))
-	log.Output(1, fmt.Sprintf("%d", moveAction.FinalXPosition))
+	if moveAction.StartXPosition > moveAction.FinalXPosition {
+		apCostX = moveAction.StartXPosition - moveAction.FinalXPosition
+	} else if moveAction.StartXPosition < moveAction.FinalXPosition {
+		apCostX = moveAction.FinalXPosition - moveAction.StartXPosition
+	} else {
+		apCostX = 0
+	}
+
+	if moveAction.StartYPosition > moveAction.FinalYPosition {
+		apCostY = moveAction.StartYPosition - moveAction.FinalYPosition
+	} else if moveAction.StartYPosition < moveAction.FinalYPosition {
+		apCostY = moveAction.FinalYPosition - moveAction.StartYPosition
+	} else {
+		apCostY = 0
+	}
+
+	encounter.ActiveEntity.Ap = encounter.ActiveEntity.Ap - apCostX
+	encounter.ActiveEntity.Ap = encounter.ActiveEntity.Ap - apCostY
 
 	// Apply all state changes to entity in encounter as well as the activeEntity.
 	encounter.Board.Entities.Entities[moveAction.FinalXPosition].Entities[moveAction.FinalYPosition] = encounter.ActiveEntity
 	encounter.Board.Entities.Entities[moveAction.StartXPosition].Entities[moveAction.StartYPosition] = &deviant.Entity{}
-	encounter.ActiveEntity.Ap = encounter.ActiveEntity.Ap - int32(totalApCost)
 
+	log.Output(1, fmt.Sprintf("%v", encounter.ActiveEntity))
 	return true
 }
