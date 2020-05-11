@@ -1,8 +1,11 @@
 package matchmaker
 
 import (
+	"io/ioutil"
+
 	"github.com/google/uuid"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 func generateHandLiterals(size int32) *deviant.Hand {
@@ -381,6 +384,9 @@ func GenerateMatch() *deviant.EncounterResponse {
 			},
 		},
 	}
+
+	result, _ := protojson.Marshal(test)
+	ioutil.WriteFile(test.Encounter.Id+".json", result, 0644)
 
 	return test
 }

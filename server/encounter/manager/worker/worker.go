@@ -70,27 +70,44 @@ func (w *IncomingWorker) StartIncoming() {
 					actionResponse = matchmaker.GenerateMatch()
 					actions.Process(actionResponse.Encounter, deviant.EntityActionNames_NOTHING, nil, nil)
 				} else {
+					encounterFromDisk := &deviant.EncounterResponse{}
+
+					in, err := ioutil.ReadFile(work.Request.Encounter.Id + ".json")
+					if err != nil {
+						panic(err)
+					}
+
+					unmarshalerror := protojson.Unmarshal(in, encounterFromDisk)
+					if unmarshalerror != nil {
+						panic(err)
+					}
+
 					// AuthZ the Player <- This should be migrated to a different layer of the codebase
-					if work.Request.PlayerId == work.Request.Encounter.ActiveEntity.OwnerId {
-						isActionValid := rules.Process(work.Request.Encounter, work.Request.EntityActionName, work.Request.EntityMoveAction)
+					if work.Request.PlayerId == encounterFromDisk.Encounter.ActiveEntity.OwnerId {
+						isActionValid := rules.Process(encounterFromDisk.Encounter, work.Request.EntityActionName, work.Request.EntityMoveAction)
 						if isActionValid == true {
-							actions.Process(work.Request.Encounter, work.Request.EntityActionName, work.Request.EntityMoveAction, work.Request.EntityPlayAction)
+							actions.Process(encounterFromDisk.Encounter, work.Request.EntityActionName, work.Request.EntityMoveAction, work.Request.EntityPlayAction)
 
 							// Apply all state changes to entity in encounter as well as the activeEntity
-							for outerIndex, outerValue := range work.Request.Encounter.Board.Entities.Entities {
+							for outerIndex, outerValue := range encounterFromDisk.Encounter.Board.Entities.Entities {
 								for innerIndex, innerValue := range outerValue.Entities {
-									if innerValue.Id == work.Request.Encounter.ActiveEntity.Id {
-										work.Request.Encounter.Board.Entities.Entities[outerIndex].Entities[innerIndex] = work.Request.Encounter.ActiveEntity
+									if innerValue.Id == encounterFromDisk.Encounter.ActiveEntity.Id {
+										encounterFromDisk.Encounter.Board.Entities.Entities[outerIndex].Entities[innerIndex] = encounterFromDisk.Encounter.ActiveEntity
 									}
 								}
 							}
 						}
+					}
 
+					result, _ := protojson.Marshal(encounterFromDisk)
+					writerror := ioutil.WriteFile(work.Request.Encounter.Id+".json", result, 0644)
+					if writerror != nil {
+						panic(err)
 					}
 
 					actionResponse = &deviant.EncounterResponse{
 						PlayerId:  work.Request.PlayerId,
-						Encounter: work.Request.Encounter,
+						Encounter: encounterFromDisk.Encounter,
 					}
 				}
 
