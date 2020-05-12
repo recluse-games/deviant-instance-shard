@@ -57,18 +57,14 @@ type OutgoingWorker struct {
 func (w *IncomingWorker) StartIncoming() {
 	go func() {
 		for {
+			// HACK: We should really just process our action message type here and switch on this rather then this crazy conditional logic.
 			// Add ourselves into the worker queue.
 			w.WorkerQueue <- w.Work
-
 			select {
 			case work := <-w.Work:
 				var actionResponse *deviant.EncounterResponse
 
-				// Implement Rules Engine and Matchingmaking integration here.
-				if work.Request.Encounter == nil && work.Request.GetEncounterState == false {
-					actionResponse = matchmaker.GenerateMatch()
-					actions.Process(actionResponse.Encounter, deviant.EntityActionNames_NOTHING, nil, nil)
-				} else if work.Request.GetEncounterState == true {
+				if work.Request.EntityTargetAction != nil {
 					encounterFromDisk := &deviant.EncounterResponse{}
 
 					in, err := ioutil.ReadFile("encounter_0000.json")
@@ -86,60 +82,91 @@ func (w *IncomingWorker) StartIncoming() {
 						panic(unmarshalerror)
 					}
 
+					// Update overlay tiles to the new tiles
+					encounterFromDisk.Encounter.Board.OverlayTiles = work.Request.EntityTargetAction.Tiles
+
 					actionResponse = &deviant.EncounterResponse{
 						PlayerId:  work.Request.PlayerId,
 						Encounter: encounterFromDisk.Encounter,
 					}
 				} else {
-					encounterFromDisk := &deviant.EncounterResponse{}
+					// Implement Rules Engine and Matchingmaking integration here.
+					if work.Request.Encounter == nil && work.Request.GetEncounterState == false {
+						actionResponse = matchmaker.GenerateMatch()
+						actions.Process(actionResponse.Encounter, deviant.EntityActionNames_NOTHING, nil, nil)
+					} else if work.Request.GetEncounterState == true {
+						encounterFromDisk := &deviant.EncounterResponse{}
 
-					in, err := ioutil.ReadFile(work.Request.Encounter.Id + ".json")
-					if err != nil {
-						panic(err)
-					}
+						in, err := ioutil.ReadFile("encounter_0000.json")
 
-					var unmarshalOptions = protojson.UnmarshalOptions{
-						AllowPartial: true,
-					}
-					unmarshalerror := protojson.UnmarshalOptions(unmarshalOptions).Unmarshal(in, encounterFromDisk)
-					if unmarshalerror != nil {
-						panic(unmarshalerror)
-					}
+						if err != nil {
+							actionResponse = matchmaker.GenerateMatch()
+							actions.Process(actionResponse.Encounter, deviant.EntityActionNames_NOTHING, nil, nil)
+						}
 
-					// AuthZ the Player <- This should be migrated to a different layer of the codebase
-					if work.Request.PlayerId == encounterFromDisk.Encounter.ActiveEntity.OwnerId {
-						isActionValid := rules.Process(encounterFromDisk.Encounter, work.Request.EntityActionName, work.Request.EntityMoveAction)
-						if isActionValid == true {
-							actions.Process(encounterFromDisk.Encounter, work.Request.EntityActionName, work.Request.EntityMoveAction, work.Request.EntityPlayAction)
+						var unmarshalOptions = protojson.UnmarshalOptions{
+							AllowPartial: true,
+						}
+						unmarshalerror := protojson.UnmarshalOptions(unmarshalOptions).Unmarshal(in, encounterFromDisk)
+						if unmarshalerror != nil {
+							panic(unmarshalerror)
+						}
 
-							// Apply all state changes to entity in encounter as well as the activeEntity
-							for outerIndex, outerValue := range encounterFromDisk.Encounter.Board.Entities.Entities {
-								for innerIndex, innerValue := range outerValue.Entities {
-									if innerValue.Id == encounterFromDisk.Encounter.ActiveEntity.Id {
-										encounterFromDisk.Encounter.Board.Entities.Entities[outerIndex].Entities[innerIndex] = encounterFromDisk.Encounter.ActiveEntity
+						actionResponse = &deviant.EncounterResponse{
+							PlayerId:  work.Request.PlayerId,
+							Encounter: encounterFromDisk.Encounter,
+						}
+					} else {
+						encounterFromDisk := &deviant.EncounterResponse{}
+
+						in, err := ioutil.ReadFile(work.Request.Encounter.Id + ".json")
+						if err != nil {
+							panic(err)
+						}
+
+						var unmarshalOptions = protojson.UnmarshalOptions{
+							AllowPartial: true,
+						}
+						unmarshalerror := protojson.UnmarshalOptions(unmarshalOptions).Unmarshal(in, encounterFromDisk)
+						if unmarshalerror != nil {
+							panic(unmarshalerror)
+						}
+
+						// AuthZ the Player <- This should be migrated to a different layer of the codebase
+						if work.Request.PlayerId == encounterFromDisk.Encounter.ActiveEntity.OwnerId {
+							isActionValid := rules.Process(encounterFromDisk.Encounter, work.Request.EntityActionName, work.Request.EntityMoveAction)
+							if isActionValid == true {
+								actions.Process(encounterFromDisk.Encounter, work.Request.EntityActionName, work.Request.EntityMoveAction, work.Request.EntityPlayAction)
+
+								// Apply all state changes to entity in encounter as well as the activeEntity
+								for outerIndex, outerValue := range encounterFromDisk.Encounter.Board.Entities.Entities {
+									for innerIndex, innerValue := range outerValue.Entities {
+										if innerValue.Id == encounterFromDisk.Encounter.ActiveEntity.Id {
+											encounterFromDisk.Encounter.Board.Entities.Entities[outerIndex].Entities[innerIndex] = encounterFromDisk.Encounter.ActiveEntity
+										}
 									}
 								}
 							}
 						}
-					}
 
-					var marshalOptions = protojson.MarshalOptions{
-						AllowPartial:    true,
-						EmitUnpopulated: true,
-					}
+						var marshalOptions = protojson.MarshalOptions{
+							AllowPartial:    true,
+							EmitUnpopulated: true,
+						}
 
-					result, marshallerror := protojson.MarshalOptions(marshalOptions).Marshal(encounterFromDisk)
-					if marshallerror != nil {
-						panic(marshallerror)
-					}
-					writerror := ioutil.WriteFile(work.Request.Encounter.Id+".json", result, 0644)
-					if writerror != nil {
-						panic(writerror)
-					}
+						result, marshallerror := protojson.MarshalOptions(marshalOptions).Marshal(encounterFromDisk)
+						if marshallerror != nil {
+							panic(marshallerror)
+						}
+						writerror := ioutil.WriteFile(work.Request.Encounter.Id+".json", result, 0644)
+						if writerror != nil {
+							panic(writerror)
+						}
 
-					actionResponse = &deviant.EncounterResponse{
-						PlayerId:  work.Request.PlayerId,
-						Encounter: encounterFromDisk.Encounter,
+						actionResponse = &deviant.EncounterResponse{
+							PlayerId:  work.Request.PlayerId,
+							Encounter: encounterFromDisk.Encounter,
+						}
 					}
 				}
 
