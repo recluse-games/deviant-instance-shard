@@ -208,6 +208,106 @@ func GenerateMatch() *deviant.EncounterResponse {
 						},
 					},
 				},
+				OverlayTiles: &deviant.Tiles{
+					Tiles: []*deviant.TilesRow{
+						{
+							Tiles: []*deviant.Tile{
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+							},
+						},
+						{
+							Tiles: []*deviant.Tile{
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+							},
+						},
+						{
+							Tiles: []*deviant.Tile{
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+							},
+						},
+						{
+							Tiles: []*deviant.Tile{
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+							},
+						},
+						{
+							Tiles: []*deviant.Tile{
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+							},
+						},
+						{
+							Tiles: []*deviant.Tile{
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+							},
+						},
+						{
+							Tiles: []*deviant.Tile{
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+							},
+						},
+						{
+							Tiles: []*deviant.Tile{
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+								{},
+							},
+						},
+					},
+				},
 				Entities: &deviant.Entities{
 					Entities: []*deviant.EntitiesRow{
 						{
