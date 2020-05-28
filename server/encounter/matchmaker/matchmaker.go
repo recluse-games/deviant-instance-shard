@@ -1,12 +1,26 @@
 package matchmaker
 
 import (
-	"io/ioutil"
+	"fmt"
 
+	"github.com/go-redis/redis/v7"
 	"github.com/google/uuid"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 	"google.golang.org/protobuf/encoding/protojson"
 )
+
+// NewCacheClient Get a new cache client
+func NewCacheClient() *redis.Client {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
+
+	pong, err := client.Ping().Result()
+	fmt.Println(pong, err)
+	return client
+}
 
 func generateHandLiterals(size int32) *deviant.Hand {
 	deckLiteral := &deviant.Hand{
@@ -208,106 +222,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 						},
 					},
 				},
-				OverlayTiles: &deviant.Tiles{
-					Tiles: []*deviant.TilesRow{
-						{
-							Tiles: []*deviant.Tile{
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-							},
-						},
-						{
-							Tiles: []*deviant.Tile{
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-							},
-						},
-						{
-							Tiles: []*deviant.Tile{
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-							},
-						},
-						{
-							Tiles: []*deviant.Tile{
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-							},
-						},
-						{
-							Tiles: []*deviant.Tile{
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-							},
-						},
-						{
-							Tiles: []*deviant.Tile{
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-							},
-						},
-						{
-							Tiles: []*deviant.Tile{
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-							},
-						},
-						{
-							Tiles: []*deviant.Tile{
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-								{},
-							},
-						},
-					},
-				},
+				OverlayTiles: []*deviant.Tile{},
 				Entities: &deviant.Entities{
 					Entities: []*deviant.EntitiesRow{
 						{
@@ -455,9 +370,10 @@ func GenerateMatch() *deviant.EncounterResponse {
 	}
 
 	result, _ := protojson.MarshalOptions(marshalOptions).Marshal(test)
-	writerror := ioutil.WriteFile(test.Encounter.Id+".json", result, 0644)
-	if writerror != nil {
-		panic(writerror)
+	redisClient := NewCacheClient()
+	err := redisClient.Set("encounter_0000", string(result), 0).Err()
+	if err != nil {
+		panic(err)
 	}
 
 	return test

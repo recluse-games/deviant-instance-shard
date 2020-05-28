@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	"github.com/go-redis/redis/v7"
 	"github.com/golang/glog"
 	actions "github.com/recluse-games/deviant-instance-shard/server/actions/processor"
 	model "github.com/recluse-games/deviant-instance-shard/server/encounter/manager/model"
@@ -12,6 +13,19 @@ import (
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 	"google.golang.org/protobuf/encoding/protojson"
 )
+
+// NewCacheClient accss the cache
+func NewCacheClient() *redis.Client {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
+
+	pong, err := client.Ping().Result()
+	fmt.Println(pong, err)
+	return client
+}
 
 // NewIncomingWorker creates, and returns a new Worker object.
 func NewIncomingWorker(id int, workerQueue chan chan *model.DeviantRequestResponse) IncomingWorker {
@@ -55,33 +69,57 @@ type OutgoingWorker struct {
 
 // StartIncoming Starts a working with an infinite loop.
 func (w *IncomingWorker) StartIncoming() {
+	redisClient := NewCacheClient()
 	go func() {
+
+		// Setup Options for Marshalling and Unmarshalling JSON
+		var marshalOptions = protojson.MarshalOptions{
+			AllowPartial:    true,
+			Multiline:       true,
+			EmitUnpopulated: true,
+		}
+
+		var unmarshalOptions = protojson.UnmarshalOptions{
+			AllowPartial: true,
+		}
+
 		for {
 			// HACK: We should really just process our action message type here and switch on this rather then this crazy conditional logic.
 			// Add ourselves into the worker queue.
 			w.WorkerQueue <- w.Work
 			select {
 			case work := <-w.Work:
-				var actionResponse *deviant.EncounterResponse
+				var actionResponse = &deviant.EncounterResponse{}
+				var encounterFromDisk = &deviant.EncounterResponse{}
 
-				if work.Request.EntityTargetAction != nil {
-					encounterFromDisk := &deviant.EncounterResponse{}
+				in, err := redisClient.Get("encounter_0000").Result()
+				if err != nil {
+					actionResponse = matchmaker.GenerateMatch()
+					actions.Process(actionResponse.Encounter, deviant.EntityActionNames_NOTHING, nil, nil)
 
-					in, err := ioutil.ReadFile("encounter_0000.json")
-
-					if err != nil {
-						actionResponse = matchmaker.GenerateMatch()
-						actions.Process(actionResponse.Encounter, deviant.EntityActionNames_NOTHING, nil, nil)
+					result, marshalError := protojson.MarshalOptions(marshalOptions).Marshal(actionResponse)
+					if marshalError != nil {
+						panic(marshalError)
+					}
+					writeErr := redisClient.Set("encounter_0000", string(result), 0).Err()
+					if writeErr != nil {
+						panic(writeErr)
 					}
 
-					var unmarshalOptions = protojson.UnmarshalOptions{
-						AllowPartial: true,
+					encounterFromDisk = actionResponse
+				} else {
+					unmarshalError := protojson.UnmarshalOptions(unmarshalOptions).Unmarshal([]byte(in), encounterFromDisk)
+					if unmarshalError != nil {
+						panic(unmarshalError)
 					}
-					unmarshalerror := protojson.UnmarshalOptions(unmarshalOptions).Unmarshal(in, encounterFromDisk)
-					if unmarshalerror != nil {
-						panic(unmarshalerror)
-					}
+				}
 
+				if work.Request.GetEncounterState == true {
+					actionResponse = &deviant.EncounterResponse{
+						PlayerId:  work.Request.PlayerId,
+						Encounter: encounterFromDisk.Encounter,
+					}
+				} else if work.Request.EntityTargetAction != nil {
 					// Update overlay tiles to the new tiles
 					encounterFromDisk.Encounter.Board.OverlayTiles = work.Request.EntityTargetAction.Tiles
 
@@ -89,85 +127,56 @@ func (w *IncomingWorker) StartIncoming() {
 						PlayerId:  work.Request.PlayerId,
 						Encounter: encounterFromDisk.Encounter,
 					}
-				} else {
-					// Implement Rules Engine and Matchingmaking integration here.
-					if work.Request.Encounter == nil && work.Request.GetEncounterState == false {
-						actionResponse = matchmaker.GenerateMatch()
-						actions.Process(actionResponse.Encounter, deviant.EntityActionNames_NOTHING, nil, nil)
-					} else if work.Request.GetEncounterState == true {
-						encounterFromDisk := &deviant.EncounterResponse{}
-
-						in, err := ioutil.ReadFile("encounter_0000.json")
-
-						if err != nil {
-							actionResponse = matchmaker.GenerateMatch()
-							actions.Process(actionResponse.Encounter, deviant.EntityActionNames_NOTHING, nil, nil)
+				} else if work.Request.EntityStateAction != nil {
+					// Apply all state changes to entity in encounter as well as the activeEntity
+					for outerIndex, outerValue := range encounterFromDisk.Encounter.Board.Entities.Entities {
+						for innerIndex, innerValue := range outerValue.Entities {
+							if innerValue.Id == work.Request.EntityStateAction.Id {
+								encounterFromDisk.Encounter.Board.Entities.Entities[outerIndex].Entities[innerIndex].State = work.Request.EntityStateAction.State
+							}
 						}
+					}
 
-						var unmarshalOptions = protojson.UnmarshalOptions{
-							AllowPartial: true,
-						}
-						unmarshalerror := protojson.UnmarshalOptions(unmarshalOptions).Unmarshal(in, encounterFromDisk)
-						if unmarshalerror != nil {
-							panic(unmarshalerror)
-						}
+					if work.Request.EntityStateAction.Id == encounterFromDisk.Encounter.ActiveEntity.Id {
+						encounterFromDisk.Encounter.ActiveEntity.State = work.Request.EntityStateAction.State
+					}
 
-						actionResponse = &deviant.EncounterResponse{
-							PlayerId:  work.Request.PlayerId,
-							Encounter: encounterFromDisk.Encounter,
-						}
-					} else {
-						encounterFromDisk := &deviant.EncounterResponse{}
+					actionResponse = &deviant.EncounterResponse{
+						PlayerId:  work.Request.PlayerId,
+						Encounter: encounterFromDisk.Encounter,
+					}
+				} else if work.Request.EntityPlayAction != nil || work.Request.EntityMoveAction != nil {
+					// AuthZ the Player <- This should be migrated to a different layer of the codebase
+					if work.Request.PlayerId == encounterFromDisk.Encounter.ActiveEntity.OwnerId {
+						isActionValid := rules.Process(encounterFromDisk.Encounter, work.Request.EntityActionName, work.Request.EntityMoveAction)
+						if isActionValid == true {
+							actions.Process(encounterFromDisk.Encounter, work.Request.EntityActionName, work.Request.EntityMoveAction, work.Request.EntityPlayAction)
 
-						in, err := ioutil.ReadFile(work.Request.Encounter.Id + ".json")
-						if err != nil {
-							panic(err)
-						}
-
-						var unmarshalOptions = protojson.UnmarshalOptions{
-							AllowPartial: true,
-						}
-						unmarshalerror := protojson.UnmarshalOptions(unmarshalOptions).Unmarshal(in, encounterFromDisk)
-						if unmarshalerror != nil {
-							panic(unmarshalerror)
-						}
-
-						// AuthZ the Player <- This should be migrated to a different layer of the codebase
-						if work.Request.PlayerId == encounterFromDisk.Encounter.ActiveEntity.OwnerId {
-							isActionValid := rules.Process(encounterFromDisk.Encounter, work.Request.EntityActionName, work.Request.EntityMoveAction)
-							if isActionValid == true {
-								actions.Process(encounterFromDisk.Encounter, work.Request.EntityActionName, work.Request.EntityMoveAction, work.Request.EntityPlayAction)
-
-								// Apply all state changes to entity in encounter as well as the activeEntity
-								for outerIndex, outerValue := range encounterFromDisk.Encounter.Board.Entities.Entities {
-									for innerIndex, innerValue := range outerValue.Entities {
-										if innerValue.Id == encounterFromDisk.Encounter.ActiveEntity.Id {
-											encounterFromDisk.Encounter.Board.Entities.Entities[outerIndex].Entities[innerIndex] = encounterFromDisk.Encounter.ActiveEntity
-										}
+							// Apply all state changes to entity in encounter as well as the activeEntity
+							for outerIndex, outerValue := range encounterFromDisk.Encounter.Board.Entities.Entities {
+								for innerIndex, innerValue := range outerValue.Entities {
+									if innerValue.Id == encounterFromDisk.Encounter.ActiveEntity.Id {
+										encounterFromDisk.Encounter.Board.Entities.Entities[outerIndex].Entities[innerIndex] = encounterFromDisk.Encounter.ActiveEntity
 									}
 								}
 							}
 						}
-
-						var marshalOptions = protojson.MarshalOptions{
-							AllowPartial:    true,
-							EmitUnpopulated: true,
-						}
-
-						result, marshallerror := protojson.MarshalOptions(marshalOptions).Marshal(encounterFromDisk)
-						if marshallerror != nil {
-							panic(marshallerror)
-						}
-						writerror := ioutil.WriteFile(work.Request.Encounter.Id+".json", result, 0644)
-						if writerror != nil {
-							panic(writerror)
-						}
-
-						actionResponse = &deviant.EncounterResponse{
-							PlayerId:  work.Request.PlayerId,
-							Encounter: encounterFromDisk.Encounter,
-						}
 					}
+
+					actionResponse = &deviant.EncounterResponse{
+						PlayerId:  work.Request.PlayerId,
+						Encounter: encounterFromDisk.Encounter,
+					}
+				}
+
+				result, marshalError := protojson.MarshalOptions(marshalOptions).Marshal(encounterFromDisk)
+				if marshalError != nil {
+					panic(marshalError)
+				}
+
+				writeErr := redisClient.Set("encounter_0000", string(result), 0).Err()
+				if writeErr != nil {
+					panic(writeErr)
 				}
 
 				message := fmt.Sprintf("Actions Processed: %s\n", work.Request.EntityActionName)
