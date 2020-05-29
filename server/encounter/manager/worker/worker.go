@@ -114,7 +114,7 @@ func (w *IncomingWorker) StartIncoming() {
 					}
 				}
 
-				if work.Request.GetEncounterState == true {
+				if work.Request.EntityGetAction != nil {
 					actionResponse = &deviant.EncounterResponse{
 						PlayerId:  work.Request.PlayerId,
 						Encounter: encounterFromDisk.Encounter,

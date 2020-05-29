@@ -50,6 +50,8 @@ github.com/recluse-games/deviant-protobuf v0.0.0-20200514172202-4df5cba14e7f h1:
 github.com/recluse-games/deviant-protobuf v0.0.0-20200514172202-4df5cba14e7f/go.mod h1:4k+vJrjvrzk96Gml5EhK++lFJcJ+sjALl0JWA80yBYQ=
 github.com/recluse-games/deviant-protobuf v0.0.0-20200528013908-de2821746dbf h1:VlTZB/t5oIhBxyoGCIlhowPzg+WAYgPCJ1LAB4eHvvA=
 github.com/recluse-games/deviant-protobuf v0.0.0-20200528013908-de2821746dbf/go.mod h1:4k+vJrjvrzk96Gml5EhK++lFJcJ+sjALl0JWA80yBYQ=
+github.com/recluse-games/deviant-protobuf v0.0.0-20200528210859-7c158cfa6836 h1:kp8pi7duIPUbWcI2P4FGmGhAGVbQB9nZ8usq+ILwbRQ=
+github.com/recluse-games/deviant-protobuf v0.0.0-20200528210859-7c158cfa6836/go.mod h1:4k+vJrjvrzk96Gml5EhK++lFJcJ+sjALl0JWA80yBYQ=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/exp v0.0.0-20190121172915-509febef88a4/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
 golang.org/x/lint v0.0.0-20181026193005-c67002cb31c3/go.mod h1:UVdnD1Gm6xHRNCYTkRU2/jEulfH38KcIWyp/GAMgvoE=
@@ -109,6 +111,8 @@ google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013 h1:+kGHl1aib/qcwaR
 google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013/go.mod h1:NbSheEEYHJ7i3ixzK3sjbqSGDJWnxyFXZblF3eUsNvo=
 google.golang.org/genproto v0.0.0-20200527145253-8367513e4ece h1:1YM0uhfumvoDu9sx8+RyWwTI63zoCQvI23IYFRlvte0=
 google.golang.org/genproto v0.0.0-20200527145253-8367513e4ece/go.mod h1:jDfRM7FcilCzHH/e9qn6dsT145K34l5v+OpcnNgKAAA=
+google.golang.org/genproto v0.0.0-20200528191852-705c0b31589b h1:nl5tymnV+50ACFZUDAP+xFCe3Zh3SWdMDx+ernZSKNA=
+google.golang.org/genproto v0.0.0-20200528191852-705c0b31589b/go.mod h1:jDfRM7FcilCzHH/e9qn6dsT145K34l5v+OpcnNgKAAA=
 google.golang.org/grpc v1.19.0/go.mod h1:mqu4LbDTu4XGKhr4mRzUsmM4RtVoemTSY81AxZiDr8c=
 google.golang.org/grpc v1.23.0/go.mod h1:Y5yQAOtifL1yxbo5wqy6BxZv8vAUGQwXBOALyacEbxg=
 google.golang.org/grpc v1.25.1/go.mod h1:c3i+UQWmh7LiEpx4sFZnkU36qjEYZ0imhYfXVyQciAY=
