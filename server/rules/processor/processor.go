@@ -7,13 +7,14 @@ import (
 	"github.com/recluse-games/deviant-instance-shard/server/rules/deck"
 	"github.com/recluse-games/deviant-instance-shard/server/rules/hand"
 	"github.com/recluse-games/deviant-instance-shard/server/rules/move"
+	"github.com/recluse-games/deviant-instance-shard/server/rules/play"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
 // Process Processes all rules to determine validity.
-func Process(encounter *deviant.Encounter, entityActionName deviant.EntityActionNames, entityMoveAction *deviant.EntityMoveAction) bool {
+func Process(encounter *deviant.Encounter, entityActionName deviant.EntityActionNames, entityMoveAction *deviant.EntityMoveAction, entityPlayAction *deviant.EntityPlayAction) bool {
 	entityActionRules := map[deviant.EntityActionNames][]interface{}{
-		deviant.EntityActionNames_PLAY:         {},
+		deviant.EntityActionNames_PLAY:         {play.ValidateApCost},
 		deviant.EntityActionNames_MOVE:         {move.ValidateApCost, move.ValidateNewLocationEmpty, move.ValidateNewLocationSide},
 		deviant.EntityActionNames_DISCARD:      {},
 		deviant.EntityActionNames_CHANGE_PHASE: {},
@@ -67,6 +68,10 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 				switch entityActionName {
 				case deviant.EntityActionNames_MOVE:
 					if entityActionFunction.(func(*deviant.Entity, *deviant.EntityMoveAction, *deviant.Encounter) bool)(encounter.ActiveEntity, entityMoveAction, encounter) == false {
+						return false
+					}
+				case deviant.EntityActionNames_PLAY:
+					if entityActionFunction.(func(*deviant.Entity, *deviant.EntityPlayAction, *deviant.Encounter) bool)(encounter.ActiveEntity, entityPlayAction, encounter) == false {
 						return false
 					}
 				case deviant.EntityActionNames_CHANGE_PHASE:

@@ -35,6 +35,27 @@ func removeEntityFromOrder(entityID string, slice []string) []string {
 	}
 }
 
+func findCardIndex(cards []*deviant.Card, cardID string) int {
+	for index, card := range cards {
+		if cardID == card.Id {
+			return index
+		}
+	}
+	return len(cards)
+}
+
+func removeCardFromHand(cardID string, slice []*deviant.Card) []*deviant.Card {
+	var cardIDIndex = findCardIndex(slice, cardID)
+
+	if len(slice) > cardIDIndex+1 {
+		return slice[:cardIDIndex+copy(slice[cardIDIndex:], slice[cardIDIndex+1:])]
+	} else if len(slice) == cardIDIndex {
+		return slice[:cardIDIndex+copy(slice[cardIDIndex:], slice[cardIDIndex-1:])]
+	}
+
+	return []*deviant.Card{}
+}
+
 //Play Applys a play action
 func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction) bool {
 
@@ -60,8 +81,13 @@ func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction) bo
 
 			// Pay Ap Cost for Card
 			encounter.ActiveEntity.Ap = encounter.ActiveEntity.Ap - card.Cost
+			// Add Card To Discard Pile
+			encounter.ActiveEntity.Discard.Cards = append(encounter.ActiveEntity.Discard.Cards, card)
 		}
 	}
+
+	// Remove Card From Hand
+	encounter.ActiveEntity.Hand.Cards = removeCardFromHand(playAction.CardId, encounter.ActiveEntity.Hand.Cards)
 
 	return true
 }

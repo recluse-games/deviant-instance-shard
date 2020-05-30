@@ -57,7 +57,7 @@ func generateCardLiterals(size int32) []*deviant.Card {
 			Id:          "attack_slash_0000",
 			BackId:      "back_0000",
 			InstanceId:  uuid.New().String(),
-			Cost:        0,
+			Cost:        2,
 			Damage:      5,
 			Title:       "Test Title",
 			Flavor:      "Test Flavor",
