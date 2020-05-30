@@ -57,6 +57,9 @@ func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction) bo
 					}
 				}
 			}
+
+			// Pay Ap Cost for Card
+			encounter.ActiveEntity.Ap = encounter.ActiveEntity.Ap - card.Cost
 		}
 	}
 

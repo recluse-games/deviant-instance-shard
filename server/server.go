@@ -14,6 +14,8 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
+var streams = make(map[string]deviant.EncounterService_UpdateEncounterServer)
+
 var kaep = keepalive.EnforcementPolicy{
 	MinTime:             0,    // If a client pings more than once every 5 seconds, terminate the connection
 	PermitWithoutStream: true, // Allow pings even when there are no active streams
@@ -36,6 +38,7 @@ func (s *server) UpdateEncounter(stream deviant.EncounterService_UpdateEncounter
 	for {
 		in, err := stream.Recv()
 		log.Output(0, in.String())
+		streams[in.PlayerId] = stream
 
 		if err == io.EOF {
 			return nil
@@ -46,8 +49,10 @@ func (s *server) UpdateEncounter(stream deviant.EncounterService_UpdateEncounter
 
 		response := incomingWorker.ProcessWork(in)
 
-		if err := stream.Send(response); err != nil {
-			return err
+		for _, stream := range streams {
+			if err := stream.Send(response); err != nil {
+				return err
+			}
 		}
 	}
 }

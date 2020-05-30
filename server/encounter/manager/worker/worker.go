@@ -108,7 +108,7 @@ func (w *IncomingWorker) ProcessWork(work *deviant.EncounterRequest) *deviant.En
 			PlayerId:  work.PlayerId,
 			Encounter: encounterFromDisk.Encounter,
 		}
-	} else if work.EntityPlayAction != nil || work.EntityMoveAction != nil {
+	} else {
 		// AuthZ the Player <- This should be migrated to a different layer of the codebase
 		if work.PlayerId == encounterFromDisk.Encounter.ActiveEntity.OwnerId {
 			isActionValid := rules.Process(encounterFromDisk.Encounter, work.EntityActionName, work.EntityMoveAction)
