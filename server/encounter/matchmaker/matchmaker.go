@@ -353,6 +353,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 								{
 									Id:         "0001",
 									Hp:         10,
+									MaxHp:      10,
 									Ap:         5,
 									Alignment:  deviant.Alignment_FRIENDLY,
 									Class:      deviant.Classes_WARRIOR,
@@ -367,6 +368,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 								{
 									Id:         "0003",
 									Hp:         10,
+									MaxHp:      10,
 									Ap:         5,
 									Alignment:  deviant.Alignment_FRIENDLY,
 									Class:      deviant.Classes_WARRIOR,
@@ -459,6 +461,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 								{
 									Id:         "0002",
 									Hp:         10,
+									MaxHp:      10,
 									Ap:         5,
 									Alignment:  deviant.Alignment_UNFRIENDLY,
 									Class:      deviant.Classes_WARRIOR,
@@ -466,12 +469,13 @@ func GenerateMatch() *deviant.EncounterResponse {
 									Deck:       generateDeckLiterals(10),
 									Discard:    generateDiscardLiteral(0),
 									Initiative: 5,
-									OwnerId:    "0002",
+									OwnerId:    "0001",
 								},
 								{},
 								{
 									Id:         "0004",
 									Hp:         10,
+									MaxHp:      10,
 									Ap:         5,
 									Alignment:  deviant.Alignment_UNFRIENDLY,
 									Class:      deviant.Classes_WARRIOR,
@@ -479,7 +483,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 									Deck:       generateDeckLiterals(10),
 									Discard:    generateDiscardLiteral(0),
 									Initiative: 5,
-									OwnerId:    "0002",
+									OwnerId:    "0001",
 								},
 								{},
 								{},
@@ -492,6 +496,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 			ActiveEntity: &deviant.Entity{
 				Id:         "0001",
 				Hp:         10,
+				MaxHp:      10,
 				Ap:         5,
 				Alignment:  deviant.Alignment_FRIENDLY,
 				Class:      deviant.Classes_WARRIOR,
