@@ -37,7 +37,6 @@ func (s *server) UpdateEncounter(stream deviant.EncounterService_UpdateEncounter
 
 	for {
 		in, err := stream.Recv()
-		log.Output(0, in.String())
 		streams[in.PlayerId] = stream
 
 		if err == io.EOF {
@@ -49,9 +48,9 @@ func (s *server) UpdateEncounter(stream deviant.EncounterService_UpdateEncounter
 
 		response := incomingWorker.ProcessWork(in)
 
-		for _, stream := range streams {
+		for id, stream := range streams {
 			if err := stream.Send(response); err != nil {
-				return err
+				delete(streams, id)
 			}
 		}
 	}

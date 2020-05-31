@@ -35,32 +35,25 @@ func removeEntityFromOrder(entityID string, slice []string) []string {
 	}
 }
 
-func findCardIndex(cards []*deviant.Card, cardID string) int {
-	for index, card := range cards {
-		if cardID == card.Id {
-			return index
+func removeCardFromHand(cardID string, slice []*deviant.Card) []*deviant.Card {
+	var newCards = []*deviant.Card{}
+
+	for _, card := range slice {
+		log.Output(0, card.InstanceId)
+		log.Output(0, cardID)
+		if card.InstanceId != cardID {
+			newCards = append(newCards, card)
 		}
 	}
-	return len(cards)
-}
 
-func removeCardFromHand(cardID string, slice []*deviant.Card) []*deviant.Card {
-	var cardIDIndex = findCardIndex(slice, cardID)
-
-	if len(slice) > cardIDIndex+1 {
-		return slice[:cardIDIndex+copy(slice[cardIDIndex:], slice[cardIDIndex+1:])]
-	} else if len(slice) == cardIDIndex {
-		return slice[:cardIDIndex+copy(slice[cardIDIndex:], slice[cardIDIndex-1:])]
-	}
-
-	return []*deviant.Card{}
+	return newCards
 }
 
 //Play Applys a play action
 func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction) bool {
 
 	for _, card := range encounter.ActiveEntity.Hand.Cards {
-		if card.Id == playAction.CardId {
+		if card.InstanceId == playAction.CardId {
 			for _, playPair := range playAction.Plays {
 				//CAUTION: HACK - This logic should be moved into rules
 				if playPair.X >= 0 && playPair.Y >= 0 && playPair.X <= 7 && playPair.Y <= 7 {

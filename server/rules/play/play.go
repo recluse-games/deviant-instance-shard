@@ -1,6 +1,8 @@
 package play
 
 import (
+	"log"
+
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
@@ -8,8 +10,9 @@ import (
 func ValidateApCost(activeEntity *deviant.Entity, requestedPlayAction *deviant.EntityPlayAction, encounter *deviant.Encounter) bool {
 	var totalApCost = int32(0)
 
+	log.Output(0, requestedPlayAction.CardId)
 	for _, card := range encounter.ActiveEntity.Hand.Cards {
-		if card.Id == requestedPlayAction.CardId {
+		if card.InstanceId == requestedPlayAction.CardId {
 			totalApCost += card.Cost
 		}
 	}

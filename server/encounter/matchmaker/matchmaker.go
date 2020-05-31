@@ -2,6 +2,8 @@ package matchmaker
 
 import (
 	"fmt"
+	"math/rand"
+	"time"
 
 	"github.com/go-redis/redis/v7"
 	"github.com/google/uuid"
@@ -54,14 +56,14 @@ func generateCardLiterals(size int32) []*deviant.Card {
 
 	for i := int32(0); i < size; i++ {
 		card := &deviant.Card{
-			Id:          "attack_slash_0000",
+			Id:          "attack_bash_0000",
 			BackId:      "back_0000",
 			InstanceId:  uuid.New().String(),
-			Cost:        2,
-			Damage:      5,
-			Title:       "Test Title",
-			Flavor:      "Test Flavor",
-			Description: "Test Description",
+			Cost:        3,
+			Damage:      2,
+			Title:       "Bash",
+			Flavor:      "OP Area Move",
+			Description: "Something Too Broken to Be Real",
 			Type:        deviant.CardType_ATTACK,
 			Action: &deviant.CardAction{
 				Id: uuid.New().String(),
@@ -109,6 +111,71 @@ func generateCardLiterals(size int32) []*deviant.Card {
 		}
 
 		cardLiterals = append(cardLiterals, card)
+
+		card = &deviant.Card{
+			Id:          "attack_slash_0000",
+			BackId:      "back_0000",
+			InstanceId:  uuid.New().String(),
+			Cost:        2,
+			Damage:      3,
+			Title:       "Slash",
+			Flavor:      "Downward Dog",
+			Description: "A Simple Slash",
+			Type:        deviant.CardType_ATTACK,
+			Action: &deviant.CardAction{
+				Id: uuid.New().String(),
+				Pattern: []*deviant.Pattern{
+					{
+						Direction: deviant.Direction_DOWN,
+						Distance:  3,
+						Offset: []*deviant.Offset{
+							{
+								Direction: deviant.Direction_DOWN,
+								Distance:  1,
+							},
+						},
+					},
+				},
+			},
+		}
+
+		cardLiterals = append(cardLiterals, card)
+
+		card = &deviant.Card{
+			Id:          "attack_fireball_0000",
+			BackId:      "back_0000",
+			InstanceId:  uuid.New().String(),
+			Cost:        1,
+			Damage:      2,
+			Title:       "Fireball",
+			Flavor:      "Dunking",
+			Description: "A Simple Fireball",
+			Type:        deviant.CardType_ATTACK,
+			Action: &deviant.CardAction{
+				Id: uuid.New().String(),
+				Pattern: []*deviant.Pattern{
+					{
+						Direction: deviant.Direction_DOWN,
+						Distance:  1,
+						Offset: []*deviant.Offset{
+							{
+								Direction: deviant.Direction_DOWN,
+								Distance:  2,
+							},
+						},
+					},
+				},
+			},
+		}
+
+		cardLiterals = append(cardLiterals, card)
+	}
+
+	// Suffle the Deck
+	rand.Seed(time.Now().UnixNano())
+	for i := len(cardLiterals) - 1; i > 0; i-- { // Fisher–Yates shuffle
+		j := rand.Intn(i + 1)
+		cardLiterals[i], cardLiterals[j] = cardLiterals[j], cardLiterals[i]
 	}
 
 	return cardLiterals
