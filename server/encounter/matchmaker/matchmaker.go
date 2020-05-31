@@ -142,6 +142,62 @@ func generateCardLiterals(size int32) []*deviant.Card {
 		cardLiterals = append(cardLiterals, card)
 
 		card = &deviant.Card{
+			Id:          "cast_heal_0000",
+			BackId:      "back_0000",
+			InstanceId:  uuid.New().String(),
+			Cost:        2,
+			Damage:      2,
+			Title:       "Heal",
+			Flavor:      "A Basic Heal",
+			Description: "A Simple Heal",
+			Type:        deviant.CardType_HEAL,
+			Action: &deviant.CardAction{
+				Id: uuid.New().String(),
+				Pattern: []*deviant.Pattern{
+					{
+						Direction: deviant.Direction_DOWN,
+						Distance:  1,
+						Offset: []*deviant.Offset{
+							{
+								Direction: deviant.Direction_DOWN,
+								Distance:  1,
+							},
+						},
+					},
+				},
+			},
+		}
+
+		card = &deviant.Card{
+			Id:          "cast_healing_ray_0000",
+			BackId:      "back_0000",
+			InstanceId:  uuid.New().String(),
+			Cost:        2,
+			Damage:      2,
+			Title:       "Healing Ray",
+			Flavor:      "A Basic Heal",
+			Description: "A Ranged Heal",
+			Type:        deviant.CardType_HEAL,
+			Action: &deviant.CardAction{
+				Id: uuid.New().String(),
+				Pattern: []*deviant.Pattern{
+					{
+						Direction: deviant.Direction_DOWN,
+						Distance:  3,
+						Offset: []*deviant.Offset{
+							{
+								Direction: deviant.Direction_DOWN,
+								Distance:  1,
+							},
+						},
+					},
+				},
+			},
+		}
+
+		cardLiterals = append(cardLiterals, card)
+
+		card = &deviant.Card{
 			Id:          "attack_fireball_0000",
 			BackId:      "back_0000",
 			InstanceId:  uuid.New().String(),
@@ -318,7 +374,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 									Deck:       generateDeckLiterals(10),
 									Discard:    generateDiscardLiteral(0),
 									Initiative: 5,
-									OwnerId:    "0003",
+									OwnerId:    "0001",
 								},
 								{},
 								{},
@@ -419,7 +475,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 									Ap:         5,
 									Alignment:  deviant.Alignment_UNFRIENDLY,
 									Class:      deviant.Classes_WARRIOR,
-									Hand:       generateHandLiterals(1),
+									Hand:       generateHandLiterals(0),
 									Deck:       generateDeckLiterals(10),
 									Discard:    generateDiscardLiteral(0),
 									Initiative: 5,

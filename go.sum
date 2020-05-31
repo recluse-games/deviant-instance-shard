@@ -56,6 +56,10 @@ github.com/recluse-games/deviant-protobuf v0.0.0-20200528210859-7c158cfa6836 h1:
 github.com/recluse-games/deviant-protobuf v0.0.0-20200528210859-7c158cfa6836/go.mod h1:4k+vJrjvrzk96Gml5EhK++lFJcJ+sjALl0JWA80yBYQ=
 github.com/recluse-games/deviant-protobuf v0.0.0-20200530001709-d536c59f3d84 h1:irE5Vneg/Rzy5bID+AM0KrTCBAq/X5h2Uh+iK5Pm9JE=
 github.com/recluse-games/deviant-protobuf v0.0.0-20200530001709-d536c59f3d84/go.mod h1:4k+vJrjvrzk96Gml5EhK++lFJcJ+sjALl0JWA80yBYQ=
+github.com/recluse-games/deviant-protobuf v0.0.0-20200531070439-74f905917902 h1:68tR0/o2XSXJv+hs8G1JxvpfQy6cOdBBcanq5HJ+J0I=
+github.com/recluse-games/deviant-protobuf v0.0.0-20200531070439-74f905917902/go.mod h1:4k+vJrjvrzk96Gml5EhK++lFJcJ+sjALl0JWA80yBYQ=
+github.com/recluse-games/deviant-protobuf v0.0.0-20200531073121-d81dee8eac40 h1:glcRL+YwXNV5Ar7LWIhqEUvZ2yWXEnfE0Piyku3fg9w=
+github.com/recluse-games/deviant-protobuf v0.0.0-20200531073121-d81dee8eac40/go.mod h1:4k+vJrjvrzk96Gml5EhK++lFJcJ+sjALl0JWA80yBYQ=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/exp v0.0.0-20190121172915-509febef88a4/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
 golang.org/x/lint v0.0.0-20181026193005-c67002cb31c3/go.mod h1:UVdnD1Gm6xHRNCYTkRU2/jEulfH38KcIWyp/GAMgvoE=
