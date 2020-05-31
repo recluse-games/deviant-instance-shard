@@ -88,13 +88,13 @@ func generateCardLiterals(size int32) []*deviant.Card {
 							},
 							{
 								Direction: deviant.Direction_DOWN,
-								Distance:  2,
+								Distance:  3,
 							},
 						},
 					},
 					{
 						Direction: deviant.Direction_DOWN,
-						Distance:  1,
+						Distance:  2,
 						Offset: []*deviant.Offset{
 							{
 								Direction: deviant.Direction_RIGHT,
@@ -102,7 +102,7 @@ func generateCardLiterals(size int32) []*deviant.Card {
 							},
 							{
 								Direction: deviant.Direction_DOWN,
-								Distance:  2,
+								Distance:  3,
 							},
 						},
 					},
