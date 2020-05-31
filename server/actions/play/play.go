@@ -65,7 +65,7 @@ func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction) bo
 							encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp = encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp - card.Damage
 						}
 					case deviant.CardType_HEAL:
-						if encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].MaxHp >= encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp+card.Damage {
+						if encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].MaxHp <= encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp+card.Damage {
 							encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp = encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].MaxHp
 						} else {
 							encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp = encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp + card.Damage
