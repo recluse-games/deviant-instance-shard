@@ -422,6 +422,16 @@ func GenerateMatch() *deviant.EncounterResponse {
 						},
 						{
 							Entities: []*deviant.Entity{
+								{
+									Id:        uuid.New().String(),
+									Hp:        10,
+									MaxHp:     10,
+									Alignment: deviant.Alignment_NEUTRAL,
+								},
+							},
+						},
+						{
+							Entities: []*deviant.Entity{
 								{},
 								{},
 								{},
