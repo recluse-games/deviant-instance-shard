@@ -4,10 +4,10 @@ import (
 	"fmt"
 
 	"github.com/golang/glog"
-	"github.com/recluse-games/deviant-instance-shard/server/rules/deck"
-	"github.com/recluse-games/deviant-instance-shard/server/rules/hand"
-	"github.com/recluse-games/deviant-instance-shard/server/rules/move"
-	"github.com/recluse-games/deviant-instance-shard/server/rules/play"
+	deck "github.com/recluse-games/deviant-instance-shard/server/rules/deck"
+	hand "github.com/recluse-games/deviant-instance-shard/server/rules/hand"
+	move "github.com/recluse-games/deviant-instance-shard/server/rules/move"
+	play "github.com/recluse-games/deviant-instance-shard/server/rules/play"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
