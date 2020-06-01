@@ -360,6 +360,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 							Entities: []*deviant.Entity{
 								{
 									Id:         "0001",
+									Name:       "Ian",
 									Hp:         10,
 									MaxHp:      10,
 									Ap:         5,
@@ -376,6 +377,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 								{},
 								{
 									Id:         "0003",
+									Name:       "Zach",
 									Hp:         10,
 									MaxHp:      10,
 									Ap:         5,
@@ -434,6 +436,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 							Entities: []*deviant.Entity{
 								{
 									Id:        uuid.New().String(),
+									Name:      "Wall",
 									Hp:        10,
 									MaxHp:     10,
 									Class:     deviant.Classes_WALL,
@@ -442,6 +445,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 								},
 								{
 									Id:        uuid.New().String(),
+									Name:      "Wall",
 									Hp:        10,
 									MaxHp:     10,
 									Class:     deviant.Classes_WALL,
@@ -450,6 +454,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 								},
 								{
 									Id:        uuid.New().String(),
+									Name:      "Wall",
 									Hp:        10,
 									MaxHp:     10,
 									Class:     deviant.Classes_WALL,
@@ -458,6 +463,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 								},
 								{
 									Id:        uuid.New().String(),
+									Name:      "Wall",
 									Hp:        10,
 									MaxHp:     10,
 									State:     deviant.EntityStateNames_IDLE,
@@ -466,6 +472,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 								},
 								{
 									Id:        uuid.New().String(),
+									Name:      "Wall",
 									Hp:        10,
 									MaxHp:     10,
 									Class:     deviant.Classes_WALL,
@@ -474,6 +481,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 								},
 								{
 									Id:        uuid.New().String(),
+									Name:      "Wall",
 									Hp:        10,
 									MaxHp:     10,
 									Class:     deviant.Classes_WALL,
@@ -482,6 +490,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 								},
 								{
 									Id:        uuid.New().String(),
+									Name:      "Wall",
 									Hp:        10,
 									MaxHp:     10,
 									Class:     deviant.Classes_WALL,
@@ -490,6 +499,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 								},
 								{
 									Id:        uuid.New().String(),
+									Name:      "Wall",
 									Hp:        10,
 									MaxHp:     10,
 									Class:     deviant.Classes_WALL,
@@ -538,6 +548,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 							Entities: []*deviant.Entity{
 								{
 									Id:         "0002",
+									Name:       "Cameron",
 									Hp:         10,
 									MaxHp:      10,
 									Ap:         5,
@@ -553,6 +564,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 								{},
 								{
 									Id:         "0004",
+									Name:       "Matt",
 									Hp:         10,
 									MaxHp:      10,
 									Ap:         5,
@@ -575,6 +587,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 			},
 			ActiveEntity: &deviant.Entity{
 				Id:         "0001",
+				Name:       "Ian",
 				Hp:         10,
 				MaxHp:      10,
 				Ap:         5,
