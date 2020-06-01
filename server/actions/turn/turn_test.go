@@ -7,15 +7,18 @@ import (
 )
 
 func TestGrantAp(t *testing.T) {
-	entityWithNoAp := &deviant.Entity{
-		Ap: int32(0),
+	entityWithNoAp := &deviant.Encounter{
+		ActiveEntity: &deviant.Entity{
+			Ap:    0,
+			MaxAp: 5,
+		},
 	}
 
 	if GrantAp(entityWithNoAp) != true {
 		t.Fail()
 	}
 
-	if entityWithNoAp.Ap != 5 {
+	if entityWithNoAp.ActiveEntity.Ap != 5 {
 		t.Fail()
 	}
 }

@@ -50,7 +50,11 @@ func TestValidateDraw(t *testing.T) {
 		Deck: GenerateDeckLiteral(5),
 	}
 
-	if ValidateDraw(entityWithEnoughCardsInDeckToDraw) != true {
+	encounter := &deviant.Encounter{
+		ActiveEntity: entityWithEnoughCardsInDeckToDraw,
+	}
+
+	if ValidateDraw(encounter) != true {
 		t.Fail()
 	}
 
@@ -58,7 +62,11 @@ func TestValidateDraw(t *testing.T) {
 		Deck: GenerateDeckLiteral(0),
 	}
 
-	if ValidateDraw(entityWithoutEnoughCardsInDeckToDraw) != false {
+	encounter = &deviant.Encounter{
+		ActiveEntity: entityWithoutEnoughCardsInDeckToDraw,
+	}
+
+	if ValidateDraw(encounter) != false {
 		t.Fail()
 	}
 }

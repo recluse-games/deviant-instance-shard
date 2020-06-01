@@ -9,8 +9,7 @@ import (
 
 // GrantAp grants some entity a default AP value of 5
 func GrantAp(encounter *deviant.Encounter) bool {
-	startingApValue := int32(5)
-	encounter.ActiveEntity.Ap = startingApValue
+	encounter.ActiveEntity.Ap = encounter.ActiveEntity.MaxAp
 
 	return true
 }

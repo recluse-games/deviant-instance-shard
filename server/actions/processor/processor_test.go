@@ -60,12 +60,47 @@ func TestProcess(t *testing.T) {
 	}
 
 	entity := &deviant.Entity{
-		Deck: GenerateDeckLiteral(5),
-		Hand: GenerateHandLiteral(5),
+		Ap:    0,
+		MaxAp: 5,
+		Deck:  GenerateDeckLiteral(5),
+		Hand:  GenerateHandLiteral(5),
+	}
+
+	encounter := &deviant.Encounter{
+		ActiveEntity: entity,
+		Turn:         turn,
+		Board: &deviant.Board{
+			Tiles: &deviant.Tiles{
+				Tiles: []*deviant.TilesRow{
+					{
+						Tiles: []*deviant.Tile{
+							{Id: "grass_0000"},
+							{Id: "grass_0000"},
+							{Id: "grass_0000"},
+							{Id: "grass_0000"},
+							{Id: "grass_0000"},
+							{Id: "grass_0000"},
+							{Id: "grass_0000"},
+							{Id: "grass_0000"},
+						},
+					},
+				},
+			},
+			OverlayTiles: []*deviant.Tile{},
+			Entities: &deviant.Entities{
+				Entities: []*deviant.EntitiesRow{
+					{
+						Entities: []*deviant.Entity{
+							entity,
+						},
+					},
+				},
+			},
+		},
 	}
 
 	// Test Draw Turn Phase Action
-	if Process(turn, entity, deviant.EntityActionNames_NOTHING) != true {
+	if Process(encounter, deviant.EntityActionNames_NOTHING, nil, nil) != true {
 		t.Fail()
 	}
 
@@ -77,12 +112,46 @@ func TestProcess(t *testing.T) {
 		Phase: deviant.TurnPhaseNames_PHASE_POINT,
 	}
 
+	encounter = &deviant.Encounter{
+		ActiveEntity: entity,
+		Turn:         turn,
+		Board: &deviant.Board{
+			Tiles: &deviant.Tiles{
+				Tiles: []*deviant.TilesRow{
+					{
+						Tiles: []*deviant.Tile{
+							{Id: "grass_0000"},
+							{Id: "grass_0000"},
+							{Id: "grass_0000"},
+							{Id: "grass_0000"},
+							{Id: "grass_0000"},
+							{Id: "grass_0000"},
+							{Id: "grass_0000"},
+							{Id: "grass_0000"},
+						},
+					},
+				},
+			},
+			OverlayTiles: []*deviant.Tile{},
+			Entities: &deviant.Entities{
+				Entities: []*deviant.EntitiesRow{
+					{
+						Entities: []*deviant.Entity{
+							entity,
+						},
+					},
+				},
+			},
+		},
+	}
+
 	// Test GrantAP Turn Phase Action
-	if Process(turn, entity, deviant.EntityActionNames_NOTHING) != true {
+	if Process(encounter, deviant.EntityActionNames_NOTHING, nil, nil) != true {
 		t.Fail()
 	}
 
-	if entity.Ap != 5 {
+	if encounter.ActiveEntity.Ap != 5 {
+		t.Logf("%v", encounter.ActiveEntity)
 		t.Fail()
 	}
 }

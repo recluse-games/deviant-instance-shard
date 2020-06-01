@@ -44,7 +44,11 @@ func TestValidateSize(t *testing.T) {
 		},
 	}
 
-	isHandSizeValid := ValidateSize(testEntityWithValidHand)
+	encounter := &deviant.Encounter{
+		ActiveEntity: testEntityWithValidHand,
+	}
+
+	isHandSizeValid := ValidateSize(encounter)
 
 	if isHandSizeValid != true {
 		t.Fail()
@@ -57,7 +61,11 @@ func TestValidateSize(t *testing.T) {
 		},
 	}
 
-	isHandSizeInvalid := ValidateSize(testEntityWithInvalidHand)
+	encounter = &deviant.Encounter{
+		ActiveEntity: testEntityWithInvalidHand,
+	}
+
+	isHandSizeInvalid := ValidateSize(encounter)
 
 	if isHandSizeInvalid != false {
 		t.Fail()

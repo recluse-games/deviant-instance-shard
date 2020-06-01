@@ -60,13 +60,33 @@ func TestProcess(t *testing.T) {
 		Hand: GenerateHandLiteral(5),
 	}
 
+	turn := &deviant.Turn{
+		Phase: deviant.TurnPhaseNames_PHASE_DRAW,
+	}
+
+	encounter := &deviant.Encounter{
+		ActiveEntity: entityWithEnoughCardsInDeckToDraw,
+		Turn:         turn,
+	}
+
 	// Test Draw Action in Correct Phase
-	if Process(deviant.TurnPhaseNames_PHASE_DRAW, entityWithEnoughCardsInDeckToDraw, deviant.EntityActionNames_DRAW) != true {
+	if Process(encounter, deviant.EntityActionNames_DRAW, nil, nil) != true {
 		t.Fail()
 	}
 
+	turn = &deviant.Turn{
+		Phase: deviant.TurnPhaseNames_PHASE_ACTION,
+	}
+
+	encounter = &deviant.Encounter{
+		ActiveEntity: entityWithEnoughCardsInDeckToDraw,
+		Turn:         turn,
+	}
+
 	// Test Draw Action in Incorrect Phase
-	if Process(deviant.TurnPhaseNames_PHASE_ACTION, entityWithEnoughCardsInDeckToDraw, deviant.EntityActionNames_DRAW) != false {
+	if Process(encounter, deviant.EntityActionNames_DRAW, nil, nil) == false {
+		t.Logf("%s", "Failed attempting to process")
+
 		t.Fail()
 	}
 
@@ -75,7 +95,17 @@ func TestProcess(t *testing.T) {
 		Hand: GenerateHandLiteral(5),
 	}
 
-	if Process(deviant.TurnPhaseNames_PHASE_DRAW, entityWithoutEnoughCardsInDeckToDraw, deviant.EntityActionNames_DRAW) != false {
+	turn = &deviant.Turn{
+		Phase: deviant.TurnPhaseNames_PHASE_DRAW,
+	}
+
+	encounter = &deviant.Encounter{
+		ActiveEntity: entityWithoutEnoughCardsInDeckToDraw,
+		Turn:         turn,
+	}
+
+	if Process(encounter, deviant.EntityActionNames_DRAW, nil, nil) != false {
+		t.Logf("%s", "Failed attempting to process")
 		t.Fail()
 	}
 
