@@ -20,5 +20,10 @@ func DrawCard(encounter *deviant.Encounter) bool {
 	encounter.ActiveEntity.Deck.Cards = removeCard(encounter.ActiveEntity.Deck.Cards)
 	encounter.ActiveEntity.Hand.Cards = addCard(encounter.ActiveEntity.Hand.Cards, topCard)
 
+	topCard = encounter.ActiveEntity.Deck.Cards[0]
+
+	encounter.ActiveEntity.Deck.Cards = removeCard(encounter.ActiveEntity.Deck.Cards)
+	encounter.ActiveEntity.Hand.Cards = addCard(encounter.ActiveEntity.Hand.Cards, topCard)
+
 	return true
 }
