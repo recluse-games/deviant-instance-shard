@@ -15,7 +15,7 @@ import (
 func Process(encounter *deviant.Encounter, entityActionName deviant.EntityActionNames, entityMoveAction *deviant.EntityMoveAction, entityPlayAction *deviant.EntityPlayAction) bool {
 	entityActionRules := map[deviant.EntityActionNames][]interface{}{
 		deviant.EntityActionNames_PLAY:         {play.ValidateApCost},
-		deviant.EntityActionNames_MOVE:         {move.ValidateApCost, move.ValidateNewLocationEmpty, move.ValidateNewLocationSide},
+		deviant.EntityActionNames_MOVE:         {move.ValidateApCost, move.ValidateNewLocationEmpty, move.ValidateMovePermissable},
 		deviant.EntityActionNames_DISCARD:      {},
 		deviant.EntityActionNames_CHANGE_PHASE: {},
 	}

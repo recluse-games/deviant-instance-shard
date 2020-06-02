@@ -7,6 +7,100 @@ import (
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
+func boundaryFill4(startx int32, starty int32, x int32, y int32, filledID string, blockedID string, limit int32, tiles [][]*deviant.Tile) {
+	if tiles[x][y].Id != blockedID && tiles[x][y].Id != filledID {
+		var apCostX int32
+		var apCostY int32
+
+		if startx > x {
+			apCostX = startx - x
+		} else if startx < x {
+			apCostX = x - startx
+		} else {
+			apCostX = 0
+		}
+
+		if starty > y {
+			apCostY = starty - y
+		} else if starty < y {
+			apCostY = y - starty
+		} else {
+			apCostY = 0
+		}
+
+		tiles[x][y].Id = filledID
+
+		if limit-apCostX-apCostY > 0 {
+			if x+1 <= 8 {
+				boundaryFill4(startx, starty, x+1, y, filledID, blockedID, limit, tiles)
+			}
+
+			if y+1 <= 7 {
+				boundaryFill4(startx, starty, x, y+1, filledID, blockedID, limit, tiles)
+			}
+
+			if x-1 >= 0 {
+				boundaryFill4(startx, starty, x-1, y, filledID, blockedID, limit, tiles)
+			}
+
+			if y-1 >= 0 {
+				boundaryFill4(startx, starty, x, y-1, filledID, blockedID, limit, tiles)
+			}
+		}
+	}
+}
+
+func GeneratePermissableMoves(requestedMoveAction *deviant.EntityMoveAction, avaliableAp int32, entities *deviant.Entities) []*deviant.Tile {
+	finalTiles := []*deviant.Tile{}
+	moveTargetTiles := [][]*deviant.Tile{}
+
+	for y := 0; y < len(entities.Entities); y++ {
+		newRow := []*deviant.Tile{}
+
+		for x := 0; x < len(entities.Entities[y].Entities); x++ {
+			newTile := &deviant.Tile{}
+			newTile.X = int32(y)
+			newTile.Y = int32(x)
+
+			if entities.Entities[y].Entities[x].Id != "" {
+				if int32(y) != requestedMoveAction.FinalYPosition || int32(x) != requestedMoveAction.FinalXPosition {
+					newTile.Id = "select_0002"
+				}
+			}
+
+			newRow = append(newRow, newTile)
+		}
+
+		moveTargetTiles = append(moveTargetTiles, newRow)
+	}
+
+	boundaryFill4(requestedMoveAction.StartXPosition, requestedMoveAction.StartYPosition, requestedMoveAction.StartXPosition, requestedMoveAction.StartYPosition, "select_0000", "select_0002", avaliableAp, moveTargetTiles)
+
+	for _, row := range moveTargetTiles {
+		for _, tile := range row {
+			if tile.Id != "select_0002" {
+				finalTiles = append(finalTiles, tile)
+			}
+		}
+	}
+
+	return finalTiles
+}
+
+func ValidateMovePermissable(activeEntity *deviant.Entity, requestedMoveAction *deviant.EntityMoveAction, encounter *deviant.Encounter) bool {
+	isRequestedMoveValid := false
+
+	validTiles := GeneratePermissableMoves(requestedMoveAction, activeEntity.Ap, encounter.Board.Entities)
+
+	for _, tile := range validTiles {
+		if tile.X == requestedMoveAction.FinalXPosition && tile.Y == requestedMoveAction.FinalYPosition {
+			isRequestedMoveValid = true
+		}
+	}
+
+	return isRequestedMoveValid
+}
+
 // ValidateApCost Determines that the entity has the correct amount of AP to perform the requested move.
 func ValidateApCost(activeEntity *deviant.Entity, requestedMoveAction *deviant.EntityMoveAction, encounter *deviant.Encounter) bool {
 	var totalApCost int32
