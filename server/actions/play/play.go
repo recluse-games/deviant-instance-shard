@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/google/uuid"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
@@ -56,7 +57,7 @@ func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction) bo
 		if card.InstanceId == playAction.CardId {
 			for _, playPair := range playAction.Plays {
 				//CAUTION: HACK - This logic should be moved into rules
-				if playPair.X >= 0 && playPair.Y >= 0 && playPair.X <= 7 && playPair.Y <= 7 {
+				if playPair.X >= 0 && playPair.Y >= 0 && playPair.X <= 7 && playPair.Y <= 8 {
 					switch card.Type {
 					case deviant.CardType_ATTACK:
 						if encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp < card.Damage {
@@ -70,6 +71,18 @@ func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction) bo
 						} else {
 							encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp = encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp + card.Damage
 						}
+					case deviant.CardType_BLOCK:
+						wall := &deviant.Entity{
+							Id:        uuid.New().String(),
+							Name:      "Wall",
+							Hp:        1,
+							MaxHp:     1,
+							Class:     deviant.Classes_WALL,
+							State:     deviant.EntityStateNames_IDLE,
+							Alignment: deviant.Alignment_NEUTRAL,
+						}
+
+						encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y] = wall
 					}
 
 					// HACK - This logic should be moved outside of this method and processed on every turn or something.

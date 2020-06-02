@@ -225,6 +225,35 @@ func generateCardLiterals(size int32) []*deviant.Card {
 		}
 
 		cardLiterals = append(cardLiterals, card)
+
+		card = &deviant.Card{
+			Id:          "block_wall_0000",
+			BackId:      "back_0000",
+			InstanceId:  uuid.New().String(),
+			Cost:        1,
+			Damage:      2,
+			Title:       "Block",
+			Flavor:      "A Simple Block",
+			Description: "The most beautiful block",
+			Type:        deviant.CardType_BLOCK,
+			Action: &deviant.CardAction{
+				Id: uuid.New().String(),
+				Pattern: []*deviant.Pattern{
+					{
+						Direction: deviant.Direction_DOWN,
+						Distance:  1,
+						Offset: []*deviant.Offset{
+							{
+								Direction: deviant.Direction_DOWN,
+								Distance:  1,
+							},
+						},
+					},
+				},
+			},
+		}
+
+		cardLiterals = append(cardLiterals, card)
 	}
 
 	// Suffle the Deck
