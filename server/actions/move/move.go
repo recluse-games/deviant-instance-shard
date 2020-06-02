@@ -1,9 +1,6 @@
 package move
 
 import (
-	"fmt"
-	"log"
-
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
@@ -35,6 +32,5 @@ func Move(encounter *deviant.Encounter, moveAction *deviant.EntityMoveAction) bo
 	encounter.Board.Entities.Entities[moveAction.FinalXPosition].Entities[moveAction.FinalYPosition] = encounter.ActiveEntity
 	encounter.Board.Entities.Entities[moveAction.StartXPosition].Entities[moveAction.StartYPosition] = &deviant.Entity{}
 
-	log.Output(1, fmt.Sprintf("%v", encounter.ActiveEntity))
 	return true
 }

@@ -2,7 +2,6 @@ package worker
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/go-redis/redis/v7"
 	"github.com/golang/glog"
@@ -101,8 +100,6 @@ func (w *IncomingWorker) ProcessWork(work *deviant.EncounterRequest) *deviant.En
 		if work.EntityStateAction.Id == encounterFromDisk.Encounter.ActiveEntity.Id {
 			encounterFromDisk.Encounter.ActiveEntity.State = work.EntityStateAction.State
 		}
-
-		log.Output(0, work.EntityStateAction.State.String())
 
 		actionResponse = &deviant.EncounterResponse{
 			PlayerId:  work.PlayerId,
