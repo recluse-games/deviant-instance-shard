@@ -8,16 +8,18 @@ import (
 	encounterActions "github.com/recluse-games/deviant-instance-shard/server/actions/encounter"
 	moveActions "github.com/recluse-games/deviant-instance-shard/server/actions/move"
 	playActions "github.com/recluse-games/deviant-instance-shard/server/actions/play"
+	rotateActions "github.com/recluse-games/deviant-instance-shard/server/actions/rotate"
 	"github.com/recluse-games/deviant-instance-shard/server/actions/turn"
 	turnActions "github.com/recluse-games/deviant-instance-shard/server/actions/turn"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
 // Process Processes all actions.
-func Process(encounter *deviant.Encounter, entityActionName deviant.EntityActionNames, entityMoveAction *deviant.EntityMoveAction, entityPlayAction *deviant.EntityPlayAction) bool {
+func Process(encounter *deviant.Encounter, entityActionName deviant.EntityActionNames, entityMoveAction *deviant.EntityMoveAction, entityPlayAction *deviant.EntityPlayAction, entityRotateAction *deviant.EntityRotateAction) bool {
 	entityActions := map[deviant.EntityActionNames][]interface{}{
 		deviant.EntityActionNames_PLAY:         {playActions.Play},
 		deviant.EntityActionNames_MOVE:         {moveActions.Move},
+		deviant.EntityActionNames_ROTATE:       {rotateActions.Rotate},
 		deviant.EntityActionNames_DRAW:         {},
 		deviant.EntityActionNames_DISCARD:      {},
 		deviant.EntityActionNames_NOTHING:      {},
@@ -51,6 +53,10 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 					}
 				case deviant.EntityActionNames_CHANGE_PHASE:
 					if entityActionFunction.(func(*deviant.Encounter) bool)(encounter) == false {
+						return false
+					}
+				case deviant.EntityActionNames_ROTATE:
+					if entityActionFunction.(func(*deviant.Encounter, *deviant.EntityRotateAction) bool)(encounter, entityRotateAction) == false {
 						return false
 					}
 				default:

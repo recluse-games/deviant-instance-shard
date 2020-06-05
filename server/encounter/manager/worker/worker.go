@@ -68,10 +68,9 @@ func (w *IncomingWorker) ProcessWork(work *deviant.EncounterRequest) *deviant.En
 			panic(unmarshalError)
 		}
 	}
-
 	if work.EncounterCreateAction != nil {
 		actionResponse = matchmaker.GenerateMatch()
-		actions.Process(actionResponse.Encounter, deviant.EntityActionNames_NOTHING, nil, nil)
+		actions.Process(actionResponse.Encounter, deviant.EntityActionNames_NOTHING, nil, nil, nil)
 
 		encounterFromDisk = actionResponse
 	} else if work.EntityGetAction != nil {
@@ -105,12 +104,29 @@ func (w *IncomingWorker) ProcessWork(work *deviant.EncounterRequest) *deviant.En
 			PlayerId:  work.PlayerId,
 			Encounter: encounterFromDisk.Encounter,
 		}
+	} else if work.EntityRotateAction != nil {
+		actions.Process(encounterFromDisk.Encounter, work.EntityActionName, nil, nil, work.EntityRotateAction)
+
+		// Apply all state changes to entity in encounter as well as the activeEntity
+		for outerIndex, outerValue := range encounterFromDisk.Encounter.Board.Entities.Entities {
+			for innerIndex, innerValue := range outerValue.Entities {
+				if innerValue.Id == encounterFromDisk.Encounter.ActiveEntity.Id {
+					encounterFromDisk.Encounter.Board.Entities.Entities[outerIndex].Entities[innerIndex] = encounterFromDisk.Encounter.ActiveEntity
+				}
+			}
+		}
+
+		actionResponse = &deviant.EncounterResponse{
+			PlayerId:  work.PlayerId,
+			Encounter: encounterFromDisk.Encounter,
+		}
+
 	} else {
 		// AuthZ the Player <- This should be migrated to a different layer of the codebase
 		if work.PlayerId == encounterFromDisk.Encounter.ActiveEntity.OwnerId {
 			isActionValid := rules.Process(encounterFromDisk.Encounter, work.EntityActionName, work.EntityMoveAction, work.EntityPlayAction)
 			if isActionValid == true {
-				actions.Process(encounterFromDisk.Encounter, work.EntityActionName, work.EntityMoveAction, work.EntityPlayAction)
+				actions.Process(encounterFromDisk.Encounter, work.EntityActionName, work.EntityMoveAction, work.EntityPlayAction, nil)
 
 				// Apply all state changes to entity in encounter as well as the activeEntity
 				for outerIndex, outerValue := range encounterFromDisk.Encounter.Board.Entities.Entities {
