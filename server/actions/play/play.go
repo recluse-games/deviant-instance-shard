@@ -3,10 +3,16 @@ package play
 import (
 	"fmt"
 	"log"
+	"math"
 
 	"github.com/google/uuid"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
+
+type gridLocation struct {
+	X float64
+	Y float64
+}
 
 func find(a []string, x string) int {
 	for i, n := range a {
@@ -50,26 +56,75 @@ func removeCardFromHand(cardID string, slice []*deviant.Card) []*deviant.Card {
 	return newCards
 }
 
+func convertDirectionToDegree(characterRotation deviant.EntityRotationNames) float64 {
+	switch characterRotation {
+	case deviant.EntityRotationNames_NORTH:
+		return 180.00
+	case deviant.EntityRotationNames_SOUTH:
+		return 0.00
+	case deviant.EntityRotationNames_EAST:
+		return 270.00
+	case deviant.EntityRotationNames_WEST:
+		return 90.00
+	}
+
+	return 0.00
+}
+
+func rotateTilePatterns(ocx float64, ocy float64, px float64, py float64, rotationAngle float64) *gridLocation {
+	var radians = (math.Pi / 180) * rotationAngle
+	var s = math.Sin(radians)
+	var c = math.Cos(radians)
+
+	// translate point back to origin:
+	px -= ocx
+	py -= ocy
+
+	// rotate point
+	var xnew = px*c - py*s
+	var ynew = px*s + py*c
+
+	// translate point back:
+	px = xnew + ocx
+	py = ynew + ocy
+
+	return &gridLocation{px, py}
+}
+
 //Play Applys a play action
 func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction) bool {
+	var activeEntityLocationPoint = &gridLocation{}
 
+	for y, entitiesRow := range encounter.Board.Entities.Entities {
+		for x, entity := range entitiesRow.Entities {
+			if entity.Id == encounter.ActiveEntity.Id {
+				activeEntityLocationPoint.X = float64(y)
+				activeEntityLocationPoint.Y = float64(x)
+			}
+		}
+	}
 	for _, card := range encounter.ActiveEntity.Hand.Cards {
 		if card.InstanceId == playAction.CardId {
 			for _, playPair := range playAction.Plays {
+
+				// CAUTION: HACK - This logic should be moved somewhere else to apply rotations directly to the cards themselves maybe?
+				var rotationDegree = convertDirectionToDegree(encounter.ActiveEntity.Rotation)
+				var rotatedPlayPair = rotateTilePatterns(activeEntityLocationPoint.X, activeEntityLocationPoint.Y, float64(playPair.X), float64(playPair.Y), rotationDegree)
+
 				//CAUTION: HACK - This logic should be moved into rules
-				if playPair.X >= 0 && playPair.Y >= 0 && playPair.X <= 7 && playPair.Y <= 8 {
+				if rotatedPlayPair.X >= 0 && rotatedPlayPair.Y >= 0 && rotatedPlayPair.X <= 7 && rotatedPlayPair.Y <= 8 {
 					switch card.Type {
 					case deviant.CardType_ATTACK:
-						if encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp < card.Damage {
-							encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp = 0
+						if encounter.Board.Entities.Entities[int(rotatedPlayPair.X)].Entities[int(rotatedPlayPair.Y)].Hp < card.Damage {
+							encounter.Board.Entities.Entities[int(rotatedPlayPair.X)].Entities[int(rotatedPlayPair.Y)].Hp = 0
 						} else {
-							encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp = encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp - card.Damage
+							encounter.Board.Entities.Entities[int(rotatedPlayPair.X)].Entities[int(rotatedPlayPair.Y)].Hp = encounter.Board.Entities.Entities[int(rotatedPlayPair.X)].Entities[int(rotatedPlayPair.Y)].Hp - card.Damage
 						}
 					case deviant.CardType_HEAL:
-						if encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].MaxHp <= encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp+card.Damage {
-							encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp = encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].MaxHp
+						if encounter.Board.Entities.Entities[int(rotatedPlayPair.X)].Entities[int(rotatedPlayPair.Y)].MaxHp <= encounter.Board.Entities.Entities[int(rotatedPlayPair.X)].Entities[int(rotatedPlayPair.Y)].Hp+card.Damage {
+							encounter.Board.Entities.Entities[int(rotatedPlayPair.X)].Entities[int(rotatedPlayPair.Y)].Hp = encounter.Board.Entities.Entities[int(rotatedPlayPair.X)].Entities[int(rotatedPlayPair.Y)].MaxHp
 						} else {
-							encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp = encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp + card.Damage
+							encounter.Board.Entities.Entities[int(rotatedPlayPair.X)].Entities[int(rotatedPlayPair.Y)].Hp = encounter.Board.Entities.Entities[int(rotatedPlayPair.X)].Entities[int(rotatedPlayPair.Y)].Hp + card.Damage
 						}
 					case deviant.CardType_BLOCK:
 						wall := &deviant.Entity{
@@ -82,13 +137,13 @@ func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction) bo
 							Alignment: deviant.Alignment_NEUTRAL,
 						}
 
-						encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y] = wall
+						encounter.Board.Entities.Entities[int(rotatedPlayPair.X)].Entities[int(rotatedPlayPair.Y)] = wall
 					}
 
 					// HACK - This logic should be moved outside of this method and processed on every turn or something.
-					if encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Hp == 0 {
-						encounter.ActiveEntityOrder = removeEntityFromOrder(encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y].Id, encounter.ActiveEntityOrder)
-						encounter.Board.Entities.Entities[playPair.X].Entities[playPair.Y] = &deviant.Entity{}
+					if encounter.Board.Entities.Entities[int(rotatedPlayPair.X)].Entities[int(rotatedPlayPair.Y)].Hp == 0 {
+						encounter.ActiveEntityOrder = removeEntityFromOrder(encounter.Board.Entities.Entities[int(rotatedPlayPair.X)].Entities[int(rotatedPlayPair.Y)].Id, encounter.ActiveEntityOrder)
+						encounter.Board.Entities.Entities[int(rotatedPlayPair.X)].Entities[int(rotatedPlayPair.Y)] = &deviant.Entity{}
 					}
 				}
 			}
