@@ -50,7 +50,13 @@ func UpdateActiveEntity(encounter *deviant.Encounter) bool {
 		}
 	}
 
-	encounter.ActiveEntity.Id = newActiveEntityID
+	for _, entitiesRow := range encounter.Board.Entities.Entities {
+		for _, entity := range entitiesRow.Entities {
+			if entity.Id == newActiveEntityID {
+				encounter.ActiveEntity = entity
+			}
+		}
+	}
 
 	message := fmt.Sprintf("Updated Active Entity: %s", encounter.ActiveEntity.Id)
 	glog.Info(message)
