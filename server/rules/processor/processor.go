@@ -46,8 +46,9 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 			deviant.EntityActionNames_CHANGE_PHASE: true,
 		},
 		deviant.TurnPhaseNames_PHASE_DISCARD: {
-			deviant.EntityActionNames_NOTHING: true,
-			deviant.EntityActionNames_DISCARD: true,
+			deviant.EntityActionNames_NOTHING:      true,
+			deviant.EntityActionNames_DISCARD:      true,
+			deviant.EntityActionNames_CHANGE_PHASE: true,
 		},
 		deviant.TurnPhaseNames_PHASE_END: {
 			deviant.EntityActionNames_NOTHING: true,

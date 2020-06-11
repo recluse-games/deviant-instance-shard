@@ -142,35 +142,36 @@ func generateCardLiterals(size int32, class deviant.Classes) []*deviant.Card {
 			}
 
 			cardLiterals = append(cardLiterals, card)
-
-			card = &deviant.Card{
-				Id:          "block_wall_0000",
-				BackId:      "back_0000",
-				InstanceId:  uuid.New().String(),
-				Cost:        1,
-				Damage:      2,
-				Title:       "Block",
-				Flavor:      "A Simple Block",
-				Description: "The most beautiful block",
-				Type:        deviant.CardType_BLOCK,
-				Action: &deviant.CardAction{
-					Id: uuid.New().String(),
-					Pattern: []*deviant.Pattern{
-						{
-							Direction: deviant.Direction_DOWN,
-							Distance:  1,
-							Offset: []*deviant.Offset{
-								{
-									Direction: deviant.Direction_DOWN,
-									Distance:  1,
+			/*
+				card = &deviant.Card{
+					Id:          "block_wall_0000",
+					BackId:      "back_0000",
+					InstanceId:  uuid.New().String(),
+					Cost:        1,
+					Damage:      2,
+					Title:       "Block",
+					Flavor:      "A Simple Block",
+					Description: "The most beautiful block",
+					Type:        deviant.CardType_BLOCK,
+					Action: &deviant.CardAction{
+						Id: uuid.New().String(),
+						Pattern: []*deviant.Pattern{
+							{
+								Direction: deviant.Direction_DOWN,
+								Distance:  1,
+								Offset: []*deviant.Offset{
+									{
+										Direction: deviant.Direction_DOWN,
+										Distance:  1,
+									},
 								},
 							},
 						},
 					},
-				},
-			}
+				}
 
-			cardLiterals = append(cardLiterals, card)
+				cardLiterals = append(cardLiterals, card)
+			*/
 		}
 	case deviant.Classes_PRIEST:
 		for i := int32(0); i < size; i++ {
@@ -634,7 +635,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 									Rotation:   deviant.EntityRotationNames_NORTH,
 								},
 								{
-									Id:         "0006",
+									Id:         "0005",
 									Name:       "Chris",
 									Hp:         10,
 									MaxHp:      10,
@@ -642,9 +643,9 @@ func GenerateMatch() *deviant.EncounterResponse {
 									MaxAp:      5,
 									Alignment:  deviant.Alignment_FRIENDLY,
 									Class:      deviant.Classes_PRIEST,
-									Hand:       generateHandLiterals(0, deviant.Classes_PRIEST),
-									Deck:       generateDeckLiterals(10, deviant.Classes_PRIEST),
-									Discard:    generateDiscardLiteral(0, deviant.Classes_PRIEST),
+									Hand:       generateHandLiterals(0, deviant.Classes_WARRIOR),
+									Deck:       generateDeckLiterals(10, deviant.Classes_WARRIOR),
+									Discard:    generateDiscardLiteral(0, deviant.Classes_WARRIOR),
 									Initiative: 5,
 									OwnerId:    "0001",
 									Rotation:   deviant.EntityRotationNames_NORTH,
@@ -838,7 +839,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 									Rotation:   deviant.EntityRotationNames_SOUTH,
 								},
 								{
-									Id:         "0005",
+									Id:         "0006",
 									Name:       "Ben",
 									Hp:         10,
 									MaxHp:      10,
@@ -846,9 +847,9 @@ func GenerateMatch() *deviant.EncounterResponse {
 									MaxAp:      5,
 									Alignment:  deviant.Alignment_UNFRIENDLY,
 									Class:      deviant.Classes_PRIEST,
-									Hand:       generateHandLiterals(0, deviant.Classes_PRIEST),
-									Deck:       generateDeckLiterals(10, deviant.Classes_PRIEST),
-									Discard:    generateDiscardLiteral(0, deviant.Classes_PRIEST),
+									Hand:       generateHandLiterals(0, deviant.Classes_WARRIOR),
+									Deck:       generateDeckLiterals(10, deviant.Classes_WARRIOR),
+									Discard:    generateDiscardLiteral(0, deviant.Classes_WARRIOR),
 									Initiative: 5,
 									OwnerId:    "0001",
 									Rotation:   deviant.EntityRotationNames_SOUTH,

@@ -25,6 +25,10 @@ func ChangePhase(encounter *deviant.Encounter) bool {
 				break
 			}
 			encounter.Turn.Phase = turnOrder[i+1]
+
+			message := fmt.Sprintf("Changed Phase: %s", encounter.Turn.Phase)
+			glog.Info(message)
+
 			break
 		}
 	}
@@ -46,14 +50,7 @@ func UpdateActiveEntity(encounter *deviant.Encounter) bool {
 		}
 	}
 
-	// Apply all state changes to entity in encounter as well as the activeEntity
-	for outerIndex, outerValue := range encounter.Board.Entities.Entities {
-		for innerIndex, innerValue := range outerValue.Entities {
-			if innerValue.Id == newActiveEntityID {
-				encounter.ActiveEntity = encounter.Board.Entities.Entities[outerIndex].Entities[innerIndex]
-			}
-		}
-	}
+	encounter.ActiveEntity.Id = newActiveEntityID
 
 	message := fmt.Sprintf("Updated Active Entity: %s", encounter.ActiveEntity.Id)
 	glog.Info(message)

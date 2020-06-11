@@ -104,6 +104,9 @@ ProcessTurnActions:
 							return false
 						}
 					case deviant.TurnPhaseNames_PHASE_DISCARD:
+						if turnActionFunction.(func(*deviant.Encounter) bool)(encounter) == false {
+							return false
+						}
 					case deviant.TurnPhaseNames_PHASE_END:
 						if turnActionFunction.(func(*deviant.Encounter) bool)(encounter) == false {
 							return false
