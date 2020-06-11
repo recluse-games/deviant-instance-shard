@@ -170,21 +170,3 @@ func ValidateNewLocationEmpty(activeEntity *deviant.Entity, requestedMoveAction 
 	glog.Error(message)
 	return false
 }
-
-// ValidateNewLocationSide Determines that the entity can actually move to this location on the board.
-func ValidateNewLocationSide(activeEntity *deviant.Entity, requestedMoveAction *deviant.EntityMoveAction, encounter *deviant.Encounter) bool {
-	if activeEntity.Alignment == deviant.Alignment_FRIENDLY {
-		if requestedMoveAction.FinalXPosition <= 3 {
-			return true
-		}
-	}
-	if activeEntity.Alignment == deviant.Alignment_UNFRIENDLY {
-		if requestedMoveAction.FinalXPosition >= 4 {
-			return true
-		}
-	}
-
-	message := fmt.Sprintf("Rule: Move-ValidateNewLocationSide: Failed")
-	glog.Info(message)
-	return false
-}
