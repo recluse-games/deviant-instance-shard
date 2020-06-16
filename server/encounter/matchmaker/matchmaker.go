@@ -175,122 +175,124 @@ func generateCardLiterals(size int32, class deviant.Classes) []*deviant.Card {
 		}
 	case deviant.Classes_PRIEST:
 		for i := int32(0); i < size; i++ {
+			/*
+					card := &deviant.Card{
+						Id:          "cast_radience_0000",
+						BackId:      "back_0000",
+						InstanceId:  uuid.New().String(),
+						Cost:        1,
+						Damage:      1,
+						Title:       "Radience",
+						Flavor:      "A Basic Clearing Spell",
+						Description: "A Basic Clearing Spell",
+						Type:        deviant.CardType_ATTACK,
+						Action: &deviant.CardAction{
+							Id: uuid.New().String(),
+							Pattern: []*deviant.Pattern{
+								{
+									Direction: deviant.Direction_DOWN,
+									Distance:  1,
+									Offset: []*deviant.Offset{
+										{
+											Direction: deviant.Direction_DOWN,
+											Distance:  1,
+										},
+									},
+								},
+								{
+									Direction: deviant.Direction_DOWN,
+									Distance:  1,
+									Offset: []*deviant.Offset{
+										{
+											Direction: deviant.Direction_RIGHT,
+											Distance:  1,
+										},
+									},
+								},
+								{
+									Direction: deviant.Direction_DOWN,
+									Distance:  1,
+									Offset: []*deviant.Offset{
+										{
+											Direction: deviant.Direction_LEFT,
+											Distance:  1,
+										},
+									},
+								},
+								{
+									Direction: deviant.Direction_DOWN,
+									Distance:  1,
+									Offset: []*deviant.Offset{
+										{
+											Direction: deviant.Direction_UP,
+											Distance:  1,
+										},
+									},
+								},
+								{
+									Direction: deviant.Direction_DOWN,
+									Distance:  1,
+									Offset: []*deviant.Offset{
+										{
+											Direction: deviant.Direction_UP,
+											Distance:  1,
+										},
+										{
+											Direction: deviant.Direction_LEFT,
+											Distance:  1,
+										},
+									},
+								},
+								{
+									Direction: deviant.Direction_DOWN,
+									Distance:  1,
+									Offset: []*deviant.Offset{
+										{
+											Direction: deviant.Direction_UP,
+											Distance:  1,
+										},
+										{
+											Direction: deviant.Direction_RIGHT,
+											Distance:  1,
+										},
+									},
+								},
+								{
+									Direction: deviant.Direction_DOWN,
+									Distance:  1,
+									Offset: []*deviant.Offset{
+										{
+											Direction: deviant.Direction_DOWN,
+											Distance:  1,
+										},
+										{
+											Direction: deviant.Direction_RIGHT,
+											Distance:  1,
+										},
+									},
+								},
+								{
+									Direction: deviant.Direction_DOWN,
+									Distance:  1,
+									Offset: []*deviant.Offset{
+										{
+											Direction: deviant.Direction_DOWN,
+											Distance:  1,
+										},
+										{
+											Direction: deviant.Direction_LEFT,
+											Distance:  1,
+										},
+									},
+								},
+							},
+						},
+					}
+
+				cardLiterals = append(cardLiterals, card)
+			*/
+
 			card := &deviant.Card{
-				Id:          "cast_radience_0000",
-				BackId:      "back_0000",
-				InstanceId:  uuid.New().String(),
-				Cost:        1,
-				Damage:      1,
-				Title:       "Radience",
-				Flavor:      "A Basic Clearing Spell",
-				Description: "A Basic Clearing Spell",
-				Type:        deviant.CardType_ATTACK,
-				Action: &deviant.CardAction{
-					Id: uuid.New().String(),
-					Pattern: []*deviant.Pattern{
-						{
-							Direction: deviant.Direction_DOWN,
-							Distance:  1,
-							Offset: []*deviant.Offset{
-								{
-									Direction: deviant.Direction_DOWN,
-									Distance:  1,
-								},
-							},
-						},
-						{
-							Direction: deviant.Direction_DOWN,
-							Distance:  1,
-							Offset: []*deviant.Offset{
-								{
-									Direction: deviant.Direction_RIGHT,
-									Distance:  1,
-								},
-							},
-						},
-						{
-							Direction: deviant.Direction_DOWN,
-							Distance:  1,
-							Offset: []*deviant.Offset{
-								{
-									Direction: deviant.Direction_LEFT,
-									Distance:  1,
-								},
-							},
-						},
-						{
-							Direction: deviant.Direction_DOWN,
-							Distance:  1,
-							Offset: []*deviant.Offset{
-								{
-									Direction: deviant.Direction_UP,
-									Distance:  1,
-								},
-							},
-						},
-						{
-							Direction: deviant.Direction_DOWN,
-							Distance:  1,
-							Offset: []*deviant.Offset{
-								{
-									Direction: deviant.Direction_UP,
-									Distance:  1,
-								},
-								{
-									Direction: deviant.Direction_LEFT,
-									Distance:  1,
-								},
-							},
-						},
-						{
-							Direction: deviant.Direction_DOWN,
-							Distance:  1,
-							Offset: []*deviant.Offset{
-								{
-									Direction: deviant.Direction_UP,
-									Distance:  1,
-								},
-								{
-									Direction: deviant.Direction_RIGHT,
-									Distance:  1,
-								},
-							},
-						},
-						{
-							Direction: deviant.Direction_DOWN,
-							Distance:  1,
-							Offset: []*deviant.Offset{
-								{
-									Direction: deviant.Direction_DOWN,
-									Distance:  1,
-								},
-								{
-									Direction: deviant.Direction_RIGHT,
-									Distance:  1,
-								},
-							},
-						},
-						{
-							Direction: deviant.Direction_DOWN,
-							Distance:  1,
-							Offset: []*deviant.Offset{
-								{
-									Direction: deviant.Direction_DOWN,
-									Distance:  1,
-								},
-								{
-									Direction: deviant.Direction_LEFT,
-									Distance:  1,
-								},
-							},
-						},
-					},
-				},
-			}
-
-			cardLiterals = append(cardLiterals, card)
-
-			card = &deviant.Card{
 				Id:          "cast_heal_0000",
 				BackId:      "back_0000",
 				InstanceId:  uuid.New().String(),
@@ -320,6 +322,30 @@ func generateCardLiterals(size int32, class deviant.Classes) []*deviant.Card {
 			cardLiterals = append(cardLiterals, card)
 
 			card = &deviant.Card{
+				Id:          "cast_self_heal_0000",
+				BackId:      "back_0000",
+				InstanceId:  uuid.New().String(),
+				Cost:        2,
+				Damage:      2,
+				Title:       "Bandage",
+				Flavor:      "A Basic Self Heal",
+				Description: "A Simple Self Heal",
+				Type:        deviant.CardType_HEAL,
+				Action: &deviant.CardAction{
+					Id: uuid.New().String(),
+					Pattern: []*deviant.Pattern{
+						{
+							Direction: deviant.Direction_DOWN,
+							Distance:  1,
+							Offset:    []*deviant.Offset{},
+						},
+					},
+				},
+			}
+
+			cardLiterals = append(cardLiterals, card)
+
+			card = &deviant.Card{
 				Id:          "cast_healing_ray_0000",
 				BackId:      "back_0000",
 				InstanceId:  uuid.New().String(),
@@ -339,6 +365,35 @@ func generateCardLiterals(size int32, class deviant.Classes) []*deviant.Card {
 								{
 									Direction: deviant.Direction_DOWN,
 									Distance:  1,
+								},
+							},
+						},
+					},
+				},
+			}
+
+			cardLiterals = append(cardLiterals, card)
+
+			card = &deviant.Card{
+				Id:          "cast_healing_lob_0000",
+				BackId:      "back_0000",
+				InstanceId:  uuid.New().String(),
+				Cost:        2,
+				Damage:      1,
+				Title:       "Healing Lob",
+				Flavor:      "A Basic Heal",
+				Description: "A Ranged Lob Heal",
+				Type:        deviant.CardType_HEAL,
+				Action: &deviant.CardAction{
+					Id: uuid.New().String(),
+					Pattern: []*deviant.Pattern{
+						{
+							Direction: deviant.Direction_DOWN,
+							Distance:  1,
+							Offset: []*deviant.Offset{
+								{
+									Direction: deviant.Direction_DOWN,
+									Distance:  3,
 								},
 							},
 						},
@@ -398,11 +453,11 @@ func generateCardLiterals(size int32, class deviant.Classes) []*deviant.Card {
 							Offset: []*deviant.Offset{
 								{
 									Direction: deviant.Direction_UP,
-									Distance:  1,
+									Distance:  2,
 								},
 								{
 									Direction: deviant.Direction_RIGHT,
-									Distance:  1,
+									Distance:  2,
 								},
 							},
 						},
@@ -412,11 +467,11 @@ func generateCardLiterals(size int32, class deviant.Classes) []*deviant.Card {
 							Offset: []*deviant.Offset{
 								{
 									Direction: deviant.Direction_DOWN,
-									Distance:  1,
+									Distance:  2,
 								},
 								{
 									Direction: deviant.Direction_RIGHT,
-									Distance:  1,
+									Distance:  2,
 								},
 							},
 						},
@@ -426,11 +481,11 @@ func generateCardLiterals(size int32, class deviant.Classes) []*deviant.Card {
 							Offset: []*deviant.Offset{
 								{
 									Direction: deviant.Direction_UP,
-									Distance:  1,
+									Distance:  2,
 								},
 								{
 									Direction: deviant.Direction_LEFT,
-									Distance:  1,
+									Distance:  2,
 								},
 							},
 						},
@@ -440,11 +495,11 @@ func generateCardLiterals(size int32, class deviant.Classes) []*deviant.Card {
 							Offset: []*deviant.Offset{
 								{
 									Direction: deviant.Direction_DOWN,
-									Distance:  1,
+									Distance:  2,
 								},
 								{
 									Direction: deviant.Direction_LEFT,
-									Distance:  1,
+									Distance:  2,
 								},
 							},
 						},
@@ -466,8 +521,7 @@ func generateCardLiterals(size int32, class deviant.Classes) []*deviant.Card {
 	return cardLiterals
 }
 
-// GenerateMatch Generates a new match
-func GenerateMatch() *deviant.EncounterResponse {
+func GenerateMatchObject() *deviant.EncounterResponse {
 	test := &deviant.EncounterResponse{
 		PlayerId: "player_0000",
 		Encounter: &deviant.Encounter{
@@ -643,9 +697,9 @@ func GenerateMatch() *deviant.EncounterResponse {
 									MaxAp:      5,
 									Alignment:  deviant.Alignment_FRIENDLY,
 									Class:      deviant.Classes_PRIEST,
-									Hand:       generateHandLiterals(0, deviant.Classes_WARRIOR),
-									Deck:       generateDeckLiterals(10, deviant.Classes_WARRIOR),
-									Discard:    generateDiscardLiteral(0, deviant.Classes_WARRIOR),
+									Hand:       generateHandLiterals(0, deviant.Classes_PRIEST),
+									Deck:       generateDeckLiterals(10, deviant.Classes_PRIEST),
+									Discard:    generateDiscardLiteral(0, deviant.Classes_PRIEST),
 									Initiative: 5,
 									OwnerId:    "0001",
 									Rotation:   deviant.EntityRotationNames_NORTH,
@@ -818,7 +872,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 									Deck:       generateDeckLiterals(10, deviant.Classes_WARRIOR),
 									Discard:    generateDiscardLiteral(0, deviant.Classes_WARRIOR),
 									Initiative: 5,
-									OwnerId:    "0002",
+									OwnerId:    "0001",
 									Rotation:   deviant.EntityRotationNames_SOUTH,
 								},
 								{},
@@ -835,7 +889,7 @@ func GenerateMatch() *deviant.EncounterResponse {
 									Deck:       generateDeckLiterals(10, deviant.Classes_MAGE),
 									Discard:    generateDiscardLiteral(0, deviant.Classes_MAGE),
 									Initiative: 5,
-									OwnerId:    "0002",
+									OwnerId:    "0001",
 									Rotation:   deviant.EntityRotationNames_SOUTH,
 								},
 								{
@@ -847,11 +901,11 @@ func GenerateMatch() *deviant.EncounterResponse {
 									MaxAp:      5,
 									Alignment:  deviant.Alignment_UNFRIENDLY,
 									Class:      deviant.Classes_PRIEST,
-									Hand:       generateHandLiterals(0, deviant.Classes_WARRIOR),
-									Deck:       generateDeckLiterals(10, deviant.Classes_WARRIOR),
-									Discard:    generateDiscardLiteral(0, deviant.Classes_WARRIOR),
+									Hand:       generateHandLiterals(0, deviant.Classes_PRIEST),
+									Deck:       generateDeckLiterals(10, deviant.Classes_PRIEST),
+									Discard:    generateDiscardLiteral(0, deviant.Classes_PRIEST),
 									Initiative: 5,
-									OwnerId:    "0002",
+									OwnerId:    "0001",
 									Rotation:   deviant.EntityRotationNames_SOUTH,
 								},
 								{},
@@ -879,13 +933,20 @@ func GenerateMatch() *deviant.EncounterResponse {
 				OwnerId:    "0001",
 				Rotation:   deviant.EntityRotationNames_WEST,
 			},
-			ActiveEntityOrder: []string{"0001", "0002", "0003", "0004", "0006", "0005"},
+			ActiveEntityOrder: []string{"0001", "0002", "0003", "0004", "0005", "0006"},
 			Turn: &deviant.Turn{
 				Id:    "turn_0000",
 				Phase: deviant.TurnPhaseNames_PHASE_POINT,
 			},
 		},
 	}
+
+	return test
+}
+
+// GenerateMatch Generates a new match
+func GenerateMatch() *deviant.EncounterResponse {
+	test := GenerateMatchObject()
 
 	var marshalOptions = protojson.MarshalOptions{
 		AllowPartial:    true,
