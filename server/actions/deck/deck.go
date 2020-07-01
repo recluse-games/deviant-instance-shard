@@ -46,6 +46,12 @@ func removeCard(slice []*deviant.Card) []*deviant.Card {
 
 // DrawCard draws a card for entity.
 func DrawCard(encounter *deviant.Encounter) bool {
+	// WARNING: If we don't have cards left, deal damage to myself and then return true.
+	if len(encounter.ActiveEntity.Deck.Cards) == 0 {
+		encounter.ActiveEntity.Hp = encounter.ActiveEntity.Hp - 1
+		return true
+	}
+
 	var topCard = encounter.ActiveEntity.Deck.Cards[0]
 
 	encounter.ActiveEntity.Deck.Cards = removeCard(encounter.ActiveEntity.Deck.Cards)
