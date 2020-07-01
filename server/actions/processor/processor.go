@@ -122,10 +122,13 @@ ProcessTurnActions:
 					}
 				}
 
-				// If we're not above the maximum hand size we should skip processing.
-				if len(encounter.ActiveEntity.Hand.Cards) < 6 && encounter.Turn.Phase == deviant.TurnPhaseNames_PHASE_DISCARD {
-					turn.ChangePhase(encounter)
-					continue ProcessTurnActions
+				// Ensure we have a hand and aren't just moving.
+				if encounter.ActiveEntity.Hand != nil {
+					// If we're not above the maximum hand size we should skip processing.
+					if len(encounter.ActiveEntity.Hand.Cards) < 6 && encounter.Turn.Phase == deviant.TurnPhaseNames_PHASE_DISCARD {
+						turn.ChangePhase(encounter)
+						continue ProcessTurnActions
+					}
 				}
 
 				break ProcessTurnActions
