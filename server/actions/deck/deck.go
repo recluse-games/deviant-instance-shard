@@ -17,6 +17,11 @@ func removeCard(slice []*deviant.Card) []*deviant.Card {
 func DrawCard(encounter *deviant.Encounter) bool {
 	var topCard = encounter.ActiveEntity.Deck.Cards[0]
 
+	if topCard == nil {
+		encounter.ActiveEntity.Hp = encounter.ActiveEntity.Hp - 1
+		return true
+	}
+
 	encounter.ActiveEntity.Deck.Cards = removeCard(encounter.ActiveEntity.Deck.Cards)
 	encounter.ActiveEntity.Hand.Cards = addCard(encounter.ActiveEntity.Hand.Cards, topCard)
 

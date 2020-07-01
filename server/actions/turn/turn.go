@@ -11,6 +11,9 @@ import (
 func GrantAp(encounter *deviant.Encounter) bool {
 	encounter.ActiveEntity.Ap = encounter.ActiveEntity.MaxAp
 
+	message := fmt.Sprintf("Action: Grant AP: %s", encounter.ActiveEntity.Id)
+	glog.Info(message)
+
 	return true
 }
 
@@ -24,14 +27,15 @@ func ChangePhase(encounter *deviant.Encounter) bool {
 				encounter.Turn.Phase = turnOrder[0]
 				break
 			}
-			encounter.Turn.Phase = turnOrder[i+1]
 
-			message := fmt.Sprintf("Changed Phase: %s", encounter.Turn.Phase)
-			glog.Info(message)
+			encounter.Turn.Phase = turnOrder[i+1]
 
 			break
 		}
 	}
+
+	message := fmt.Sprintf("Action: Changed Phase: %s", encounter.Turn.Phase)
+	glog.Info(message)
 
 	return true
 }
@@ -58,7 +62,7 @@ func UpdateActiveEntity(encounter *deviant.Encounter) bool {
 		}
 	}
 
-	message := fmt.Sprintf("Updated Active Entity: %s", encounter.ActiveEntity.Id)
+	message := fmt.Sprintf("Action: Updated Active Entity: %s", encounter.ActiveEntity.Id)
 	glog.Info(message)
 
 	return true
