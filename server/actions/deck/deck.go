@@ -53,7 +53,7 @@ func DrawCard(encounter *deviant.Encounter) bool {
 			for y, entityRow := range encounter.Board.Entities.Entities {
 				for x := range entityRow.Entities {
 					// HACK - This logic should be moved outside of this method and processed on every turn or something.
-					if encounter.Board.Entities.Entities[y].Entities[x].Hp == 0 {
+					if encounter.Board.Entities.Entities[y].Entities[x].Id == encounter.ActiveEntity.Id {
 						encounter.ActiveEntityOrder = removeEntityFromOrder(encounter.Board.Entities.Entities[y].Entities[x].Id, encounter.ActiveEntityOrder)
 						encounter.Board.Entities.Entities[y].Entities[x] = &deviant.Entity{}
 					}
