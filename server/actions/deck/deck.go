@@ -48,19 +48,20 @@ func removeCard(slice []*deviant.Card) []*deviant.Card {
 func DrawCard(encounter *deviant.Encounter) bool {
 	if len(encounter.ActiveEntity.Deck.Cards) == 0 {
 		encounter.ActiveEntity.Hp = encounter.ActiveEntity.Hp - 1
-		return true
-	}
 
-	if encounter.ActiveEntity.Hp <= 0 {
-		for y, entityRow := range encounter.Board.Entities.Entities {
-			for x, _ := range entityRow.Entities {
-				// HACK - This logic should be moved outside of this method and processed on every turn or something.
-				if encounter.Board.Entities.Entities[x].Entities[y].Hp == 0 {
-					encounter.ActiveEntityOrder = removeEntityFromOrder(encounter.Board.Entities.Entities[x].Entities[y].Id, encounter.ActiveEntityOrder)
-					encounter.Board.Entities.Entities[x].Entities[y] = &deviant.Entity{}
+		if encounter.ActiveEntity.Hp <= 0 {
+			for y, entityRow := range encounter.Board.Entities.Entities {
+				for x := range entityRow.Entities {
+					// HACK - This logic should be moved outside of this method and processed on every turn or something.
+					if encounter.Board.Entities.Entities[x].Entities[y].Hp == 0 {
+						encounter.ActiveEntityOrder = removeEntityFromOrder(encounter.Board.Entities.Entities[x].Entities[y].Id, encounter.ActiveEntityOrder)
+						encounter.Board.Entities.Entities[x].Entities[y] = &deviant.Entity{}
+					}
 				}
 			}
 		}
+
+		return true
 	}
 
 	var topCard = encounter.ActiveEntity.Deck.Cards[0]
