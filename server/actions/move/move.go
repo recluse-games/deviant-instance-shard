@@ -29,8 +29,8 @@ func Move(encounter *deviant.Encounter, moveAction *deviant.EntityMoveAction) bo
 	encounter.ActiveEntity.Ap = encounter.ActiveEntity.Ap - apCostY
 
 	// Apply all state changes to entity in encounter as well as the activeEntity.
-	encounter.Board.Entities.Entities[moveAction.FinalXPosition].Entities[moveAction.FinalYPosition] = encounter.ActiveEntity
 	encounter.Board.Entities.Entities[moveAction.StartXPosition].Entities[moveAction.StartYPosition] = &deviant.Entity{}
+	encounter.Board.Entities.Entities[moveAction.FinalXPosition].Entities[moveAction.FinalYPosition] = encounter.ActiveEntity
 
 	return true
 }
