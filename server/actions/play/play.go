@@ -1,8 +1,6 @@
 package play
 
 import (
-	"fmt"
-	"log"
 	"math"
 
 	"github.com/google/uuid"
@@ -25,8 +23,6 @@ func find(a []string, x string) int {
 
 func removeEntityFromOrder(entityID string, slice []string) []string {
 	var entityIDIndex = find(slice, entityID)
-
-	log.Output(1, fmt.Sprintf("%d", entityIDIndex))
 
 	if len(slice) > entityIDIndex+1 {
 		return slice[:entityIDIndex+copy(slice[entityIDIndex:], slice[entityIDIndex+1:])]
