@@ -46,8 +46,6 @@ func removeCardFromHand(cardID string, slice []*deviant.Card) []*deviant.Card {
 	var newCards = []*deviant.Card{}
 
 	for _, card := range slice {
-		log.Output(0, card.InstanceId)
-		log.Output(0, cardID)
 		if card.InstanceId != cardID {
 			newCards = append(newCards, card)
 		}
