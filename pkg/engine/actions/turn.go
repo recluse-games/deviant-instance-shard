@@ -1,24 +1,26 @@
 package actions
 
 import (
-	"fmt"
-
-	"github.com/golang/glog"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	"go.uber.org/zap"
 )
 
 // GrantAp grants some entity a default AP value of 5
-func GrantAp(encounter *deviant.Encounter) bool {
+func GrantAp(encounter *deviant.Encounter, logger *zap.Logger) bool {
 	encounter.ActiveEntity.Ap = encounter.ActiveEntity.MaxAp
 
-	message := fmt.Sprintf("Action: Grant AP: %s", encounter.ActiveEntity.Id)
-	glog.Info(message)
+	if logger != nil {
+		logger.Debug("Entity Granted AP",
+			zap.String("actionID", "GrantAP"),
+			zap.String("entityID", encounter.ActiveEntity.Id),
+		)
+	}
 
 	return true
 }
 
 // ChangePhase updates the current turn phase.
-func ChangePhase(encounter *deviant.Encounter) bool {
+func ChangePhase(encounter *deviant.Encounter, logger *zap.Logger) bool {
 	turnOrder := []deviant.TurnPhaseNames{deviant.TurnPhaseNames_PHASE_POINT, deviant.TurnPhaseNames_PHASE_EFFECT, deviant.TurnPhaseNames_PHASE_DRAW, deviant.TurnPhaseNames_PHASE_ACTION, deviant.TurnPhaseNames_PHASE_DISCARD, deviant.TurnPhaseNames_PHASE_END}
 
 	for i, v := range turnOrder {
@@ -34,14 +36,19 @@ func ChangePhase(encounter *deviant.Encounter) bool {
 		}
 	}
 
-	message := fmt.Sprintf("Action: Changed Phase: %s", encounter.Turn.Phase)
-	glog.Info(message)
+	if logger != nil {
+		logger.Debug("Phase Changed",
+			zap.String("actionID", "ChangePhase"),
+			zap.String("entityID", encounter.ActiveEntity.Id),
+			zap.String("phaseID", encounter.Turn.Phase.String()),
+		)
+	}
 
 	return true
 }
 
 // UpdateActiveEntity Updates the active entity to the next entity in the active entity order.
-func UpdateActiveEntity(encounter *deviant.Encounter) bool {
+func UpdateActiveEntity(encounter *deviant.Encounter, logger *zap.Logger) bool {
 	var newActiveEntityID string
 
 	for index, entityID := range encounter.ActiveEntityOrder {
@@ -62,8 +69,12 @@ func UpdateActiveEntity(encounter *deviant.Encounter) bool {
 		}
 	}
 
-	message := fmt.Sprintf("Action: Updated Active Entity: %s", encounter.ActiveEntity.Id)
-	glog.Info(message)
+	if logger != nil {
+		logger.Debug("Updated Active Entity",
+			zap.String("actionID", "UpdateActiveEntity"),
+			zap.String("entityID", encounter.ActiveEntity.Id),
+		)
+	}
 
 	return true
 }

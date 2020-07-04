@@ -5,10 +5,11 @@ import (
 
 	"github.com/golang/glog"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	"go.uber.org/zap"
 )
 
 // Process Processes all actions.
-func Process(encounter *deviant.Encounter, entityActionName deviant.EntityActionNames, entityMoveAction *deviant.EntityMoveAction, entityPlayAction *deviant.EntityPlayAction, entityRotateAction *deviant.EntityRotateAction) bool {
+func Process(encounter *deviant.Encounter, entityActionName deviant.EntityActionNames, entityMoveAction *deviant.EntityMoveAction, entityPlayAction *deviant.EntityPlayAction, entityRotateAction *deviant.EntityRotateAction, logger *zap.Logger) bool {
 	entityActions := map[deviant.EntityActionNames][]interface{}{
 		deviant.EntityActionNames_PLAY:         {Play},
 		deviant.EntityActionNames_MOVE:         {Move},
@@ -28,7 +29,7 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 		deviant.TurnPhaseNames_PHASE_END:     {UpdateActiveEntity, ChangePhase},
 	}
 
-	encounterActions := []func(*deviant.Encounter) bool{
+	encounterActions := []func(*deviant.Encounter, *zap.Logger) bool{
 		ProcessWinConditions,
 	}
 
@@ -37,19 +38,19 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 			for _, entityActionFunction := range val {
 				switch entityActionName {
 				case deviant.EntityActionNames_PLAY:
-					if entityActionFunction.(func(*deviant.Encounter, *deviant.EntityPlayAction) bool)(encounter, entityPlayAction) == false {
+					if entityActionFunction.(func(*deviant.Encounter, *deviant.EntityPlayAction, *zap.Logger) bool)(encounter, entityPlayAction, logger) == false {
 						return false
 					}
 				case deviant.EntityActionNames_MOVE:
-					if entityActionFunction.(func(*deviant.Encounter, *deviant.EntityMoveAction) bool)(encounter, entityMoveAction) == false {
+					if entityActionFunction.(func(*deviant.Encounter, *deviant.EntityMoveAction, *zap.Logger) bool)(encounter, entityMoveAction, logger) == false {
 						return false
 					}
 				case deviant.EntityActionNames_CHANGE_PHASE:
-					if entityActionFunction.(func(*deviant.Encounter) bool)(encounter) == false {
+					if entityActionFunction.(func(*deviant.Encounter, *zap.Logger) bool)(encounter, logger) == false {
 						return false
 					}
 				case deviant.EntityActionNames_ROTATE:
-					if entityActionFunction.(func(*deviant.Encounter, *deviant.EntityRotateAction) bool)(encounter, entityRotateAction) == false {
+					if entityActionFunction.(func(*deviant.Encounter, *deviant.EntityRotateAction, *zap.Logger) bool)(encounter, entityRotateAction, logger) == false {
 						return false
 					}
 				default:
@@ -81,27 +82,27 @@ ProcessTurnActions:
 				for _, turnActionFunction := range val {
 					switch encounter.Turn.Phase {
 					case deviant.TurnPhaseNames_PHASE_POINT:
-						if turnActionFunction.(func(*deviant.Encounter) bool)(encounter) == false {
+						if turnActionFunction.(func(*deviant.Encounter, *zap.Logger) bool)(encounter, logger) == false {
 							return false
 						}
 					case deviant.TurnPhaseNames_PHASE_EFFECT:
-						if turnActionFunction.(func(*deviant.Encounter) bool)(encounter) == false {
+						if turnActionFunction.(func(*deviant.Encounter, *zap.Logger) bool)(encounter, logger) == false {
 							return false
 						}
 					case deviant.TurnPhaseNames_PHASE_DRAW:
-						if turnActionFunction.(func(*deviant.Encounter) bool)(encounter) == false {
+						if turnActionFunction.(func(*deviant.Encounter, *zap.Logger) bool)(encounter, logger) == false {
 							return false
 						}
 					case deviant.TurnPhaseNames_PHASE_ACTION:
-						if turnActionFunction.(func(*deviant.Encounter) bool)(encounter) == false {
+						if turnActionFunction.(func(*deviant.Encounter, *zap.Logger) bool)(encounter, logger) == false {
 							return false
 						}
 					case deviant.TurnPhaseNames_PHASE_DISCARD:
-						if turnActionFunction.(func(*deviant.Encounter) bool)(encounter) == false {
+						if turnActionFunction.(func(*deviant.Encounter, *zap.Logger) bool)(encounter, logger) == false {
 							return false
 						}
 					case deviant.TurnPhaseNames_PHASE_END:
-						if turnActionFunction.(func(*deviant.Encounter) bool)(encounter) == false {
+						if turnActionFunction.(func(*deviant.Encounter, *zap.Logger) bool)(encounter, logger) == false {
 							return false
 						}
 					default:
@@ -117,7 +118,7 @@ ProcessTurnActions:
 
 				// If we're not above the maximum hand size we should skip processing.
 				if encounter.Turn.Phase == deviant.TurnPhaseNames_PHASE_DISCARD && len(encounter.ActiveEntity.Hand.Cards) < 6 {
-					ChangePhase(encounter)
+					ChangePhase(encounter, logger)
 					continue ProcessTurnActions
 				}
 
@@ -132,7 +133,7 @@ ProcessTurnActions:
 
 	// Verify all actions were completed succesfully.
 	for _, encounterActionFunction := range encounterActions {
-		if encounterActionFunction(encounter) == false {
+		if encounterActionFunction(encounter, logger) == false {
 			return false
 		}
 	}

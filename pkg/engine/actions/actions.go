@@ -1,5 +1,7 @@
 package actions
 
+import "go.uber.org/zap"
+
 //findSliceIndex Locates the index of a particular string in a slice.
 func findSliceIndex(a []string, x string) int {
 	for i, n := range a {
@@ -19,6 +21,7 @@ func removeEntityFromOrder(entityID string, slice []string) []string {
 	} else if len(slice) == entityIDIndex {
 		return slice[:entityIDIndex+copy(slice[entityIDIndex:], slice[entityIDIndex-1:])]
 	}
+
 	if 0 > entityIDIndex-1 {
 		return slice[:0+copy(slice[(entityIDIndex-1):], slice[entityIDIndex:])]
 	} else if len(slice) > 1 {
@@ -26,4 +29,11 @@ func removeEntityFromOrder(entityID string, slice []string) []string {
 	} else {
 		return []string{}
 	}
+}
+
+// GetLogger Returns a zap logger for this package.
+func GetLogger() *zap.Logger {
+	logger, _ := zap.NewProduction()
+
+	return logger
 }

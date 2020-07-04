@@ -15,7 +15,7 @@ func TestDrawCard(t *testing.T) {
 		},
 	}
 
-	if DrawCard(entityWithOneCardInDeckAndHand) != true {
+	if DrawCard(entityWithOneCardInDeckAndHand, nil) != true {
 		t.Fail()
 	}
 
@@ -34,7 +34,7 @@ func TestDrawCard(t *testing.T) {
 		},
 	}
 
-	if DrawCard(entityWithTwoCardsInDeckAndNoneInHand) != true {
+	if DrawCard(entityWithTwoCardsInDeckAndNoneInHand, nil) != true {
 		t.Fail()
 	}
 
@@ -46,7 +46,7 @@ func TestDrawCard(t *testing.T) {
 		t.Fail()
 	}
 
-	if DrawCard(entityWithTwoCardsInDeckAndNoneInHand) != true {
+	if DrawCard(entityWithTwoCardsInDeckAndNoneInHand, nil) != true {
 		t.Fail()
 	}
 

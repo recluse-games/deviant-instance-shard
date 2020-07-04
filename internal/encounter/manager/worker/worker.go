@@ -70,7 +70,7 @@ func (w *IncomingWorker) ProcessWork(work *deviant.EncounterRequest) *deviant.En
 	}
 	if work.EncounterCreateAction != nil {
 		actionResponse = matchmaker.GenerateMatch()
-		actions.Process(actionResponse.Encounter, deviant.EntityActionNames_NOTHING, nil, nil, nil)
+		actions.Process(actionResponse.Encounter, deviant.EntityActionNames_NOTHING, nil, nil, nil, nil)
 
 		encounterFromDisk = actionResponse
 	} else if work.EntityGetAction != nil {
@@ -105,7 +105,7 @@ func (w *IncomingWorker) ProcessWork(work *deviant.EncounterRequest) *deviant.En
 			Encounter: encounterFromDisk.Encounter,
 		}
 	} else if work.EntityRotateAction != nil {
-		actions.Process(encounterFromDisk.Encounter, work.EntityActionName, nil, nil, work.EntityRotateAction)
+		actions.Process(encounterFromDisk.Encounter, work.EntityActionName, nil, nil, work.EntityRotateAction, nil)
 
 		// Apply all state changes to entity in encounter as well as the activeEntity
 		for outerIndex, outerValue := range encounterFromDisk.Encounter.Board.Entities.Entities {
@@ -126,7 +126,7 @@ func (w *IncomingWorker) ProcessWork(work *deviant.EncounterRequest) *deviant.En
 		if work.PlayerId == encounterFromDisk.Encounter.ActiveEntity.OwnerId {
 			isActionValid := rules.Process(encounterFromDisk.Encounter, work.EntityActionName, work.EntityMoveAction, work.EntityPlayAction)
 			if isActionValid == true {
-				actions.Process(encounterFromDisk.Encounter, work.EntityActionName, work.EntityMoveAction, work.EntityPlayAction, nil)
+				actions.Process(encounterFromDisk.Encounter, work.EntityActionName, work.EntityMoveAction, work.EntityPlayAction, nil, nil)
 
 				// Apply all state changes to entity in encounter as well as the activeEntity
 				for outerIndex, outerValue := range encounterFromDisk.Encounter.Board.Entities.Entities {

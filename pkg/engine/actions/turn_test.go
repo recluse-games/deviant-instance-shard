@@ -14,7 +14,7 @@ func TestGrantAp(t *testing.T) {
 		},
 	}
 
-	if GrantAp(entityWithNoAp) != true {
+	if GrantAp(entityWithNoAp, nil) != true {
 		t.Fail()
 	}
 

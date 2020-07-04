@@ -5,6 +5,7 @@ import (
 
 	"github.com/google/uuid"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	"go.uber.org/zap"
 )
 
 type gridLocation struct {
@@ -60,7 +61,7 @@ func rotateTilePatterns(ocx float64, ocy float64, px float64, py float64, rotati
 }
 
 //Play Applys a play action
-func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction) bool {
+func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction, logger *zap.Logger) bool {
 	var activeEntityLocationPoint = &gridLocation{}
 
 	for y, entitiesRow := range encounter.Board.Entities.Entities {
@@ -128,6 +129,13 @@ func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction) bo
 
 	// Remove Card From Hand
 	encounter.ActiveEntity.Hand.Cards = removeCardFromHand(playAction.CardId, encounter.ActiveEntity.Hand.Cards)
+
+	if logger != nil {
+		logger.Debug("Entity Play Processed",
+			zap.String("actionID", "Play"),
+			zap.String("entityID", encounter.ActiveEntity.Id),
+		)
+	}
 
 	return true
 }

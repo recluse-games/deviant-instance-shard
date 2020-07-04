@@ -2,10 +2,11 @@ package actions
 
 import (
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	"go.uber.org/zap"
 )
 
 // Move draws a card for entity.
-func Move(encounter *deviant.Encounter, moveAction *deviant.EntityMoveAction) bool {
+func Move(encounter *deviant.Encounter, moveAction *deviant.EntityMoveAction, logger *zap.Logger) bool {
 	var apCostX int32
 	var apCostY int32
 
@@ -31,6 +32,13 @@ func Move(encounter *deviant.Encounter, moveAction *deviant.EntityMoveAction) bo
 	// Apply all state changes to entity in encounter as well as the activeEntity.
 	encounter.Board.Entities.Entities[moveAction.StartXPosition].Entities[moveAction.StartYPosition] = &deviant.Entity{}
 	encounter.Board.Entities.Entities[moveAction.FinalXPosition].Entities[moveAction.FinalYPosition] = encounter.ActiveEntity
+
+	if logger != nil {
+		logger.Debug("Entity Move Processed",
+			zap.String("actionID", "Move"),
+			zap.String("entityID", encounter.ActiveEntity.Id),
+		)
+	}
 
 	return true
 }

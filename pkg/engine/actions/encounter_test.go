@@ -27,7 +27,7 @@ func TestProcessWinConditions(t *testing.T) {
 		},
 	}
 
-	isEncounterComplete := ProcessWinConditions(encounter)
+	isEncounterComplete := ProcessWinConditions(encounter, nil)
 
 	if isEncounterComplete == false {
 		t.Fail()
