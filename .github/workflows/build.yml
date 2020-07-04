@@ -58,12 +58,12 @@ jobs:
         cd $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard
         rm go.mod go.sum
         go mod init
-        go get -v -t -d .
+        go get -v -t -d ./...
   
     - name: Build deviant-instance-shard
       run: |
         cd $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard
-        go build -v .
+        go build -o deviant-instance-shard -v ./cmd/deviant-instance-shard.go
         
     - name: Get Windows Dependencies
       run: |
@@ -71,12 +71,12 @@ jobs:
         export GOARCH=amd64 
         cd $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard
 
-        go install
+        go install ./...
         
     - name: Build For Windows
       run: |
         cd $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard   
-        go build -o deviant-instance-shard.exe -v .
+        go build -o deviant-instance-shard.exe -v ./cmd/deviant-instance-shard.go
         
     # Copy Build Artifact to Artifact Upload Directory
     # This just help verifies the artifact is a file
