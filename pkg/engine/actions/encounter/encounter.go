@@ -7,7 +7,6 @@ func ProcessWinConditions(encounter *deviant.Encounter) bool {
 	friendlyCounter := 0
 	enemyCounter := 0
 
-	// Apply all state changes to entity in encounter as well as the activeEntity
 	for _, outerValue := range encounter.Board.Entities.Entities {
 		for _, innerValue := range outerValue.Entities {
 			if innerValue.Alignment == deviant.Alignment_UNFRIENDLY {
@@ -16,7 +15,6 @@ func ProcessWinConditions(encounter *deviant.Encounter) bool {
 		}
 	}
 
-	// Apply all state changes to entity in encounter as well as the activeEntity
 	for _, outerValue := range encounter.Board.Entities.Entities {
 		for _, innerValue := range outerValue.Entities {
 			if innerValue.Alignment == deviant.Alignment_FRIENDLY {
