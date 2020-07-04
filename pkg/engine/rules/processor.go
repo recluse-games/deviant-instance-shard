@@ -1,21 +1,17 @@
-package processor
+package rules
 
 import (
 	"fmt"
 
 	"github.com/golang/glog"
-	deck "github.com/recluse-games/deviant-instance-shard/pkg/engine/rules/deck"
-	hand "github.com/recluse-games/deviant-instance-shard/pkg/engine/rules/hand"
-	move "github.com/recluse-games/deviant-instance-shard/pkg/engine/rules/move"
-	play "github.com/recluse-games/deviant-instance-shard/pkg/engine/rules/play"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
 // Process Processes all rules to determine validity.
 func Process(encounter *deviant.Encounter, entityActionName deviant.EntityActionNames, entityMoveAction *deviant.EntityMoveAction, entityPlayAction *deviant.EntityPlayAction) bool {
 	entityActionRules := map[deviant.EntityActionNames][]interface{}{
-		deviant.EntityActionNames_PLAY:         {play.ValidateApCost, play.ValidateCardTypeSpecificConstraints},
-		deviant.EntityActionNames_MOVE:         {move.ValidateApCost, move.ValidateNewLocationEmpty, move.ValidateMovePermissable},
+		deviant.EntityActionNames_PLAY:         {ValidatePlayApCost, ValidateCardTypeSpecificConstraints},
+		deviant.EntityActionNames_MOVE:         {ValidateMoveApCost, ValidateNewLocationEmpty, ValidateMovePermissable},
 		deviant.EntityActionNames_DISCARD:      {},
 		deviant.EntityActionNames_CHANGE_PHASE: {},
 	}
@@ -23,7 +19,7 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 	turnPhaseRules := map[deviant.TurnPhaseNames][]interface{}{
 		deviant.TurnPhaseNames_PHASE_POINT:   {},
 		deviant.TurnPhaseNames_PHASE_EFFECT:  {},
-		deviant.TurnPhaseNames_PHASE_DRAW:    {hand.ValidateSize, deck.ValidateDraw},
+		deviant.TurnPhaseNames_PHASE_DRAW:    {ValidateSize, ValidateDraw},
 		deviant.TurnPhaseNames_PHASE_ACTION:  {},
 		deviant.TurnPhaseNames_PHASE_DISCARD: {},
 		deviant.TurnPhaseNames_PHASE_END:     {},

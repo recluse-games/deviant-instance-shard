@@ -1,4 +1,4 @@
-package move
+package rules
 
 import (
 	"testing"
@@ -20,7 +20,7 @@ func TestValidateApCost(t *testing.T) {
 
 	encounter := &deviant.Encounter{}
 
-	isApCostValid := ValidateApCost(entity, moveAction, encounter)
+	isApCostValid := ValidateMoveApCost(entity, moveAction, encounter)
 
 	if isApCostValid != true {
 		t.Fail()

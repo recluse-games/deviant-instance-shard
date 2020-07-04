@@ -1,4 +1,4 @@
-package encounter
+package actions
 
 import deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 

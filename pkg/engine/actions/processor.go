@@ -1,42 +1,35 @@
-package processor
+package actions
 
 import (
 	"fmt"
 
 	"github.com/golang/glog"
-	deckActions "github.com/recluse-games/deviant-instance-shard/pkg/engine/actions/deck"
-	encounterActions "github.com/recluse-games/deviant-instance-shard/pkg/engine/actions/encounter"
-	moveActions "github.com/recluse-games/deviant-instance-shard/pkg/engine/actions/move"
-	playActions "github.com/recluse-games/deviant-instance-shard/pkg/engine/actions/play"
-	rotateActions "github.com/recluse-games/deviant-instance-shard/pkg/engine/actions/rotate"
-	"github.com/recluse-games/deviant-instance-shard/pkg/engine/actions/turn"
-	turnActions "github.com/recluse-games/deviant-instance-shard/pkg/engine/actions/turn"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
 
 // Process Processes all actions.
 func Process(encounter *deviant.Encounter, entityActionName deviant.EntityActionNames, entityMoveAction *deviant.EntityMoveAction, entityPlayAction *deviant.EntityPlayAction, entityRotateAction *deviant.EntityRotateAction) bool {
 	entityActions := map[deviant.EntityActionNames][]interface{}{
-		deviant.EntityActionNames_PLAY:         {playActions.Play},
-		deviant.EntityActionNames_MOVE:         {moveActions.Move},
-		deviant.EntityActionNames_ROTATE:       {rotateActions.Rotate},
+		deviant.EntityActionNames_PLAY:         {Play},
+		deviant.EntityActionNames_MOVE:         {Move},
+		deviant.EntityActionNames_ROTATE:       {Rotate},
 		deviant.EntityActionNames_DRAW:         {},
 		deviant.EntityActionNames_DISCARD:      {},
 		deviant.EntityActionNames_NOTHING:      {},
-		deviant.EntityActionNames_CHANGE_PHASE: {turn.ChangePhase},
+		deviant.EntityActionNames_CHANGE_PHASE: {ChangePhase},
 	}
 
 	turnActions := map[deviant.TurnPhaseNames][]interface{}{
-		deviant.TurnPhaseNames_PHASE_POINT:   {turnActions.GrantAp, turn.ChangePhase},
-		deviant.TurnPhaseNames_PHASE_EFFECT:  {turn.ChangePhase},
-		deviant.TurnPhaseNames_PHASE_DRAW:    {deckActions.DrawCard, turn.ChangePhase},
+		deviant.TurnPhaseNames_PHASE_POINT:   {GrantAp, ChangePhase},
+		deviant.TurnPhaseNames_PHASE_EFFECT:  {ChangePhase},
+		deviant.TurnPhaseNames_PHASE_DRAW:    {DrawCard, ChangePhase},
 		deviant.TurnPhaseNames_PHASE_ACTION:  {},
 		deviant.TurnPhaseNames_PHASE_DISCARD: {},
-		deviant.TurnPhaseNames_PHASE_END:     {turn.UpdateActiveEntity, turn.ChangePhase},
+		deviant.TurnPhaseNames_PHASE_END:     {UpdateActiveEntity, ChangePhase},
 	}
 
 	encounterActions := []func(*deviant.Encounter) bool{
-		encounterActions.ProcessWinConditions,
+		ProcessWinConditions,
 	}
 
 	if val, ok := entityActions[entityActionName]; ok {
@@ -124,7 +117,7 @@ ProcessTurnActions:
 
 				// If we're not above the maximum hand size we should skip processing.
 				if encounter.Turn.Phase == deviant.TurnPhaseNames_PHASE_DISCARD && len(encounter.ActiveEntity.Hand.Cards) < 6 {
-					turn.ChangePhase(encounter)
+					ChangePhase(encounter)
 					continue ProcessTurnActions
 				}
 

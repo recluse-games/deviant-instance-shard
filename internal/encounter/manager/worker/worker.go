@@ -6,8 +6,8 @@ import (
 	"github.com/go-redis/redis/v7"
 	"github.com/golang/glog"
 	"github.com/recluse-games/deviant-instance-shard/internal/encounter/matchmaker"
-	actions "github.com/recluse-games/deviant-instance-shard/pkg/engine/actions/processor"
-	rules "github.com/recluse-games/deviant-instance-shard/pkg/engine/rules/processor"
+	"github.com/recluse-games/deviant-instance-shard/pkg/engine/actions"
+	"github.com/recluse-games/deviant-instance-shard/pkg/engine/rules"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 	"google.golang.org/protobuf/encoding/protojson"
 )
@@ -40,7 +40,7 @@ func NewIncomingWorker(id int) IncomingWorker {
 	return worker
 }
 
-// StartIncoming Starts a working with an infinite loop.
+// ProcessWork Processing any incoming work to the worker.
 func (w *IncomingWorker) ProcessWork(work *deviant.EncounterRequest) *deviant.EncounterResponse {
 	var redisClient = NewCacheClient()
 

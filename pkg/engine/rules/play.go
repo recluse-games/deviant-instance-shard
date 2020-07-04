@@ -1,7 +1,6 @@
-package play
+package rules
 
 import (
-	"log"
 	"math"
 
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
@@ -48,10 +47,9 @@ func rotateTilePatterns(ocx float64, ocy float64, px float64, py float64, rotati
 }
 
 // ValidateApCost Determines that the entity has the correct amount of AP to perform the requested move.
-func ValidateApCost(activeEntity *deviant.Entity, requestedPlayAction *deviant.EntityPlayAction, encounter *deviant.Encounter) bool {
+func ValidatePlayApCost(activeEntity *deviant.Entity, requestedPlayAction *deviant.EntityPlayAction, encounter *deviant.Encounter) bool {
 	var totalApCost = int32(0)
 
-	log.Output(0, requestedPlayAction.CardId)
 	for _, card := range encounter.ActiveEntity.Hand.Cards {
 		if card.InstanceId == requestedPlayAction.CardId {
 			totalApCost += card.Cost

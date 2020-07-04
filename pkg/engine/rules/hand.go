@@ -1,4 +1,4 @@
-package hand
+package rules
 
 import deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 

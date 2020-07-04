@@ -1,39 +1,8 @@
-package deck
+package actions
 
 import (
-	"fmt"
-	"log"
-
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 )
-
-func find(a []string, x string) int {
-	for i, n := range a {
-		if x == n {
-			return i
-		}
-	}
-	return len(a)
-}
-
-func removeEntityFromOrder(entityID string, slice []string) []string {
-	var entityIDIndex = find(slice, entityID)
-
-	log.Output(1, fmt.Sprintf("%d", entityIDIndex))
-
-	if len(slice) > entityIDIndex+1 {
-		return slice[:entityIDIndex+copy(slice[entityIDIndex:], slice[entityIDIndex+1:])]
-	} else if len(slice) == entityIDIndex {
-		return slice[:entityIDIndex+copy(slice[entityIDIndex:], slice[entityIDIndex-1:])]
-	}
-	if 0 > entityIDIndex-1 {
-		return slice[:0+copy(slice[(entityIDIndex-1):], slice[entityIDIndex:])]
-	} else if len(slice) > 1 {
-		return slice[:len(slice)-1]
-	} else {
-		return []string{}
-	}
-}
 
 func addCard(slice []*deviant.Card, card *deviant.Card) []*deviant.Card {
 	slice = append(slice, card)

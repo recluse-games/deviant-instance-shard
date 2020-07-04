@@ -1,4 +1,4 @@
-package encounter
+package actions
 
 import (
 	"testing"

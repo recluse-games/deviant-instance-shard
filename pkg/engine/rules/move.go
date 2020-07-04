@@ -1,4 +1,4 @@
-package move
+package rules
 
 import (
 	"fmt"
@@ -120,7 +120,7 @@ func ValidateMovePermissable(activeEntity *deviant.Entity, requestedMoveAction *
 }
 
 // ValidateApCost Determines that the entity has the correct amount of AP to perform the requested move.
-func ValidateApCost(activeEntity *deviant.Entity, requestedMoveAction *deviant.EntityMoveAction, encounter *deviant.Encounter) bool {
+func ValidateMoveApCost(activeEntity *deviant.Entity, requestedMoveAction *deviant.EntityMoveAction, encounter *deviant.Encounter) bool {
 	var totalApCost int32
 	var apCostX int32
 	var apCostY int32

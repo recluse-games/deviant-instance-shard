@@ -1,4 +1,4 @@
-package rotate
+package actions
 
 import (
 	"fmt"

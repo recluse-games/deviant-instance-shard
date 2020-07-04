@@ -1,4 +1,4 @@
-package play
+package actions
 
 import (
 	"math"
@@ -10,32 +10,6 @@ import (
 type gridLocation struct {
 	X float64
 	Y float64
-}
-
-func find(a []string, x string) int {
-	for i, n := range a {
-		if x == n {
-			return i
-		}
-	}
-	return len(a)
-}
-
-func removeEntityFromOrder(entityID string, slice []string) []string {
-	var entityIDIndex = find(slice, entityID)
-
-	if len(slice) > entityIDIndex+1 {
-		return slice[:entityIDIndex+copy(slice[entityIDIndex:], slice[entityIDIndex+1:])]
-	} else if len(slice) == entityIDIndex {
-		return slice[:entityIDIndex+copy(slice[entityIDIndex:], slice[entityIDIndex-1:])]
-	}
-	if 0 > entityIDIndex-1 {
-		return slice[:0+copy(slice[(entityIDIndex-1):], slice[entityIDIndex:])]
-	} else if len(slice) > 1 {
-		return slice[:len(slice)-1]
-	} else {
-		return []string{}
-	}
 }
 
 func removeCardFromHand(cardID string, slice []*deviant.Card) []*deviant.Card {
