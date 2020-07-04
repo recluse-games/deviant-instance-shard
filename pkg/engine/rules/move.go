@@ -5,6 +5,7 @@ import (
 
 	"github.com/golang/glog"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	"go.uber.org/zap"
 )
 
 func boundaryFill4(startx int32, starty int32, x int32, y int32, filledID string, blockedID string, limit int32, tiles []*[]*deviant.Tile) {
@@ -97,30 +98,40 @@ func GeneratePermissableMoves(requestedMoveAction *deviant.EntityMoveAction, ava
 }
 
 // ValidateMovePermissable Determines if the move is permissable using a flood fill algorithm and ap cost.
-func ValidateMovePermissable(activeEntity *deviant.Entity, requestedMoveAction *deviant.EntityMoveAction, encounter *deviant.Encounter) bool {
+func ValidateMovePermissable(activeEntity *deviant.Entity, requestedMoveAction *deviant.EntityMoveAction, encounter *deviant.Encounter, logger *zap.Logger) bool {
 	isRequestedMoveValid := false
 
 	validTiles := GeneratePermissableMoves(requestedMoveAction, activeEntity.Ap, encounter.Board.Entities)
 
 	for _, tile := range validTiles {
 		if tile.X == requestedMoveAction.FinalXPosition && tile.Y == requestedMoveAction.FinalYPosition {
-			message := fmt.Sprintf("Rule: Move-ValidateMovePermissable: Success")
-			glog.Info(message)
+			if logger != nil {
+				logger.Debug("Validated Move Permissable",
+					zap.String("actionID", "ValidateMovePermissable"),
+					zap.String("entityID", encounter.ActiveEntity.Id),
+					zap.Bool("succeeded", true),
+				)
+			}
 
 			isRequestedMoveValid = true
 		}
 	}
 
 	if isRequestedMoveValid == false {
-		message := fmt.Sprintf("Rule: Move-ValidateMovePermissable: Failure")
-		glog.Info(message)
+		if logger != nil {
+			logger.Debug("Validated Move Permissable",
+				zap.String("actionID", "ValidateMovePermissable"),
+				zap.String("entityID", encounter.ActiveEntity.Id),
+				zap.Bool("succeeded", false),
+			)
+		}
 	}
 
 	return isRequestedMoveValid
 }
 
-// ValidateApCost Determines that the entity has the correct amount of AP to perform the requested move.
-func ValidateMoveApCost(activeEntity *deviant.Entity, requestedMoveAction *deviant.EntityMoveAction, encounter *deviant.Encounter) bool {
+// ValidateMoveApCost Determines that the entity has the correct amount of AP to perform the requested move.
+func ValidateMoveApCost(activeEntity *deviant.Entity, requestedMoveAction *deviant.EntityMoveAction, encounter *deviant.Encounter, logger *zap.Logger) bool {
 	var totalApCost int32
 	var apCostX int32
 	var apCostY int32
@@ -144,29 +155,50 @@ func ValidateMoveApCost(activeEntity *deviant.Entity, requestedMoveAction *devia
 	totalApCost = apCostX + apCostY
 
 	if totalApCost <= activeEntity.Ap {
-		message := fmt.Sprintf("Rule: Move-ValidateApCost: Success")
-		glog.Info(message)
+		if logger != nil {
+			logger.Debug("Validated New Move AP Cost",
+				zap.String("actionID", "ValidateMoveApCost"),
+				zap.String("entityID", encounter.ActiveEntity.Id),
+				zap.Bool("succeeded", true),
+			)
+		}
 
 		return true
 	}
 
-	message := fmt.Sprintf("Rule: Move-ValidateApCost: Failed")
-	glog.Info(message)
+	if logger != nil {
+		logger.Debug("Validated New Move AP Cost",
+			zap.String("actionID", "ValidateMoveApCost"),
+			zap.String("entityID", encounter.ActiveEntity.Id),
+			zap.Bool("succeeded", false),
+		)
+	}
 
 	return false
 }
 
 // ValidateNewLocationEmpty Determines that the entity can actually move to this location on the board.
-func ValidateNewLocationEmpty(activeEntity *deviant.Entity, requestedMoveAction *deviant.EntityMoveAction, encounter *deviant.Encounter) bool {
+func ValidateNewLocationEmpty(activeEntity *deviant.Entity, requestedMoveAction *deviant.EntityMoveAction, encounter *deviant.Encounter, logger *zap.Logger) bool {
 	// Validate that the new location is empty
 	if encounter.Board.Entities.Entities[requestedMoveAction.FinalXPosition].Entities[requestedMoveAction.FinalYPosition].Id == "" {
-		message := fmt.Sprintf("Rule: Move-ValidateNewLocationEmpty: Success")
-		glog.Info(message)
+		if logger != nil {
+			logger.Debug("Validated New Location Empty",
+				zap.String("actionID", "ValidateNewLocationEmpty"),
+				zap.String("entityID", encounter.ActiveEntity.Id),
+				zap.Bool("succeeded", true),
+			)
+		}
 
 		return true
 	}
 
-	message := fmt.Sprintf("Rule: Move-ValidateNewLocationEmpty: Failed")
-	glog.Error(message)
+	if logger != nil {
+		logger.Debug("Validated New Location Empty",
+			zap.String("actionID", "ValidateNewLocationEmpty"),
+			zap.String("entityID", encounter.ActiveEntity.Id),
+			zap.Bool("succeeded", false),
+		)
+	}
+
 	return false
 }

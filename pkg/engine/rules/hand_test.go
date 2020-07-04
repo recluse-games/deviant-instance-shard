@@ -20,7 +20,7 @@ func TestValidateSize(t *testing.T) {
 		ActiveEntity: testEntityWithValidHand,
 	}
 
-	isHandSizeValid := ValidateSize(encounter)
+	isHandSizeValid := ValidateSize(encounter, nil)
 
 	if isHandSizeValid != true {
 		t.Fail()
@@ -37,7 +37,7 @@ func TestValidateSize(t *testing.T) {
 		ActiveEntity: testEntityWithInvalidHand,
 	}
 
-	isHandSizeInvalid := ValidateSize(encounter)
+	isHandSizeInvalid := ValidateSize(encounter, nil)
 
 	if isHandSizeInvalid != false {
 		t.Fail()

@@ -17,7 +17,7 @@ func TestValidateDraw(t *testing.T) {
 		ActiveEntity: entityWithEnoughCardsInDeckToDraw,
 	}
 
-	if ValidateDraw(encounter) != true {
+	if ValidateDraw(encounter, nil) != true {
 		t.Fail()
 	}
 
@@ -29,7 +29,7 @@ func TestValidateDraw(t *testing.T) {
 		ActiveEntity: entityWithoutEnoughCardsInDeckToDraw,
 	}
 
-	if ValidateDraw(encounter) != false {
+	if ValidateDraw(encounter, nil) != false {
 		t.Fail()
 	}
 }

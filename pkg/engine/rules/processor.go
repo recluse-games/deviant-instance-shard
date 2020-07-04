@@ -5,10 +5,11 @@ import (
 
 	"github.com/golang/glog"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	"go.uber.org/zap"
 )
 
 // Process Processes all rules to determine validity.
-func Process(encounter *deviant.Encounter, entityActionName deviant.EntityActionNames, entityMoveAction *deviant.EntityMoveAction, entityPlayAction *deviant.EntityPlayAction) bool {
+func Process(encounter *deviant.Encounter, entityActionName deviant.EntityActionNames, entityMoveAction *deviant.EntityMoveAction, entityPlayAction *deviant.EntityPlayAction, logger *zap.Logger) bool {
 	entityActionRules := map[deviant.EntityActionNames][]interface{}{
 		deviant.EntityActionNames_PLAY:         {ValidatePlayApCost, ValidateCardTypeSpecificConstraints},
 		deviant.EntityActionNames_MOVE:         {ValidateMoveApCost, ValidateNewLocationEmpty, ValidateMovePermissable},
@@ -64,15 +65,15 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 			for _, entityActionFunction := range val {
 				switch entityActionName {
 				case deviant.EntityActionNames_MOVE:
-					if entityActionFunction.(func(*deviant.Entity, *deviant.EntityMoveAction, *deviant.Encounter) bool)(encounter.ActiveEntity, entityMoveAction, encounter) == false {
+					if entityActionFunction.(func(*deviant.Entity, *deviant.EntityMoveAction, *deviant.Encounter, *zap.Logger) bool)(encounter.ActiveEntity, entityMoveAction, encounter, logger) == false {
 						return false
 					}
 				case deviant.EntityActionNames_PLAY:
-					if entityActionFunction.(func(*deviant.Entity, *deviant.EntityPlayAction, *deviant.Encounter) bool)(encounter.ActiveEntity, entityPlayAction, encounter) == false {
+					if entityActionFunction.(func(*deviant.Entity, *deviant.EntityPlayAction, *deviant.Encounter, *zap.Logger) bool)(encounter.ActiveEntity, entityPlayAction, encounter, logger) == false {
 						return false
 					}
 				case deviant.EntityActionNames_CHANGE_PHASE:
-					if entityActionFunction.(func(*deviant.Encounter) bool)(encounter) == false {
+					if entityActionFunction.(func(*deviant.Encounter, *zap.Logger) bool)(encounter, logger) == false {
 						return false
 					}
 				default:
@@ -95,7 +96,7 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 				case deviant.TurnPhaseNames_PHASE_POINT:
 				case deviant.TurnPhaseNames_PHASE_EFFECT:
 				case deviant.TurnPhaseNames_PHASE_DRAW:
-					if turnRuleFunction.(func(*deviant.Encounter) bool)(encounter) == false {
+					if turnRuleFunction.(func(*deviant.Encounter, *zap.Logger) bool)(encounter, logger) == false {
 						return false
 					}
 				case deviant.TurnPhaseNames_PHASE_ACTION:

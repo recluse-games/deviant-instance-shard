@@ -24,7 +24,7 @@ func TestProcess(t *testing.T) {
 	}
 
 	// Test Draw Action in Correct Phase
-	if Process(encounter, deviant.EntityActionNames_DRAW, nil, nil) != true {
+	if Process(encounter, deviant.EntityActionNames_DRAW, nil, nil, nil) != true {
 		t.Fail()
 	}
 
@@ -38,7 +38,7 @@ func TestProcess(t *testing.T) {
 	}
 
 	// Test Draw Action in Incorrect Phase
-	if Process(encounter, deviant.EntityActionNames_DRAW, nil, nil) == false {
+	if Process(encounter, deviant.EntityActionNames_DRAW, nil, nil, nil) == false {
 		t.Logf("%s", "Failed attempting to process")
 
 		t.Fail()
@@ -58,7 +58,7 @@ func TestProcess(t *testing.T) {
 		Turn:         turn,
 	}
 
-	if Process(encounter, deviant.EntityActionNames_DRAW, nil, nil) != false {
+	if Process(encounter, deviant.EntityActionNames_DRAW, nil, nil, nil) != false {
 		t.Logf("%s", "Failed attempting to process")
 		t.Fail()
 	}

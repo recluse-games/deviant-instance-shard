@@ -20,7 +20,7 @@ func TestValidateApCost(t *testing.T) {
 
 	encounter := &deviant.Encounter{}
 
-	isApCostValid := ValidateMoveApCost(entity, moveAction, encounter)
+	isApCostValid := ValidateMoveApCost(entity, moveAction, encounter, nil)
 
 	if isApCostValid != true {
 		t.Fail()
@@ -72,7 +72,7 @@ func TestValidateNewLocationEmpty(t *testing.T) {
 		},
 	}
 
-	isMoveLocationValid := ValidateNewLocationEmpty(entity, moveAction, encounter)
+	isMoveLocationValid := ValidateNewLocationEmpty(entity, moveAction, encounter, nil)
 
 	if isMoveLocationValid == false {
 		t.Fail()

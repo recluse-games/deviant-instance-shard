@@ -4,6 +4,7 @@ import (
 	"math"
 
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	"go.uber.org/zap"
 )
 
 type gridLocation struct {
@@ -46,8 +47,8 @@ func rotateTilePatterns(ocx float64, ocy float64, px float64, py float64, rotati
 	return &gridLocation{px, py}
 }
 
-// ValidateApCost Determines that the entity has the correct amount of AP to perform the requested move.
-func ValidatePlayApCost(activeEntity *deviant.Entity, requestedPlayAction *deviant.EntityPlayAction, encounter *deviant.Encounter) bool {
+// ValidatePlayApCost Determines that the entity has the correct amount of AP to perform the requested move.
+func ValidatePlayApCost(activeEntity *deviant.Entity, requestedPlayAction *deviant.EntityPlayAction, encounter *deviant.Encounter, logger *zap.Logger) bool {
 	var totalApCost = int32(0)
 
 	for _, card := range encounter.ActiveEntity.Hand.Cards {
@@ -60,11 +61,18 @@ func ValidatePlayApCost(activeEntity *deviant.Entity, requestedPlayAction *devia
 		return true
 	}
 
+	if logger != nil {
+		logger.Debug("Validated Play AP Cost",
+			zap.String("actionID", "ValidatePlayApCost"),
+			zap.String("entityID", encounter.ActiveEntity.Id),
+		)
+	}
+
 	return false
 }
 
-// ValidateApCost Validates specific sub rules for particular types of cards I.E. Block/Attack/Heal.
-func ValidateCardTypeSpecificConstraints(activeEntity *deviant.Entity, requestedPlayAction *deviant.EntityPlayAction, encounter *deviant.Encounter) bool {
+// ValidateCardTypeSpecificConstraints Validates specific sub rules for particular types of cards I.E. Block/Attack/Heal.
+func ValidateCardTypeSpecificConstraints(activeEntity *deviant.Entity, requestedPlayAction *deviant.EntityPlayAction, encounter *deviant.Encounter, logger *zap.Logger) bool {
 	var activeEntityLocationPoint = &gridLocation{}
 
 	for y, entitiesRow := range encounter.Board.Entities.Entities {
@@ -97,6 +105,13 @@ func ValidateCardTypeSpecificConstraints(activeEntity *deviant.Entity, requested
 				}
 			}
 		}
+	}
+
+	if logger != nil {
+		logger.Debug("Validated Card Type Specific Constraints",
+			zap.String("actionID", "ValidateCardTypeSpecificConstraints"),
+			zap.String("entityID", encounter.ActiveEntity.Id),
+		)
 	}
 
 	return true
