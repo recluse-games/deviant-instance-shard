@@ -22,7 +22,7 @@ func DrawCard(encounter *deviant.Encounter, logger *zap.Logger) bool {
 		return true
 	}
 
-	var topCard = encounter.ActiveEntity.Deck.Cards[0]
+	topCard := encounter.ActiveEntity.Deck.Cards[0]
 
 	encounter.ActiveEntity.Deck.Cards = removeCard(encounter.ActiveEntity.Deck.Cards)
 	encounter.ActiveEntity.Hand.Cards = addCard(encounter.ActiveEntity.Hand.Cards, topCard)

@@ -72,6 +72,7 @@ func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction, lo
 			}
 		}
 	}
+
 	for _, card := range encounter.ActiveEntity.Hand.Cards {
 		if card.InstanceId == playAction.CardId {
 			for _, playPair := range playAction.Plays {
