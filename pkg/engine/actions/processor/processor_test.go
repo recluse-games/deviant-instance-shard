@@ -100,7 +100,7 @@ func TestProcess(t *testing.T) {
 	}
 
 	// Test Draw Turn Phase Action
-	if Process(encounter, deviant.EntityActionNames_NOTHING, nil, nil) != true {
+	if Process(encounter, deviant.EntityActionNames_NOTHING, nil, nil, nil) != true {
 		t.Fail()
 	}
 
@@ -146,7 +146,7 @@ func TestProcess(t *testing.T) {
 	}
 
 	// Test GrantAP Turn Phase Action
-	if Process(encounter, deviant.EntityActionNames_NOTHING, nil, nil) != true {
+	if Process(encounter, deviant.EntityActionNames_NOTHING, nil, nil, nil) != true {
 		t.Fail()
 	}
 
