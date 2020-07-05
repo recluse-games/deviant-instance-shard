@@ -85,7 +85,7 @@ func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction, lo
 				var y = int(math.RoundToEven(rotatedPlayPair.Y))
 
 				//CAUTION: HACK - This logic should be moved into rules
-				if x >= 0 && y >= 0 && x <= 7 && y <= 8 {
+				if x >= 0 && y >= 0 && x <= 7 && y <= 7 {
 					switch card.Type {
 					case deviant.CardType_ATTACK:
 						if encounter.Board.Entities.Entities[x].Entities[y].Hp < card.Damage {
