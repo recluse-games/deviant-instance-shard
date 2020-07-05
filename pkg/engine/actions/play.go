@@ -120,6 +120,15 @@ func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction, lo
 						encounter.ActiveEntityOrder = removeEntityFromOrder(encounter.Board.Entities.Entities[x].Entities[y].Id, encounter.ActiveEntityOrder)
 						log.Output(0, fmt.Sprintf("%v", encounter.ActiveEntityOrder))
 
+						for _, entitiesRow := range encounter.Board.Entities.Entities {
+							for _, entity := range entitiesRow.Entities {
+								if entity.Id != "" {
+									log.Output(0, "id: "+fmt.Sprintf("%v", entity.Id))
+									log.Output(0, "hp: "+fmt.Sprintf("%v", entity.Hp))
+								}
+							}
+						}
+
 						encounter.Board.Entities.Entities[x].Entities[y] = &deviant.Entity{}
 					}
 				}
