@@ -1,8 +1,6 @@
 package actions
 
 import (
-	"fmt"
-	"log"
 	"math"
 
 	"github.com/google/uuid"
@@ -118,17 +116,6 @@ func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction, lo
 					// HACK - This logic should be moved outside of this method and processed on every turn or something.
 					if encounter.Board.Entities.Entities[x].Entities[y].Hp <= 0 {
 						encounter.ActiveEntityOrder = removeEntityFromOrder(encounter.Board.Entities.Entities[x].Entities[y].Id, encounter.ActiveEntityOrder)
-						log.Output(0, fmt.Sprintf("%v", encounter.ActiveEntityOrder))
-
-						for _, entitiesRow := range encounter.Board.Entities.Entities {
-							for _, entity := range entitiesRow.Entities {
-								if entity.Id != "" {
-									log.Output(0, "id: "+fmt.Sprintf("%v", entity.Id))
-									log.Output(0, "hp: "+fmt.Sprintf("%v", entity.Hp))
-								}
-							}
-						}
-
 						encounter.Board.Entities.Entities[x].Entities[y] = &deviant.Entity{}
 					}
 				}
