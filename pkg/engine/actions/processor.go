@@ -112,7 +112,7 @@ ProcessTurnActions:
 
 					// If one of our previously executed actions killed the ActiveEntity we skip to the end phase.
 					if encounter.ActiveEntity.Hp <= 0 {
-						nextTurnPhaseName = deviant.TurnPhaseNames_PHASE_END
+						encounter.Turn.Phase = deviant.TurnPhaseNames_PHASE_END
 						continue ProcessTurnActions
 					}
 
