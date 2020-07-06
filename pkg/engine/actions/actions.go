@@ -22,11 +22,12 @@ func removeEntityFromOrder(entityID string, slice []string) []string {
 		return slice[:entityIDIndex+copy(slice[entityIDIndex:], slice[entityIDIndex-1:])]
 	}
 
-	if 0 > entityIDIndex-1 && len(slice) > 1 {
+	if 0 > entityIDIndex-1 && len(slice) >= 1 {
 		return slice[:0+copy(slice[0:], slice[1:])]
-	} else {
-		return []string{}
 	}
+
+	return []string{}
+
 }
 
 // GetLogger Returns a zap logger for this package.
