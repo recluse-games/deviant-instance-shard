@@ -24,15 +24,6 @@ func DrawCard(encounter *deviant.Encounter, logger *zap.Logger) bool {
 			encounter.ActiveEntityOrder = removeEntityFromOrder(encounter.ActiveEntity.Id, encounter.ActiveEntityOrder)
 		}
 
-		// WARNING: This will end up breaking the existing worker encounter logic, and should probably be handled elsewhere.
-		for y, entitiesRow := range encounter.Board.Entities.Entities {
-			for x, entity := range entitiesRow.Entities {
-				if entity.Id == encounter.ActiveEntity.Id {
-					encounter.Board.Entities.Entities[x].Entities[y] = &deviant.Entity{}
-				}
-			}
-		}
-
 		return true
 	}
 
