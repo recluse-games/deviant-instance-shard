@@ -18,7 +18,7 @@ func removeEntityFromOrder(entityID string, slice []string) []string {
 
 	if len(slice) > entityIDIndex+1 {
 		return slice[:entityIDIndex+copy(slice[entityIDIndex:], slice[entityIDIndex+1:])]
-	} else if len(slice) == entityIDIndex {
+	} else if len(slice) == entityIDIndex && len(slice) > 1 {
 		return slice[:entityIDIndex+copy(slice[entityIDIndex:], slice[entityIDIndex-1:])]
 	}
 
