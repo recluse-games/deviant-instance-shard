@@ -19,50 +19,12 @@ func DrawCard(encounter *deviant.Encounter, logger *zap.Logger) bool {
 	if encounter.ActiveEntity.Deck == nil {
 		encounter.ActiveEntity.Hp = encounter.ActiveEntity.Hp - 1
 
-		if encounter.ActiveEntity.Hp == 0 {
-			encounter.ActiveEntityOrder = removeEntityFromOrder(encounter.ActiveEntity.Id, encounter.ActiveEntityOrder)
-			for y, entitiesRow := range encounter.Board.Entities.Entities {
-				for x, entity := range entitiesRow.Entities {
-					if entity.Id == encounter.ActiveEntity.Id {
-						encounter.Board.Entities.Entities[y].Entities[x] = &deviant.Entity{}
-					}
-				}
-			}
-		}
-
-		for y, entitiesRow := range encounter.Board.Entities.Entities {
-			for x, entity := range entitiesRow.Entities {
-				if entity.Id == encounter.ActiveEntity.Id {
-					encounter.Board.Entities.Entities[y].Entities[x] = encounter.ActiveEntity
-				}
-			}
-		}
-
 		return true
 	}
 
 	// WARNING: I don't love that this is included in the DrawCard logic, it feels like it should be somewhere else.
 	if len(encounter.ActiveEntity.Deck.Cards) == 0 {
 		encounter.ActiveEntity.Hp = encounter.ActiveEntity.Hp - 1
-
-		if encounter.ActiveEntity.Hp == 0 {
-			encounter.ActiveEntityOrder = removeEntityFromOrder(encounter.ActiveEntity.Id, encounter.ActiveEntityOrder)
-			for y, entitiesRow := range encounter.Board.Entities.Entities {
-				for x, entity := range entitiesRow.Entities {
-					if entity.Id == encounter.ActiveEntity.Id {
-						encounter.Board.Entities.Entities[y].Entities[x] = &deviant.Entity{}
-					}
-				}
-			}
-		}
-
-		for y, entitiesRow := range encounter.Board.Entities.Entities {
-			for x, entity := range entitiesRow.Entities {
-				if entity.Id == encounter.ActiveEntity.Id {
-					encounter.Board.Entities.Entities[y].Entities[x] = encounter.ActiveEntity
-				}
-			}
-		}
 
 		return true
 	}

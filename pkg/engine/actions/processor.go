@@ -110,9 +110,9 @@ ProcessTurnActions:
 						glog.Error(message)
 					}
 
-					// If one of our previously executed actions killed the activeEntity we should process to the end.
-					if encounter.ActiveEntity.Hp == 0 {
-						ChangePhase(encounter, logger)
+					// If one of our previously executed actions killed the ActiveEntity we skip to the end phase.
+					if encounter.ActiveEntity.Hp <= 0 {
+						nextTurnPhaseName = deviant.TurnPhaseNames_PHASE_END
 						continue ProcessTurnActions
 					}
 
