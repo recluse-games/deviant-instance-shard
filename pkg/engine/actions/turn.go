@@ -61,6 +61,14 @@ func UpdateActiveEntity(encounter *deviant.Encounter, logger *zap.Logger) bool {
 		}
 	}
 
+	for _, entitiesRow := range encounter.Board.Entities.Entities {
+		for _, entity := range entitiesRow.Entities {
+			if entity.Id == newActiveEntityID {
+				encounter.ActiveEntity = entity
+			}
+		}
+	}
+
 	if encounter.ActiveEntity.Hp <= 0 {
 		encounter.ActiveEntityOrder = removeEntityFromOrder(encounter.ActiveEntity.Id, encounter.ActiveEntityOrder)
 
@@ -69,14 +77,6 @@ func UpdateActiveEntity(encounter *deviant.Encounter, logger *zap.Logger) bool {
 				if entity.Id == encounter.ActiveEntity.Id {
 					encounter.Board.Entities.Entities[y].Entities[x] = &deviant.Entity{}
 				}
-			}
-		}
-	}
-
-	for _, entitiesRow := range encounter.Board.Entities.Entities {
-		for _, entity := range entitiesRow.Entities {
-			if entity.Id == newActiveEntityID {
-				encounter.ActiveEntity = entity
 			}
 		}
 	}
