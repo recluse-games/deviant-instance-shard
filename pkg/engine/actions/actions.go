@@ -15,6 +15,10 @@ func findSliceIndex(a []string, x string) int {
 //removeEntityFromOrder Removes an entityID from the entityTurnOrder of an encounter.
 func removeEntityFromOrder(entityID string, slice []string) []string {
 	var entityIDIndex = findSliceIndex(slice, entityID)
+	// Exit early
+	if len(slice) < 1 {
+		return []string{}
+	}
 
 	if len(slice) > entityIDIndex+1 {
 		return slice[:entityIDIndex+copy(slice[entityIDIndex:], slice[entityIDIndex+1:])]
