@@ -1,8 +1,6 @@
 package actions
 
 import (
-	"fmt"
-
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 	"go.uber.org/zap"
 )
@@ -18,8 +16,6 @@ func removeCard(slice []*deviant.Card) []*deviant.Card {
 
 // DrawCard Draws a card for the currently active entity of an encounter.
 func DrawCard(encounter *deviant.Encounter, logger *zap.Logger) bool {
-	fmt.Println(encounter.ActiveEntity.Deck)
-
 	if encounter.ActiveEntity.Deck == nil {
 		encounter.ActiveEntity.Hp = encounter.ActiveEntity.Hp - 1
 
