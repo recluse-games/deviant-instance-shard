@@ -110,14 +110,14 @@ ProcessTurnActions:
 						glog.Error(message)
 					}
 
-					// If one of our previously executed action processors incremented the phase we should loop.
-					if encounter.Turn.Phase == nextTurnPhaseName {
+					// If one of our previously executed actions killed the activeEntity we should process to the end.
+					if encounter.ActiveEntity.Hp == 0 {
+						ChangePhase(encounter, logger)
 						continue ProcessTurnActions
 					}
 
-					// If one of our previously executed actions killed the activeEntity we should process to the end.
-					if encounter.ActiveEntity.Hp <= 0 {
-						ChangePhase(encounter, logger)
+					// If one of our previously executed action processors incremented the phase we should loop.
+					if encounter.Turn.Phase == nextTurnPhaseName {
 						continue ProcessTurnActions
 					}
 				}
