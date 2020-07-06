@@ -24,7 +24,7 @@ func DrawCard(encounter *deviant.Encounter, logger *zap.Logger) bool {
 			for y, entitiesRow := range encounter.Board.Entities.Entities {
 				for x, entity := range entitiesRow.Entities {
 					if entity.Id == encounter.ActiveEntity.Id {
-						encounter.Board.Entities.Entities[x].Entities[y] = &deviant.Entity{}
+						encounter.Board.Entities.Entities[y].Entities[x] = &deviant.Entity{}
 					}
 				}
 			}
@@ -33,7 +33,7 @@ func DrawCard(encounter *deviant.Encounter, logger *zap.Logger) bool {
 		for y, entitiesRow := range encounter.Board.Entities.Entities {
 			for x, entity := range entitiesRow.Entities {
 				if entity.Id == encounter.ActiveEntity.Id {
-					encounter.Board.Entities.Entities[x].Entities[y] = encounter.ActiveEntity
+					encounter.Board.Entities.Entities[y].Entities[x] = encounter.ActiveEntity
 				}
 			}
 		}
@@ -50,7 +50,7 @@ func DrawCard(encounter *deviant.Encounter, logger *zap.Logger) bool {
 			for y, entitiesRow := range encounter.Board.Entities.Entities {
 				for x, entity := range entitiesRow.Entities {
 					if entity.Id == encounter.ActiveEntity.Id {
-						encounter.Board.Entities.Entities[x].Entities[y] = &deviant.Entity{}
+						encounter.Board.Entities.Entities[y].Entities[x] = &deviant.Entity{}
 					}
 				}
 			}
@@ -59,7 +59,7 @@ func DrawCard(encounter *deviant.Encounter, logger *zap.Logger) bool {
 		for y, entitiesRow := range encounter.Board.Entities.Entities {
 			for x, entity := range entitiesRow.Entities {
 				if entity.Id == encounter.ActiveEntity.Id {
-					encounter.Board.Entities.Entities[x].Entities[y] = encounter.ActiveEntity
+					encounter.Board.Entities.Entities[y].Entities[x] = encounter.ActiveEntity
 				}
 			}
 		}
