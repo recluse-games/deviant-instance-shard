@@ -20,10 +20,6 @@ func DrawCard(encounter *deviant.Encounter, logger *zap.Logger) bool {
 	if len(encounter.ActiveEntity.Deck.Cards) == 0 {
 		encounter.ActiveEntity.Hp = encounter.ActiveEntity.Hp - 1
 
-		if encounter.ActiveEntity.Hp <= 0 {
-			encounter.ActiveEntityOrder = removeEntityFromOrder(encounter.ActiveEntity.Id, encounter.ActiveEntityOrder)
-		}
-
 		return true
 	}
 
