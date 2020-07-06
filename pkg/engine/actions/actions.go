@@ -30,8 +30,7 @@ func removeEntityFromOrder(entityID string, slice []string) []string {
 	if len(slice) >= 1 {
 		return remove(slice, entityIDIndex)
 	}
-
-	return slice
+	return []string{}
 }
 
 // GetLogger Returns a zap logger for this package.
