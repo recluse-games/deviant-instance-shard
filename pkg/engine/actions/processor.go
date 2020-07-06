@@ -114,6 +114,12 @@ ProcessTurnActions:
 					if encounter.Turn.Phase == nextTurnPhaseName {
 						continue ProcessTurnActions
 					}
+
+					// If one of our previously executed actions killed the activeEntity we should process to the end.
+					if encounter.ActiveEntity.Hp <= 0 {
+						ChangePhase(encounter, logger)
+						continue ProcessTurnActions
+					}
 				}
 
 				// If we're not above the maximum hand size we should skip processing.
