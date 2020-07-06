@@ -27,10 +27,8 @@ func removeEntityFromOrder(entityID string, slice []string) []string {
 		return slice
 	}
 
-	if len(slice) > 0 {
+	if len(slice) >= 1 {
 		return remove(slice, entityIDIndex)
-	} else {
-		return []string{}
 	}
 }
 
