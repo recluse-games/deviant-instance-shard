@@ -19,8 +19,15 @@ func removeCard(slice []*deviant.Card) []*deviant.Card {
 // DrawCard Draws a card for the currently active entity of an encounter.
 func DrawCard(encounter *deviant.Encounter, logger *zap.Logger) bool {
 	fmt.Println(encounter.ActiveEntity.Deck)
+
+	if encounter.ActiveEntity.Deck == nil {
+		encounter.ActiveEntity.Hp = encounter.ActiveEntity.Hp - 1
+
+		return true
+	}
+
 	// WARNING: I don't love that this is included in the DrawCard logic, it feels like it should be somewhere else.
-	if encounter.ActiveEntity.Deck.Cards == nil || len(encounter.ActiveEntity.Deck.Cards) == 0 {
+	if len(encounter.ActiveEntity.Deck.Cards) == 0 {
 		encounter.ActiveEntity.Hp = encounter.ActiveEntity.Hp - 1
 
 		return true
