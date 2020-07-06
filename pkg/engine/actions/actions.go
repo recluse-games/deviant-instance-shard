@@ -1,31 +1,34 @@
 package actions
 
-import "go.uber.org/zap"
+import (
+	"errors"
+
+	"go.uber.org/zap"
+)
+
+func remove(slice []string, s int) []string {
+	return append(slice[:s], slice[s+1:]...)
+}
 
 //findSliceIndex Locates the index of a particular string in a slice.
-func findSliceIndex(a []string, x string) int {
+func findSliceIndex(a []string, x string) (int, error) {
 	for i, n := range a {
 		if x == n {
-			return i
+			return i, nil
 		}
 	}
-	return len(a)
+	return len(a), errors.New("entry not found in slice")
 }
 
 //removeEntityFromOrder Removes an entityID from the entityTurnOrder of an encounter.
 func removeEntityFromOrder(entityID string, slice []string) []string {
-	entityIDIndex := findSliceIndex(slice, entityID)
-
-	if len(slice) > entityIDIndex+1 {
-		return slice[:entityIDIndex+copy(slice[entityIDIndex:], slice[entityIDIndex+1:])]
-	} else if len(slice) == entityIDIndex {
-		return slice[:entityIDIndex+copy(slice[entityIDIndex:], slice[entityIDIndex-1:])]
+	entityIDIndex, err := findSliceIndex(slice, entityID)
+	if err != nil {
+		return slice
 	}
 
-	if 0 > entityIDIndex-1 {
-		return slice[:0+copy(slice[(entityIDIndex-1):], slice[entityIDIndex:])]
-	} else if len(slice) > 1 {
-		return slice[:len(slice)-1]
+	if len(slice) > 0 {
+		return remove(slice, entityIDIndex)
 	} else {
 		return []string{}
 	}
