@@ -51,14 +51,14 @@ func ChangePhase(encounter *deviant.Encounter, logger *zap.Logger) bool {
 func UpdateActiveEntity(encounter *deviant.Encounter, logger *zap.Logger) bool {
 	var newActiveEntityID string
 
-	for index, entityID := range encounter.ActiveEntityOrder {
-		if entityID == encounter.ActiveEntity.Id {
-			if len(encounter.ActiveEntityOrder) != index+1 {
-				newActiveEntityID = encounter.ActiveEntityOrder[index+1]
-			} else {
-				newActiveEntityID = encounter.ActiveEntityOrder[0]
-			}
-		}
+	newActiveEntityIndex, _ := findSliceIndex(encounter.ActiveEntityOrder, encounter.ActiveEntity.Id)
+
+	if len(encounter.ActiveEntityOrder) > newActiveEntityIndex+1 {
+		newActiveEntityID = encounter.ActiveEntityOrder[newActiveEntityIndex+1]
+	} else if len(encounter.ActiveEntityOrder) == 1 {
+		newActiveEntityID = encounter.ActiveEntityOrder[0]
+	} else {
+		return true
 	}
 
 	if encounter.ActiveEntity.Hp <= 0 {

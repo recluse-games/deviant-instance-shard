@@ -17,7 +17,7 @@ func findSliceIndex(a []string, x string) (int, error) {
 			return i, nil
 		}
 	}
-	return len(a), errors.New("entry not found in slice")
+	return 0, errors.New("entry not found in slice")
 }
 
 //removeEntityFromOrder Removes an entityID from the entityTurnOrder of an encounter.

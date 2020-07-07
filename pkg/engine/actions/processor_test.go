@@ -13,6 +13,7 @@ func TestProcess(t *testing.T) {
 	}
 
 	entity := &deviant.Entity{
+		Hp:    10,
 		Ap:    0,
 		MaxAp: 5,
 		Deck:  enginetest.GenerateDeckLiteral(5),
