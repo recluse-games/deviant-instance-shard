@@ -5,7 +5,7 @@ import (
 	"go.uber.org/zap"
 )
 
-// Move draws a card for entity.
+// Move Moves the active entity to a desired location and updates the AP to reflect the cost.
 func Move(encounter *deviant.Encounter, moveAction *deviant.EntityMoveAction, logger *zap.Logger) bool {
 	var apCostX int32
 	var apCostY int32
@@ -29,7 +29,6 @@ func Move(encounter *deviant.Encounter, moveAction *deviant.EntityMoveAction, lo
 	encounter.ActiveEntity.Ap = encounter.ActiveEntity.Ap - apCostX
 	encounter.ActiveEntity.Ap = encounter.ActiveEntity.Ap - apCostY
 
-	// Apply all state changes to entity in encounter as well as the activeEntity.
 	encounter.Board.Entities.Entities[moveAction.StartXPosition].Entities[moveAction.StartYPosition] = &deviant.Entity{}
 	encounter.Board.Entities.Entities[moveAction.FinalXPosition].Entities[moveAction.FinalYPosition] = encounter.ActiveEntity
 

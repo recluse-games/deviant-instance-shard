@@ -40,7 +40,7 @@ func convertDirectionToDegree(characterRotation deviant.EntityRotationNames) flo
 	return 0.00
 }
 
-func rotateTilePatterns(ocx float64, ocy float64, px float64, py float64, rotationAngle float64) *gridLocation {
+func rotate(ocx float64, ocy float64, px float64, py float64, rotationAngle float64) *gridLocation {
 	var radians = (math.Pi / 180) * rotationAngle
 	var s = math.Sin(radians)
 	var c = math.Cos(radians)
@@ -79,7 +79,7 @@ func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction, lo
 
 				// CAUTION: HACK - This logic should be moved somewhere else to apply rotations directly to the cards themselves maybe?
 				var rotationDegree = convertDirectionToDegree(encounter.ActiveEntity.Rotation)
-				var rotatedPlayPair = rotateTilePatterns(activeEntityLocationPoint.X, activeEntityLocationPoint.Y, float64(playPair.X), float64(playPair.Y), rotationDegree)
+				var rotatedPlayPair = rotate(activeEntityLocationPoint.X, activeEntityLocationPoint.Y, float64(playPair.X), float64(playPair.Y), rotationDegree)
 
 				var x = int(math.RoundToEven(rotatedPlayPair.X))
 				var y = int(math.RoundToEven(rotatedPlayPair.Y))

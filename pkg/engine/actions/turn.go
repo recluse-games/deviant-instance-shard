@@ -5,7 +5,7 @@ import (
 	"go.uber.org/zap"
 )
 
-// GrantAp grants some entity a default AP value of 5
+// GrantAp Grants the currently active entity their maximum AP
 func GrantAp(encounter *deviant.Encounter, logger *zap.Logger) bool {
 	encounter.ActiveEntity.Ap = encounter.ActiveEntity.MaxAp
 
@@ -19,7 +19,7 @@ func GrantAp(encounter *deviant.Encounter, logger *zap.Logger) bool {
 	return true
 }
 
-// ChangePhase updates the current turn phase.
+// ChangePhase Updates the current turn phase to the next turn phase.
 func ChangePhase(encounter *deviant.Encounter, logger *zap.Logger) bool {
 	turnOrder := []deviant.TurnPhaseNames{deviant.TurnPhaseNames_PHASE_POINT, deviant.TurnPhaseNames_PHASE_EFFECT, deviant.TurnPhaseNames_PHASE_DRAW, deviant.TurnPhaseNames_PHASE_ACTION, deviant.TurnPhaseNames_PHASE_DISCARD, deviant.TurnPhaseNames_PHASE_END}
 
