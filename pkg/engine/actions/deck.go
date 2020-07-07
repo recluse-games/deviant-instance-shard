@@ -5,11 +5,13 @@ import (
 	"go.uber.org/zap"
 )
 
+//addCard Adds a card to a provided slice
 func addCard(slice []*deviant.Card, card *deviant.Card) []*deviant.Card {
 	slice = append(slice, card)
 	return slice
 }
 
+//removeCard Removes a card from a provided slice
 func removeCard(slice []*deviant.Card) []*deviant.Card {
 	return slice[:0+copy(slice[0:], slice[1:])]
 }
@@ -18,14 +20,9 @@ func removeCard(slice []*deviant.Card) []*deviant.Card {
 func DrawCard(encounter *deviant.Encounter, logger *zap.Logger) bool {
 	if encounter.ActiveEntity.Deck == nil {
 		encounter.ActiveEntity.Hp = encounter.ActiveEntity.Hp - 1
-
 		return true
-	}
-
-	// WARNING: I don't love that this is included in the DrawCard logic, it feels like it should be somewhere else.
-	if len(encounter.ActiveEntity.Deck.Cards) == 0 {
+	} else if len(encounter.ActiveEntity.Deck.Cards) == 0 {
 		encounter.ActiveEntity.Hp = encounter.ActiveEntity.Hp - 1
-
 		return true
 	}
 

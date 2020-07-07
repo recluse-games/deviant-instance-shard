@@ -175,4 +175,9 @@ func TestProcess(t *testing.T) {
 		t.Logf("%v", encounter.ActiveEntity)
 		t.Fail()
 	}
+
+	if encounter.ActiveEntity.Id != "0002" {
+		t.Logf("%v", encounter.ActiveEntity)
+		t.Fail()
+	}
 }
