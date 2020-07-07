@@ -25,7 +25,7 @@ func removeCardFromHand(cardID string, slice []*deviant.Card) []*deviant.Card {
 	return newCards
 }
 
-func convertDirectionToDegree(characterRotation deviant.EntityRotationNames) float64 {
+func convertToDegrees(characterRotation deviant.EntityRotationNames) float64 {
 	switch characterRotation {
 	case deviant.EntityRotationNames_NORTH:
 		return 180.00
@@ -41,17 +41,17 @@ func convertDirectionToDegree(characterRotation deviant.EntityRotationNames) flo
 }
 
 func rotate(ocx float64, ocy float64, px float64, py float64, rotationAngle float64) *gridLocation {
-	var radians = (math.Pi / 180) * rotationAngle
-	var s = math.Sin(radians)
-	var c = math.Cos(radians)
+	radians := (math.Pi / 180) * rotationAngle
+	s := math.Sin(radians)
+	c := math.Cos(radians)
 
 	// translate point back to origin:
 	px -= ocx
 	py -= ocy
 
 	// rotate point
-	var xnew = px*c - py*s
-	var ynew = px*s + py*c
+	xnew := px*c - py*s
+	ynew := px*s + py*c
 
 	// translate point back:
 	px = xnew + ocx
@@ -78,11 +78,11 @@ func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction, lo
 			for _, playPair := range playAction.Plays {
 
 				// CAUTION: HACK - This logic should be moved somewhere else to apply rotations directly to the cards themselves maybe?
-				var rotationDegree = convertDirectionToDegree(encounter.ActiveEntity.Rotation)
-				var rotatedPlayPair = rotate(activeEntityLocationPoint.X, activeEntityLocationPoint.Y, float64(playPair.X), float64(playPair.Y), rotationDegree)
+				rotationDegree := convertToDegrees(encounter.ActiveEntity.Rotation)
+				rotatedPlayPair := rotate(activeEntityLocationPoint.X, activeEntityLocationPoint.Y, float64(playPair.X), float64(playPair.Y), rotationDegree)
 
-				var x = int(math.RoundToEven(rotatedPlayPair.X))
-				var y = int(math.RoundToEven(rotatedPlayPair.Y))
+				x := int(math.RoundToEven(rotatedPlayPair.X))
+				y := int(math.RoundToEven(rotatedPlayPair.Y))
 
 				//CAUTION: HACK - This logic should be moved into rules
 				if x >= 0 && y >= 0 && x <= 7 && y <= 7 {

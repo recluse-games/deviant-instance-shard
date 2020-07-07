@@ -1,9 +1,6 @@
 package rules
 
 import (
-	"fmt"
-
-	"github.com/golang/glog"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 	"go.uber.org/zap"
 )
@@ -34,9 +31,6 @@ func boundaryFill4(startx int32, starty int32, x int32, y int32, filledID string
 		newTile.Y = int32(y)
 		newTile.Id = filledID
 		(*tiles[x])[y] = newTile
-
-		message := fmt.Sprintf("%v", (*tiles[x])[y].Id)
-		glog.Info(message)
 
 		if limit-apCostX-apCostY >= 0 {
 			if x+1 <= 8 {

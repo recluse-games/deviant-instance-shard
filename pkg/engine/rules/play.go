@@ -87,9 +87,8 @@ func ValidateCardTypeSpecificConstraints(activeEntity *deviant.Entity, requested
 		if card.InstanceId == requestedPlayAction.CardId {
 			for _, playPair := range requestedPlayAction.Plays {
 
-				// CAUTION: HACK - This logic should be moved somewhere else to apply rotations directly to the cards themselves maybe?
-				var rotationDegree = convertDirectionToDegree(encounter.ActiveEntity.Rotation)
-				var rotatedPlayPair = rotateTilePatterns(activeEntityLocationPoint.X, activeEntityLocationPoint.Y, float64(playPair.X), float64(playPair.Y), rotationDegree)
+				rotationDegree := convertDirectionToDegree(encounter.ActiveEntity.Rotation)
+				rotatedPlayPair := rotateTilePatterns(activeEntityLocationPoint.X, activeEntityLocationPoint.Y, float64(playPair.X), float64(playPair.Y), rotationDegree)
 
 				var x = int(math.RoundToEven(rotatedPlayPair.X))
 				var y = int(math.RoundToEven(rotatedPlayPair.Y))

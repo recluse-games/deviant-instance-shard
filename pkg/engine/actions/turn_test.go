@@ -22,3 +22,40 @@ func TestGrantAp(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestChangePhase(t *testing.T) {
+	// Test Non End Phase Incrementation
+	mockTurn := &deviant.Turn{
+		Id:    "0000",
+		Phase: deviant.TurnPhaseNames_PHASE_DRAW,
+	}
+
+	mockEncounter := &deviant.Encounter{
+		Turn: mockTurn,
+	}
+
+	ChangePhase(mockEncounter, nil)
+
+	if mockEncounter.Turn.Phase != deviant.TurnPhaseNames_PHASE_ACTION {
+		t.Logf("Failed to increment the turn phase")
+		t.Fail()
+	}
+
+	// Test End Phase Incrementation
+	mockTurn = &deviant.Turn{
+		Id:    "0000",
+		Phase: deviant.TurnPhaseNames_PHASE_END,
+	}
+
+	mockEncounter = &deviant.Encounter{
+		Turn: mockTurn,
+	}
+
+	ChangePhase(mockEncounter, nil)
+
+	if mockEncounter.Turn.Phase != deviant.TurnPhaseNames_PHASE_POINT {
+		t.Logf("Failed to increment the turn correctly from end")
+		t.Fail()
+	}
+
+}

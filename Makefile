@@ -3,4 +3,4 @@ build:
 run:
 	go run ./cmd/deviant-instance-shard.go
 test:
-	go test ./...
+	go test ./... -cover
