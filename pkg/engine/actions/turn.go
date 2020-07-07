@@ -57,8 +57,6 @@ func UpdateActiveEntity(encounter *deviant.Encounter, logger *zap.Logger) bool {
 		newActiveEntityID = encounter.ActiveEntityOrder[newActiveEntityIndex+1]
 	} else if len(encounter.ActiveEntityOrder) == 1 {
 		newActiveEntityID = encounter.ActiveEntityOrder[0]
-	} else {
-		return true
 	}
 
 	if encounter.ActiveEntity.Hp <= 0 {
