@@ -11,7 +11,7 @@ import (
 // Process Processes all rules to determine validity.
 func Process(encounter *deviant.Encounter, entityActionName deviant.EntityActionNames, entityMoveAction *deviant.EntityMoveAction, entityPlayAction *deviant.EntityPlayAction, logger *zap.Logger) bool {
 	entityActionRules := map[deviant.EntityActionNames][]interface{}{
-		deviant.EntityActionNames_PLAY:         {ValidatePlayApCost, ValidateCardTypeSpecificConstraints},
+		deviant.EntityActionNames_PLAY:         {ValidatePlayApCost, ValidateCardTypeSpecificConstraints, ValidateCardInHand},
 		deviant.EntityActionNames_MOVE:         {ValidateMoveApCost, ValidateNewLocationEmpty, ValidateMovePermissable},
 		deviant.EntityActionNames_DISCARD:      {},
 		deviant.EntityActionNames_CHANGE_PHASE: {},

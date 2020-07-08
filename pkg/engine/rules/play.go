@@ -71,6 +71,24 @@ func ValidatePlayApCost(activeEntity *deviant.Entity, requestedPlayAction *devia
 	return false
 }
 
+// ValidateCardInHand Determines if the request card is in the entities hand.
+func ValidateCardInHand(activeEntity *deviant.Entity, requestedPlayAction *deviant.EntityPlayAction, encounter *deviant.Encounter, logger *zap.Logger) bool {
+	for _, card := range encounter.ActiveEntity.Hand.Cards {
+		if card.InstanceId == requestedPlayAction.CardId {
+			return true
+		}
+	}
+
+	if logger != nil {
+		logger.Debug("ValidateCardInHand Card is not in hand",
+			zap.String("actionID", "ValidatePlayApCost"),
+			zap.String("entityID", encounter.ActiveEntity.Id),
+		)
+	}
+
+	return false
+}
+
 // ValidateCardTypeSpecificConstraints Validates specific sub rules for particular types of cards I.E. Block/Attack/Heal.
 func ValidateCardTypeSpecificConstraints(activeEntity *deviant.Entity, requestedPlayAction *deviant.EntityPlayAction, encounter *deviant.Encounter, logger *zap.Logger) bool {
 	var activeEntityLocationPoint = &gridLocation{}
