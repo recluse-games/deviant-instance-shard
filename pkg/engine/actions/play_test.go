@@ -44,7 +44,7 @@ func TestPlay(t *testing.T) {
 		Hp:       1,
 		Ap:       2,
 		Hand:     mockHand,
-		Rotation: deviant.EntityRotationNames_EAST,
+		Rotation: deviant.EntityRotationNames_NORTH,
 		Discard:  &deviant.Discard{},
 	}
 

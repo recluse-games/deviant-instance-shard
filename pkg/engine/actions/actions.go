@@ -169,6 +169,7 @@ func findIndex(a []string, x string) (int, error) {
 //removeEntityID Removes an entityID from the entityTurnOrder of an encounter.
 func removeEntityID(entityID string, slice []string) ([]string, error) {
 	entityIndex, err := findIndex(slice, entityID)
+
 	if err != nil {
 		return slice, errors.New("ID does not exist in slice")
 	}

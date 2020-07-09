@@ -59,7 +59,6 @@ func getCardLocations(card *deviant.Card, start location) []location {
 			}
 		case deviant.Direction_DOWN:
 			for i := int32(0); i < pattern.Distance; i++ {
-
 				cardActions[card.Action.Id][DOWN.String()] = append(cardActions[card.Action.Id][DOWN.String()], addLocations(offsetStart, start))
 				offsetStart = addLocations(offsetStart, DOWN.location())
 			}
