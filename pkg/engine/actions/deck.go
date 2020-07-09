@@ -12,7 +12,7 @@ func addCard(slice []*deviant.Card, card *deviant.Card) []*deviant.Card {
 }
 
 //removeCard Removes a card from a provided slice
-func removeCard(slice []*deviant.Card) []*deviant.Card {
+func drawCard(slice []*deviant.Card) []*deviant.Card {
 	return slice[:0+copy(slice[0:], slice[1:])]
 }
 
@@ -28,7 +28,7 @@ func DrawCard(encounter *deviant.Encounter, logger *zap.Logger) bool {
 
 	topCard := encounter.ActiveEntity.Deck.Cards[0]
 
-	encounter.ActiveEntity.Deck.Cards = removeCard(encounter.ActiveEntity.Deck.Cards)
+	encounter.ActiveEntity.Deck.Cards = drawCard(encounter.ActiveEntity.Deck.Cards)
 	encounter.ActiveEntity.Hand.Cards = addCard(encounter.ActiveEntity.Hand.Cards, topCard)
 
 	if logger != nil {
