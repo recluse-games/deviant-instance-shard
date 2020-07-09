@@ -8,30 +8,6 @@ import (
 	"go.uber.org/zap"
 )
 
-// Order of Operations for Incoming Play
-
-// Get Entity Location Based on ID
-// Locate Card In Hand Based on InstanceID
-// Generate Play Pairs Based on CardID and Entity Location/Rotation
-// Rotate Play Pairs According to Entity Rotation
-// Process Card Actions
-// Determine Action Type
-// Process Actions in Order
-// Clone Encounter
-// Apply All Encounter State Changes to Cloned Encounter
-// Validate Process Success
-// Repeat
-// If all actions processed sucessfully apply them to the real encounter
-// Process Actions in Order
-// Apply All Encounter State Changes to Cloned Encounter
-// Validate Process Success
-// Repeat
-// Consume Entity AP based on card cost
-// Add card to entity current discard
-// Remove card from entity current hand
-
-// Return
-
 // GetCard Returns a point to a card struct from a card slice based on ID.
 func getCard(id string, cards []*deviant.Card) (*deviant.Card, error) {
 	for _, card := range cards {
