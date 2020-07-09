@@ -2,7 +2,6 @@ package actions
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/google/uuid"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
@@ -69,8 +68,6 @@ func getCardLocations(card *deviant.Card, start location) []location {
 	cardActions[card.Action.Id][LEFT.String()] = []location{}
 	cardActions[card.Action.Id][RIGHT.String()] = []location{}
 
-	fmt.Println(card.Action.Pattern)
-
 	for _, pattern := range card.Action.Pattern {
 		offsetStart := location{0, 0}
 
@@ -114,6 +111,37 @@ func getCardLocations(card *deviant.Card, start location) []location {
 	return playLocations
 }
 
+func processAttack(damage int32, target location, board *deviant.Board) {
+	if board.Entities.Entities[target.X].Entities[target.Y].Hp < damage {
+		board.Entities.Entities[target.X].Entities[target.Y].Hp = 0
+	} else {
+		board.Entities.Entities[target.X].Entities[target.Y].Hp = board.Entities.Entities[target.X].Entities[target.Y].Hp - damage
+	}
+}
+
+func processHeal(healing int32, target location, board *deviant.Board) {
+	if board.Entities.Entities[target.X].Entities[target.Y].MaxHp <= board.Entities.Entities[target.X].Entities[target.Y].Hp+healing {
+		board.Entities.Entities[target.X].Entities[target.Y].Hp = board.Entities.Entities[target.X].Entities[target.Y].MaxHp
+	} else {
+		board.Entities.Entities[target.X].Entities[target.Y].Hp = board.Entities.Entities[target.X].Entities[target.Y].Hp + healing
+	}
+}
+
+func processBlock(hp int32, target location, board *deviant.Board) {
+	// WARNING: This should be changed to something more specific coming from the card definition itself, get creative.
+	wall := &deviant.Entity{
+		Id:        uuid.New().String(),
+		Name:      "Wall",
+		Hp:        hp,
+		MaxHp:     hp,
+		Class:     deviant.Classes_WALL,
+		State:     deviant.EntityStateNames_IDLE,
+		Alignment: deviant.Alignment_NEUTRAL,
+	}
+
+	board.Entities.Entities[target.X].Entities[target.Y] = wall
+}
+
 // Play Processes a play.
 func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction, logger *zap.Logger) bool {
 	card, err := getCard(playAction.CardId, encounter.ActiveEntity.Hand.Cards)
@@ -140,35 +168,16 @@ func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction, lo
 		return false
 	}
 
-	cardLocations := getCardLocations(card, *entityLocation)
-	cardLocations = rotateLocations(*entityLocation, cardLocations, encounter.ActiveEntity.Rotation)
+	cardLocations := rotateLocations(*entityLocation, getCardLocations(card, *entityLocation), encounter.ActiveEntity.Rotation)
 
 	for _, loc := range cardLocations {
 		switch card.Type {
 		case deviant.CardType_ATTACK:
-			if encounter.Board.Entities.Entities[loc.X].Entities[loc.Y].Hp < card.Damage {
-				encounter.Board.Entities.Entities[loc.X].Entities[loc.Y].Hp = 0
-			} else {
-				encounter.Board.Entities.Entities[loc.X].Entities[loc.Y].Hp = encounter.Board.Entities.Entities[loc.X].Entities[loc.Y].Hp - card.Damage
-			}
+			processAttack(card.Damage, loc, encounter.Board)
 		case deviant.CardType_HEAL:
-			if encounter.Board.Entities.Entities[loc.X].Entities[loc.Y].MaxHp <= encounter.Board.Entities.Entities[loc.X].Entities[loc.Y].Hp+card.Damage {
-				encounter.Board.Entities.Entities[loc.X].Entities[loc.Y].Hp = encounter.Board.Entities.Entities[loc.X].Entities[loc.Y].MaxHp
-			} else {
-				encounter.Board.Entities.Entities[loc.X].Entities[loc.Y].Hp = encounter.Board.Entities.Entities[loc.X].Entities[loc.Y].Hp + card.Damage
-			}
+			processHeal(card.Damage, loc, encounter.Board)
 		case deviant.CardType_BLOCK:
-			wall := &deviant.Entity{
-				Id:        uuid.New().String(),
-				Name:      "Wall",
-				Hp:        1,
-				MaxHp:     1,
-				Class:     deviant.Classes_WALL,
-				State:     deviant.EntityStateNames_IDLE,
-				Alignment: deviant.Alignment_NEUTRAL,
-			}
-
-			encounter.Board.Entities.Entities[loc.X].Entities[loc.Y] = wall
+			processBlock(card.Damage, loc, encounter.Board)
 		}
 
 		// HACK - This logic should be moved outside of this method and processed on every turn or something.
@@ -193,7 +202,6 @@ func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction, lo
 
 		return false
 	}
-
 	encounter.ActiveEntity.Hand.Cards = removeCard(*cardHandIndex, encounter.ActiveEntity.Hand.Cards)
 
 	if logger != nil {
