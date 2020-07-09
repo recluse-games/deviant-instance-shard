@@ -146,20 +146,23 @@ func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction, lo
 	cardLocations := rotateLocations(*entityLocation, getCardLocations(card, *entityLocation), encounter.ActiveEntity.Rotation)
 
 	for _, loc := range cardLocations {
-		switch card.Type {
-		case deviant.CardType_ATTACK:
-			processAttack(card.Damage, loc, encounter.Board)
-		case deviant.CardType_HEAL:
-			processHeal(card.Damage, loc, encounter.Board)
-		case deviant.CardType_BLOCK:
-			processBlock(card.Damage, loc, encounter.Board)
-		}
+		// This logic should maybe be migrated into another function, I'm not sure if I like conditionals this long here... alternatively this should be removed from the list when it's generated one time.
+		if loc.X <= int32(len(encounter.Board.Entities.Entities)-1) && 0 <= loc.X && loc.Y <= int32(len(encounter.Board.Entities.Entities[loc.X].Entities)-1) && 0 <= loc.Y {
+			switch card.Type {
+			case deviant.CardType_ATTACK:
+				processAttack(card.Damage, loc, encounter.Board)
+			case deviant.CardType_HEAL:
+				processHeal(card.Damage, loc, encounter.Board)
+			case deviant.CardType_BLOCK:
+				processBlock(card.Damage, loc, encounter.Board)
+			}
 
-		// HACK - This logic should be moved outside of this method and processed on every turn or something.
-		if encounter.Board.Entities.Entities[loc.X].Entities[loc.Y].Hp <= 0 {
-			encounter.ActiveEntityOrder, _ = removeEntityID(encounter.Board.Entities.Entities[loc.X].Entities[loc.Y].Id, encounter.ActiveEntityOrder)
+			// HACK - This logic should be moved outside of this method and processed on every turn or something.
+			if encounter.Board.Entities.Entities[loc.X].Entities[loc.Y].Hp <= 0 {
+				encounter.ActiveEntityOrder, _ = removeEntityID(encounter.Board.Entities.Entities[loc.X].Entities[loc.Y].Id, encounter.ActiveEntityOrder)
 
-			encounter.Board.Entities.Entities[loc.X].Entities[loc.Y] = &deviant.Entity{}
+				encounter.Board.Entities.Entities[loc.X].Entities[loc.Y] = &deviant.Entity{}
+			}
 		}
 	}
 
