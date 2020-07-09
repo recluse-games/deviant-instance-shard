@@ -5,14 +5,14 @@ import (
 	"go.uber.org/zap"
 )
 
-//addCard Adds a card to a provided slice
-func addCard(slice []*deviant.Card, card *deviant.Card) []*deviant.Card {
+//add Adds a card to the end of a provided slice
+func add(slice []*deviant.Card, card *deviant.Card) []*deviant.Card {
 	slice = append(slice, card)
 	return slice
 }
 
-//removeCard Removes a card from a provided slice
-func drawCard(slice []*deviant.Card) []*deviant.Card {
+//draw Removes a card object from the front of a provided slice
+func draw(slice []*deviant.Card) []*deviant.Card {
 	return slice[:0+copy(slice[0:], slice[1:])]
 }
 
@@ -28,8 +28,8 @@ func DrawCard(encounter *deviant.Encounter, logger *zap.Logger) bool {
 
 	topCard := encounter.ActiveEntity.Deck.Cards[0]
 
-	encounter.ActiveEntity.Deck.Cards = drawCard(encounter.ActiveEntity.Deck.Cards)
-	encounter.ActiveEntity.Hand.Cards = addCard(encounter.ActiveEntity.Hand.Cards, topCard)
+	encounter.ActiveEntity.Deck.Cards = draw(encounter.ActiveEntity.Deck.Cards)
+	encounter.ActiveEntity.Hand.Cards = add(encounter.ActiveEntity.Hand.Cards, topCard)
 
 	if logger != nil {
 		logger.Debug("Card Drawn",

@@ -92,6 +92,7 @@ func moveLocation(start location, direction deviant.Direction, distance int32) l
 	return start
 }
 
+// rotationDegrees Converts entity rotations into floating point degree representations.
 func rotationDegrees(characterRotation deviant.EntityRotationNames) float64 {
 	switch characterRotation {
 	case deviant.EntityRotationNames_NORTH:
@@ -107,7 +108,7 @@ func rotationDegrees(characterRotation deviant.EntityRotationNames) float64 {
 	return 0.00
 }
 
-// Rotates a location around a given origin point based on a degree.
+// Rotates a cartesian point around a given cartesian origin point on a 2D plane based on a degree.
 func rotateLocation(origin location, target location, degree float64) location {
 	// Convert everything to floating point.
 	oxf := float64(origin.X)

@@ -32,6 +32,7 @@ var kasp = keepalive.ServerParameters{
 type server struct {
 }
 
+// UpdateEncounter This is the main server implementation for Deviant it handles all forms of requests in an async duplex fashion utilizing GRPC.
 func (s *server) UpdateEncounter(stream deviant.EncounterService_UpdateEncounterServer) error {
 	incomingWorker := worker.NewIncomingWorker(1)
 

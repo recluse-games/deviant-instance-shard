@@ -8,16 +8,16 @@ import (
 	"go.uber.org/zap"
 )
 
-// Process Processes all rules to determine validity.
+// Process Processes validates an incoming action against the Deviant ruleset to determine if it's validity
 func Process(encounter *deviant.Encounter, entityActionName deviant.EntityActionNames, entityMoveAction *deviant.EntityMoveAction, entityPlayAction *deviant.EntityPlayAction, logger *zap.Logger) bool {
-	entityActionRules := map[deviant.EntityActionNames][]interface{}{
+	entityRuleSet := map[deviant.EntityActionNames][]interface{}{
 		deviant.EntityActionNames_PLAY:         {ValidatePlayApCost, ValidateCardTypeSpecificConstraints, ValidateCardInHand},
 		deviant.EntityActionNames_MOVE:         {ValidateMoveApCost, ValidateNewLocationEmpty, ValidateMovePermissable},
 		deviant.EntityActionNames_DISCARD:      {},
 		deviant.EntityActionNames_CHANGE_PHASE: {},
 	}
 
-	turnPhaseRules := map[deviant.TurnPhaseNames][]interface{}{
+	turnRuleSet := map[deviant.TurnPhaseNames][]interface{}{
 		deviant.TurnPhaseNames_PHASE_POINT:   {},
 		deviant.TurnPhaseNames_PHASE_EFFECT:  {},
 		deviant.TurnPhaseNames_PHASE_DRAW:    {ValidateSize, ValidateDraw},
@@ -26,7 +26,7 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 		deviant.TurnPhaseNames_PHASE_END:     {},
 	}
 
-	validEntityActionsPerTurn := map[deviant.TurnPhaseNames]map[deviant.EntityActionNames]bool{
+	validTurnActions := map[deviant.TurnPhaseNames]map[deviant.EntityActionNames]bool{
 		deviant.TurnPhaseNames_PHASE_POINT: {
 			deviant.EntityActionNames_NOTHING: true,
 		},
@@ -53,14 +53,14 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 	}
 
 	// Early return for any incoming actions that don't match turns.
-	if _, ok := validEntityActionsPerTurn[encounter.Turn.Phase][entityActionName]; ok {
+	if _, ok := validTurnActions[encounter.Turn.Phase][entityActionName]; ok {
 		if !ok {
 			return false
 		}
 	}
 
 	// Validate all entity action rules are sucessfully passing.
-	if val, ok := entityActionRules[entityActionName]; ok {
+	if val, ok := entityRuleSet[entityActionName]; ok {
 		if ok {
 			for _, entityActionFunction := range val {
 				switch entityActionName {
@@ -89,7 +89,7 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 	}
 
 	// Validate all turn phase rules are sucessfully passing.
-	if val, ok := turnPhaseRules[encounter.Turn.Phase]; ok {
+	if val, ok := turnRuleSet[encounter.Turn.Phase]; ok {
 		if ok {
 			for _, turnRuleFunction := range val {
 				switch encounter.Turn.Phase {

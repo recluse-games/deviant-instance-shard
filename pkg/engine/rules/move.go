@@ -5,7 +5,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func boundaryFill4(startx int32, starty int32, x int32, y int32, filledID string, blockedID string, limit int32, tiles []*[]*deviant.Tile) {
+func flood(startx int32, starty int32, x int32, y int32, filledID string, blockedID string, limit int32, tiles []*[]*deviant.Tile) {
 	if (*tiles[x])[y].Id != blockedID && (*tiles[x])[y].Id != filledID {
 		var apCostX int32
 		var apCostY int32
@@ -34,19 +34,19 @@ func boundaryFill4(startx int32, starty int32, x int32, y int32, filledID string
 
 		if limit-apCostX-apCostY >= 0 {
 			if x+1 <= 8 {
-				boundaryFill4(startx, starty, x+1, y, filledID, blockedID, limit, tiles)
+				flood(startx, starty, x+1, y, filledID, blockedID, limit, tiles)
 			}
 
 			if y+1 <= 7 {
-				boundaryFill4(startx, starty, x, y+1, filledID, blockedID, limit, tiles)
+				flood(startx, starty, x, y+1, filledID, blockedID, limit, tiles)
 			}
 
 			if x-1 >= 0 {
-				boundaryFill4(startx, starty, x-1, y, filledID, blockedID, limit, tiles)
+				flood(startx, starty, x-1, y, filledID, blockedID, limit, tiles)
 			}
 
 			if y-1 >= 0 {
-				boundaryFill4(startx, starty, x, y-1, filledID, blockedID, limit, tiles)
+				flood(startx, starty, x, y-1, filledID, blockedID, limit, tiles)
 			}
 		}
 	}
@@ -78,7 +78,7 @@ func GeneratePermissableMoves(requestedMoveAction *deviant.EntityMoveAction, ava
 		moveTargetTiles = append(moveTargetTiles, &newRow)
 	}
 
-	boundaryFill4(requestedMoveAction.StartXPosition, requestedMoveAction.StartYPosition, requestedMoveAction.StartXPosition, requestedMoveAction.StartYPosition, "select_0000", "select_0002", avaliableAp, moveTargetTiles)
+	flood(requestedMoveAction.StartXPosition, requestedMoveAction.StartYPosition, requestedMoveAction.StartXPosition, requestedMoveAction.StartYPosition, "select_0000", "select_0002", avaliableAp, moveTargetTiles)
 
 	for _, row := range moveTargetTiles {
 		for _, tile := range *row {
