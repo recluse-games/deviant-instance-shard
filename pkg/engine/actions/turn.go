@@ -52,7 +52,10 @@ func ChangePhase(encounter *deviant.Encounter, logger *zap.Logger) bool {
 func UpdateActiveEntity(encounter *deviant.Encounter, logger *zap.Logger) bool {
 	var newActiveEntityID string
 
-	newActiveEntityIndex, _ := engineutil.IndexString(encounter.ActiveEntityOrder, encounter.ActiveEntity.Id)
+	newActiveEntityIndex, err := engineutil.IndexString(encounter.ActiveEntityOrder, encounter.ActiveEntity.Id)
+	if err != nil {
+		return false
+	}
 
 	if len(encounter.ActiveEntityOrder) > *newActiveEntityIndex+1 {
 		newActiveEntityID = encounter.ActiveEntityOrder[*newActiveEntityIndex+1]
@@ -61,24 +64,25 @@ func UpdateActiveEntity(encounter *deviant.Encounter, logger *zap.Logger) bool {
 	}
 
 	if encounter.ActiveEntity.Hp <= 0 {
-		encounter.ActiveEntityOrder, _ = engineutil.RemoveString(encounter.ActiveEntity.Id, encounter.ActiveEntityOrder)
-
-		for y, entitiesRow := range encounter.Board.Entities.Entities {
-			for x, entity := range entitiesRow.Entities {
-				if entity.Id == encounter.ActiveEntity.Id {
-					encounter.Board.Entities.Entities[y].Entities[x] = &deviant.Entity{}
-				}
-			}
+		encounter.ActiveEntityOrder, err = engineutil.RemoveString(encounter.ActiveEntity.Id, encounter.ActiveEntityOrder)
+		if err != nil {
+			return false
 		}
+
+		location, err := engineutil.LocateEntity(encounter.ActiveEntity.Id, encounter.Board)
+		if err != nil {
+			return false
+		}
+
+		encounter.Board.Entities.Entities[location.Y].Entities[location.X] = &deviant.Entity{}
 	}
 
-	for _, entitiesRow := range encounter.Board.Entities.Entities {
-		for _, entity := range entitiesRow.Entities {
-			if entity.Id == newActiveEntityID {
-				encounter.ActiveEntity = entity
-			}
-		}
+	newActiveEntity, err := engineutil.GetEntity(newActiveEntityID, encounter.Board)
+	if err != nil {
+		return false
 	}
+
+	encounter.ActiveEntity = newActiveEntity
 
 	if logger != nil {
 		logger.Debug("Updated Active Entity",

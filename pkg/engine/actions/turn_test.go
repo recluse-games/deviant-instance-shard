@@ -59,3 +59,44 @@ func TestChangePhase(t *testing.T) {
 	}
 
 }
+
+func TestUpdateActiveEntity(t *testing.T) {
+	mockTurn := &deviant.Turn{
+		Id:    "0000",
+		Phase: deviant.TurnPhaseNames_PHASE_DRAW,
+	}
+
+	mockEncounter := &deviant.Encounter{
+		ActiveEntity: &deviant.Entity{
+			Hp: 5,
+			Id: "0001",
+		},
+		ActiveEntityOrder: []string{"0001", "0002", "0003"},
+		Turn:              mockTurn,
+		Board: &deviant.Board{
+			Entities: &deviant.Entities{
+				Entities: []*deviant.EntitiesRow{
+					{
+						Entities: []*deviant.Entity{
+							&deviant.Entity{
+								Hp: 5,
+								Id: "0001",
+							},
+							&deviant.Entity{
+								Hp: 5,
+								Id: "0002",
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	result := UpdateActiveEntity(mockEncounter, nil)
+
+	if result == false {
+		t.Logf("Failed to update active entity")
+		t.Fail()
+	}
+}
