@@ -7,22 +7,21 @@ import (
 )
 
 //IndexString Finds the index of a given string in a slice of strings.
-func IndexString(a []string, x string) (int, error) {
-	for i, n := range a {
-		if x == n {
-			return i, nil
+func IndexString(ss []string, s string) (*int, error) {
+	for i, n := range ss {
+		if s == n {
+			return &i, nil
 		}
 	}
-	return 0, errors.New("String entry not found in slice")
-}
-
-// RemoveString Removes a string from a slice based on index.
-func RemoveString(slice []string, s int) []string {
-	return append(slice[:s], slice[s+1:]...)
+	return nil, errors.New("String entry not found in slice")
 }
 
 // LocateEntity Returns the location of an Entity on the board from it's ID.
 func LocateEntity(id string, board *deviant.Board) (*Location, error) {
+	if board.Entities == nil {
+		return nil, errors.New("No entities exist on board")
+	}
+
 	for x, row := range board.Entities.Entities {
 		for y, entity := range row.Entities {
 			if entity.Id == id {
@@ -47,16 +46,15 @@ func GetEntity(id string, board *deviant.Board) (*deviant.Entity, error) {
 	return nil, errors.New("Failed to locate entity with provided ID in Board")
 }
 
-// RemoveEntityID Removes an entityID from the entityTurnOrder of an encounter.
-func RemoveEntityID(entityID string, slice []string) ([]string, error) {
-	entityIndex, err := IndexString(slice, entityID)
-
+// RemoveString Removes an entityID from the entityTurnOrder of an encounter.
+func RemoveString(value string, slice []string) ([]string, error) {
+	i, err := IndexString(slice, value)
 	if err != nil {
-		return slice, errors.New("ID does not exist in slice")
+		return slice, errors.New("string does not exist in slice")
 	}
 
 	if len(slice) > 1 {
-		return RemoveString(slice, entityIndex), nil
+		return append(slice[:*i], slice[*i+1:]...), nil
 	}
 
 	return nil, nil

@@ -177,7 +177,7 @@ func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction, lo
 
 			// HACK - This logic should be moved outside of this method and processed on every turn or something.
 			if encounter.Board.Entities.Entities[loc.X].Entities[loc.Y].Hp <= 0 {
-				encounter.ActiveEntityOrder, _ = engineutil.RemoveEntityID(encounter.Board.Entities.Entities[loc.X].Entities[loc.Y].Id, encounter.ActiveEntityOrder)
+				encounter.ActiveEntityOrder, _ = engineutil.RemoveString(encounter.Board.Entities.Entities[loc.X].Entities[loc.Y].Id, encounter.ActiveEntityOrder)
 
 				encounter.Board.Entities.Entities[loc.X].Entities[loc.Y] = &deviant.Entity{}
 			}

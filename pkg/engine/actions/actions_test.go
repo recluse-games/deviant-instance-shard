@@ -11,13 +11,13 @@ func TestRemoveEntityID(t *testing.T) {
 	entityID2 := "0002"
 	entityIDs := []string{entityID1, entityID2}
 
-	updatedEntityIDs, _ := engineutil.RemoveEntityID(entityID1, entityIDs)
+	updatedEntityIDs, _ := engineutil.RemoveString(entityID1, entityIDs)
 	if updatedEntityIDs[0] != "0002" {
 		t.Logf("EntityID removal failed for non-zero slice.")
 		t.Fail()
 	}
 
-	updatedEntityIDs, _ = engineutil.RemoveEntityID(entityID2, updatedEntityIDs)
+	updatedEntityIDs, _ = engineutil.RemoveString(entityID2, updatedEntityIDs)
 	if updatedEntityIDs != nil {
 		t.Logf("EntityID removal failed for 1 length slice.")
 		t.Fail()

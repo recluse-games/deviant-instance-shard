@@ -54,14 +54,14 @@ func UpdateActiveEntity(encounter *deviant.Encounter, logger *zap.Logger) bool {
 
 	newActiveEntityIndex, _ := engineutil.IndexString(encounter.ActiveEntityOrder, encounter.ActiveEntity.Id)
 
-	if len(encounter.ActiveEntityOrder) > newActiveEntityIndex+1 {
-		newActiveEntityID = encounter.ActiveEntityOrder[newActiveEntityIndex+1]
+	if len(encounter.ActiveEntityOrder) > *newActiveEntityIndex+1 {
+		newActiveEntityID = encounter.ActiveEntityOrder[*newActiveEntityIndex+1]
 	} else if len(encounter.ActiveEntityOrder) == 1 {
 		newActiveEntityID = encounter.ActiveEntityOrder[0]
 	}
 
 	if encounter.ActiveEntity.Hp <= 0 {
-		encounter.ActiveEntityOrder, _ = engineutil.RemoveEntityID(encounter.ActiveEntity.Id, encounter.ActiveEntityOrder)
+		encounter.ActiveEntityOrder, _ = engineutil.RemoveString(encounter.ActiveEntity.Id, encounter.ActiveEntityOrder)
 
 		for y, entitiesRow := range encounter.Board.Entities.Entities {
 			for x, entity := range entitiesRow.Entities {
