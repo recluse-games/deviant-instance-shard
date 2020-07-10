@@ -8,28 +8,29 @@ import (
 )
 
 func TestValidateDraw(t *testing.T) {
-
-	entityWithEnoughCardsInDeckToDraw := &deviant.Entity{
+	entity := &deviant.Entity{
 		Deck: enginetest.GenerateDeckLiteral(5),
 	}
 
 	encounter := &deviant.Encounter{
-		ActiveEntity: entityWithEnoughCardsInDeckToDraw,
+		ActiveEntity: entity,
 	}
 
 	if ValidateDraw(encounter, nil) != true {
+		t.Logf("Failed to determine a valid draw.")
 		t.Fail()
 	}
 
-	entityWithoutEnoughCardsInDeckToDraw := &deviant.Entity{
+	entity = &deviant.Entity{
 		Deck: enginetest.GenerateDeckLiteral(0),
 	}
 
 	encounter = &deviant.Encounter{
-		ActiveEntity: entityWithoutEnoughCardsInDeckToDraw,
+		ActiveEntity: entity,
 	}
 
 	if ValidateDraw(encounter, nil) != false {
+		t.Logf("Failed to determine an invalid draw.")
 		t.Fail()
 	}
 }

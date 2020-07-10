@@ -31,11 +31,11 @@ func FloodFill(startx int32, starty int32, x int32, y int32, filledID string, bl
 		(*tiles[x])[y] = newTile
 
 		if limit-apCostX-apCostY >= 0 {
-			if x+1 <= 8 {
+			if x+1 < int32(len(tiles)) {
 				FloodFill(startx, starty, x+1, y, filledID, blockedID, limit, tiles)
 			}
 
-			if y+1 <= 7 {
+			if y+1 < int32(len(*tiles[x])) {
 				FloodFill(startx, starty, x, y+1, filledID, blockedID, limit, tiles)
 			}
 
