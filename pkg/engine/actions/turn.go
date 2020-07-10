@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"github.com/recluse-games/deviant-instance-shard/pkg/engine/engineutil"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 	"go.uber.org/zap"
 )
@@ -51,7 +52,7 @@ func ChangePhase(encounter *deviant.Encounter, logger *zap.Logger) bool {
 func UpdateActiveEntity(encounter *deviant.Encounter, logger *zap.Logger) bool {
 	var newActiveEntityID string
 
-	newActiveEntityIndex, _ := findIndex(encounter.ActiveEntityOrder, encounter.ActiveEntity.Id)
+	newActiveEntityIndex, _ := engineutil.IndexString(encounter.ActiveEntityOrder, encounter.ActiveEntity.Id)
 
 	if len(encounter.ActiveEntityOrder) > newActiveEntityIndex+1 {
 		newActiveEntityID = encounter.ActiveEntityOrder[newActiveEntityIndex+1]
@@ -60,7 +61,7 @@ func UpdateActiveEntity(encounter *deviant.Encounter, logger *zap.Logger) bool {
 	}
 
 	if encounter.ActiveEntity.Hp <= 0 {
-		encounter.ActiveEntityOrder, _ = removeEntityID(encounter.ActiveEntity.Id, encounter.ActiveEntityOrder)
+		encounter.ActiveEntityOrder, _ = engineutil.RemoveEntityID(encounter.ActiveEntity.Id, encounter.ActiveEntityOrder)
 
 		for y, entitiesRow := range encounter.Board.Entities.Entities {
 			for x, entity := range entitiesRow.Entities {
