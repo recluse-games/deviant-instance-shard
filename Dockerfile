@@ -1,23 +1,23 @@
 FROM golang:alpine AS builder
 LABEL maintainer="The deviant authors <deviant-dev@recluse-games.com>"
 
-RUN apk update && apk add --no-cache git openssh
+# Take in the GITHUB_TOKEN from the compose environment.
+ARG GITHUB_TOKEN
 
-# Configure access to recluse private repos. There is probably a better way to
-# do this with GitHub actions. But this works for now for local builds.
-ADD deviant_rsa /root/.ssh/id_rsa
-ADD deviant_rsa.pub /root/.ssh/id_rsa.pub
-RUN chmod 700 /root/.ssh/id_rsa
-RUN echo "Host github.com\n\tStrictHostKeyChecking no\n" > /root/.ssh/config
-RUN git config --global url."git@github.com:".insteadOf https://github.com/
-RUN ssh-keyscan -t rsa github.com >> /etc/ssh/ssh_known_hosts
+RUN apk update && apk add --no-cache git openssh make redis
+RUN GOCACHE=OFF
+
+# Setup GIT related configuration to work in Docker + Private Go Repository
+RUN export GIT_TERMINAL_PROMPT=1
+ENV GOPRIVATE=github.com/recluse-games/*
+RUN git config --global url."https://$GITHUB_TOKEN:x-oauth-basic@github.com".insteadOf "https://github.com"
 
 WORKDIR /go/src/github.com/recluse-games/deviant-instance-shard
 COPY . .
-RUN CGO_ENABLED=0 go build -a -ldflags '-extldflags "-static"' -o /go/bin/deviant-instance-shard
-RUN rm -f *rsa*
+
+RUN make
 
 FROM scratch
-COPY --from=builder /go/bin/deviant-instance-shard /go/bin/deviant-instance-shard
+COPY --from=builder /go/src/github.com/recluse-games/deviant-instance-shard/bin/deviant-instance-shard /go/bin/deviant-instance-shard
 ENTRYPOINT ["/go/bin/deviant-instance-shard"]
 EXPOSE 50051

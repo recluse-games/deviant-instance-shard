@@ -18,24 +18,12 @@ make
 
 ## Using Docker
 
-#### Configure access to GitHub private repos
-
-1. Create an SSH keypair
-    ```
-    ssh-keygen
-    ```
-
-2. Navigate to the [deviant-protobuf keys settings](https://github.com/recluse-games/deviant-protobuf/settings/keys)
-
-3. Click `Add deploy key`
-
-4. Copy your public key into the provided field
-
-5. *HACK* For now, copy your keys into the root of the `deviant-instance-shard` project
+Setup a Github Developer Access Token on Github.com
+export $GITHUB_TOKEN=<YOUR_TOKEN_HERE>
 
 #### Build and run the server
 ```
-docker-compose -p deviant up --build
+make docker
 ```
 
 #### Inspect the container

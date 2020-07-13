@@ -5,5 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
     ports:
       - 50051:50051
