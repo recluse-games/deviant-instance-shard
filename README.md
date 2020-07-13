@@ -8,12 +8,20 @@ in the long run match-making between players as well as card/game data will be m
 The Deviant Instance Shard has a few dependencies that you must have on your system when building/testing your code the first and formost is Redis. A locally
 hosted Redis server on the default port is enough for now but this is subject to change in the future.
 
+# Development
+
 # Setup Guide
-
+## Windows
 ```
-Install the make toolchain on your system
-
-make
+1. Install Visual Studio Code
+2. Install Microsoft May 2020 Update
+2. Install WSL2 Kernel Update
+3. Install Docker Desktop and enable WSL2 integration
+4. Set default WSL version for new operating systems
+5. Install Ubuntu from Microsoft Store
+6. Setup and configure Golang
+7. Setup and configure Git
+8. Configure a Github Developer Access Token
 ```
 
 ## Using Docker
