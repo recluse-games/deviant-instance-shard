@@ -8,7 +8,7 @@ RUN apk update && apk add --no-cache git openssh make
 RUN GOCACHE=OFF
 
 # Setup GIT related configuration to work in Docker + Private Go Repository
-RUN export GIT_TERMINAL_PROMPT=1
+ENV GIT_TERMINAL_PROMPT=1
 ENV GOPRIVATE=github.com/recluse-games/*
 RUN git config --global url."https://$GITHUB_TOKEN:x-oauth-basic@github.com".insteadOf "https://github.com"
 

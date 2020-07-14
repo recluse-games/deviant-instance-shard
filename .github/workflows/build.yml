@@ -12,6 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: configure-git
+        run: |
+          RUN git config --global url."https://$GITHUB_TOKEN:x-oauth-basic@github.com".insteadOf "https://github.com"
+        env:
+          GITHUB_TOKEN: ${{ secrets.CI_ROBOT_SECRET }}
+          GOPRIVATE: "github.com/recluse-games"
+          GIT_TERMINAL_PROMPT: 1
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v1
         with:
