@@ -65,13 +65,19 @@ jobs:
   
     - name: Build deviant-instance-shard
       run: |
+        export GOPATH=$GITHUB_WORKSPACE/go
+        export GOPRIVATE="github.com/recluse-games"
+
         cd $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard
         make
         
     - name: Get Windows Dependencies
       run: |
+        export GOPATH=$GITHUB_WORKSPACE/go
+        export GOPRIVATE="github.com/recluse-games"
         export GOOS=windows 
         export GOARCH=amd64 
+        
         cd $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard
 
         go install ./...
