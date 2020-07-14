@@ -11,6 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps: 
+    - name: Check out Instance Shard into the Go module directory
+      uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.CI_ROBOT }}
+
     - uses: docker/build-push-action@v1
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
