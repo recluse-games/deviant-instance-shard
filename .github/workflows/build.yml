@@ -16,7 +16,7 @@ jobs:
         run: |
           git config --global url."https://$GITHUB_TOKEN:x-oauth-basic@github.com".insteadOf "https://github.com"
         env:
-          GITHUB_TOKEN: ${{ secrets.CI_ROBOT_SECRET }}
+          GITHUB_TOKEN: ${{ secrets.RECLUSE_CI_ROBOT_TOKEN }}
           GOPRIVATE: "github.com/recluse-games"
           GIT_TERMINAL_PROMPT: 1
       - name: golangci-lint
