@@ -1,0 +1,29 @@
+name: Linter
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.RECLUSE_CI_ROBOT_TOKEN }}
+      GOPRIVATE: "github.com/recluse-games/*"
+      GIT_TERMINAL_PROMPT: 1
+    steps:
+      - uses: actions/checkout@v2
+      - name: configure-git
+        run: |
+          git config --global url."https://$GITHUB_TOKEN:x-oauth-basic@github.com".insteadOf "https://github.com"
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v1
+        with:
+          version: v1.28
+        env:
+          GITHUB_TOKEN: ${{ secrets.RECLUSE_CI_ROBOT_TOKEN }}
+          GOPRIVATE: "github.com/recluse-games/*"
+          GIT_TERMINAL_PROMPT: 1
