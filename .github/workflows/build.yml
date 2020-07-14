@@ -23,6 +23,10 @@ jobs:
         uses: golangci/golangci-lint-action@v1
         with:
           version: v1.26
+          env:
+            GITHUB_TOKEN: ${{ secrets.RECLUSE_CI_ROBOT_TOKEN }}
+            GOPRIVATE: "github.com/recluse-games/*"
+            GIT_TERMINAL_PROMPT: 1
   build:
     needs: lint
     name: Build
