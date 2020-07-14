@@ -5,9 +5,13 @@ import (
 
 	"github.com/recluse-games/deviant-instance-shard/pkg/engine/enginetest"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	"go.uber.org/zap/zaptest"
 )
 
 func TestMove(t *testing.T) {
+	logger := zaptest.NewLogger(t)
+	logger.Sync()
+
 	mockEntity := &deviant.Entity{
 		Id:   "0001",
 		Ap:   2,
@@ -44,7 +48,7 @@ func TestMove(t *testing.T) {
 		FinalYPosition: 1,
 	}
 
-	if Move(mockEncounter, mockMoveAction, nil) != true {
+	if Move(mockEncounter, mockMoveAction, logger.Sugar()) != true {
 		t.Fail()
 	}
 

@@ -4,10 +4,15 @@ import (
 	"testing"
 
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	"go.uber.org/zap/zaptest"
 )
 
 func TestValidateMoveApCost(t *testing.T) {
+	logger := zaptest.NewLogger(t)
+	logger.Sync()
+
 	entity := &deviant.Entity{
+		Id: "0001",
 		Ap: 5,
 	}
 
@@ -18,9 +23,11 @@ func TestValidateMoveApCost(t *testing.T) {
 		FinalYPosition: 3,
 	}
 
-	encounter := &deviant.Encounter{}
+	encounter := &deviant.Encounter{
+		ActiveEntity: entity,
+	}
 
-	isApCostValid := ValidateMoveApCost(entity, moveAction, encounter, nil)
+	isApCostValid := ValidateMoveApCost(entity, moveAction, encounter, logger.Sugar())
 
 	if isApCostValid != true {
 		t.Fail()
@@ -28,6 +35,9 @@ func TestValidateMoveApCost(t *testing.T) {
 }
 
 func TestValidateNewLocationEmpty(t *testing.T) {
+	logger := zaptest.NewLogger(t)
+	logger.Sync()
+
 	entity := &deviant.Entity{
 		Ap: 5,
 	}
@@ -40,6 +50,7 @@ func TestValidateNewLocationEmpty(t *testing.T) {
 	}
 
 	encounter := &deviant.Encounter{
+		ActiveEntity: &deviant.Entity{Id: "0001"},
 		Board: &deviant.Board{
 			Entities: &deviant.Entities{
 				Entities: []*deviant.EntitiesRow{
@@ -72,7 +83,7 @@ func TestValidateNewLocationEmpty(t *testing.T) {
 		},
 	}
 
-	isMoveLocationValid := ValidateNewLocationEmpty(entity, moveAction, encounter, nil)
+	isMoveLocationValid := ValidateNewLocationEmpty(entity, moveAction, encounter, logger.Sugar())
 
 	if isMoveLocationValid == false {
 		t.Fail()
@@ -80,6 +91,9 @@ func TestValidateNewLocationEmpty(t *testing.T) {
 }
 
 func TestValidateMovePermissable(t *testing.T) {
+	logger := zaptest.NewLogger(t)
+	logger.Sync()
+
 	entity := &deviant.Entity{
 		Ap: 5,
 	}
@@ -92,6 +106,7 @@ func TestValidateMovePermissable(t *testing.T) {
 	}
 
 	encounter := &deviant.Encounter{
+		ActiveEntity: &deviant.Entity{Id: "0001"},
 		Board: &deviant.Board{
 			Entities: &deviant.Entities{
 				Entities: []*deviant.EntitiesRow{
@@ -124,7 +139,7 @@ func TestValidateMovePermissable(t *testing.T) {
 		},
 	}
 
-	result := ValidateMovePermissable(entity, moveAction, encounter, nil)
+	result := ValidateMovePermissable(entity, moveAction, encounter, logger.Sugar())
 
 	if result == false {
 		t.Fail()

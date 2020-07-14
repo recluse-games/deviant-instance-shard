@@ -5,10 +5,15 @@ import (
 
 	"github.com/recluse-games/deviant-instance-shard/pkg/engine/enginetest"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	"go.uber.org/zap/zaptest"
 )
 
 func TestValidateDraw(t *testing.T) {
+	logger := zaptest.NewLogger(t)
+	logger.Sync()
+
 	entity := &deviant.Entity{
+		Id:   "0001",
 		Deck: enginetest.GenerateDeckLiteral(5),
 	}
 
@@ -16,7 +21,7 @@ func TestValidateDraw(t *testing.T) {
 		ActiveEntity: entity,
 	}
 
-	if ValidateDraw(encounter, nil) != true {
+	if ValidateDraw(encounter, logger.Sugar()) != true {
 		t.Logf("Failed to determine a valid draw.")
 		t.Fail()
 	}
@@ -29,7 +34,7 @@ func TestValidateDraw(t *testing.T) {
 		ActiveEntity: entity,
 	}
 
-	if ValidateDraw(encounter, nil) != false {
+	if ValidateDraw(encounter, logger.Sugar()) != false {
 		t.Logf("Failed to determine an invalid draw.")
 		t.Fail()
 	}

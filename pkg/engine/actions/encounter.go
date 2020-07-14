@@ -6,7 +6,7 @@ import (
 )
 
 // ProcessWinConditions Validates if any enemies remain if they don't the encounter will be set to completed.
-func ProcessWinConditions(encounter *deviant.Encounter, logger *zap.Logger) bool {
+func ProcessWinConditions(encounter *deviant.Encounter, logger *zap.SugaredLogger) bool {
 	friendlyCounter := 0
 	enemyCounter := 0
 
@@ -36,11 +36,10 @@ func ProcessWinConditions(encounter *deviant.Encounter, logger *zap.Logger) bool
 		encounter.Completed = true
 	}
 
-	if logger != nil {
-		logger.Debug("Win Conditions Processed",
-			zap.String("actionID", "ProcessWinConditions"),
-		)
-	}
+	logger.Debug("Win Conditions Processed",
+		"actionID", "ProcessWinConditions",
+		"status", encounter.Completed,
+	)
 
 	return true
 }

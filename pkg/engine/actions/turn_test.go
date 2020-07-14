@@ -4,17 +4,22 @@ import (
 	"testing"
 
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	"go.uber.org/zap/zaptest"
 )
 
 func TestGrantAp(t *testing.T) {
+	logger := zaptest.NewLogger(t)
+	logger.Sync()
+
 	entityWithNoAp := &deviant.Encounter{
 		ActiveEntity: &deviant.Entity{
+			Id:    "0001",
 			Ap:    0,
 			MaxAp: 5,
 		},
 	}
 
-	if GrantAp(entityWithNoAp, nil) != true {
+	if GrantAp(entityWithNoAp, logger.Sugar()) != true {
 		t.Fail()
 	}
 
@@ -24,6 +29,9 @@ func TestGrantAp(t *testing.T) {
 }
 
 func TestChangePhase(t *testing.T) {
+	logger := zaptest.NewLogger(t)
+	logger.Sync()
+
 	// Test Non End Phase Incrementation
 	mockTurn := &deviant.Turn{
 		Id:    "0000",
@@ -31,10 +39,13 @@ func TestChangePhase(t *testing.T) {
 	}
 
 	mockEncounter := &deviant.Encounter{
+		ActiveEntity: &deviant.Entity{
+			Id: "0001",
+		},
 		Turn: mockTurn,
 	}
 
-	ChangePhase(mockEncounter, nil)
+	ChangePhase(mockEncounter, logger.Sugar())
 
 	if mockEncounter.Turn.Phase != deviant.TurnPhaseNames_PHASE_ACTION {
 		t.Logf("Failed to increment the turn phase")
@@ -48,10 +59,13 @@ func TestChangePhase(t *testing.T) {
 	}
 
 	mockEncounter = &deviant.Encounter{
+		ActiveEntity: &deviant.Entity{
+			Id: "0001",
+		},
 		Turn: mockTurn,
 	}
 
-	ChangePhase(mockEncounter, nil)
+	ChangePhase(mockEncounter, logger.Sugar())
 
 	if mockEncounter.Turn.Phase != deviant.TurnPhaseNames_PHASE_POINT {
 		t.Logf("Failed to increment the turn correctly from end")
@@ -61,6 +75,9 @@ func TestChangePhase(t *testing.T) {
 }
 
 func TestUpdateActiveEntity(t *testing.T) {
+	logger := zaptest.NewLogger(t)
+	logger.Sync()
+
 	mockTurn := &deviant.Turn{
 		Id:    "0000",
 		Phase: deviant.TurnPhaseNames_PHASE_DRAW,
@@ -78,11 +95,11 @@ func TestUpdateActiveEntity(t *testing.T) {
 				Entities: []*deviant.EntitiesRow{
 					{
 						Entities: []*deviant.Entity{
-							&deviant.Entity{
+							{
 								Hp: 5,
 								Id: "0001",
 							},
-							&deviant.Entity{
+							{
 								Hp: 5,
 								Id: "0002",
 							},
@@ -93,7 +110,7 @@ func TestUpdateActiveEntity(t *testing.T) {
 		},
 	}
 
-	result := UpdateActiveEntity(mockEncounter, nil)
+	result := UpdateActiveEntity(mockEncounter, logger.Sugar())
 
 	if result == false {
 		t.Logf("Failed to update active entity")

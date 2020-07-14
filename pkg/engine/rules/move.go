@@ -47,7 +47,7 @@ func GeneratePermissableMoves(requestedMoveAction *deviant.EntityMoveAction, ava
 }
 
 // ValidateMovePermissable Determines if the move is permissable using a flood fill algorithm and ap cost.
-func ValidateMovePermissable(activeEntity *deviant.Entity, requestedMoveAction *deviant.EntityMoveAction, encounter *deviant.Encounter, logger *zap.Logger) bool {
+func ValidateMovePermissable(activeEntity *deviant.Entity, requestedMoveAction *deviant.EntityMoveAction, encounter *deviant.Encounter, logger *zap.SugaredLogger) bool {
 	isRequestedMoveValid := false
 
 	validTiles := GeneratePermissableMoves(requestedMoveAction, activeEntity.Ap, encounter.Board.Entities)
@@ -58,19 +58,19 @@ func ValidateMovePermissable(activeEntity *deviant.Entity, requestedMoveAction *
 		}
 	}
 
-	if logger != nil {
-		logger.Debug("Validated Move Permissable",
-			zap.String("actionID", "ValidateMovePermissable"),
-			zap.String("entityID", encounter.ActiveEntity.Id),
-			zap.Bool("succeeded", isRequestedMoveValid),
-		)
-	}
+	logger.Debug("Validated Move Permissable",
+		"actionID", "ValidateMovePermissable",
+		"entityID", encounter.ActiveEntity.Id,
+		"succeeded", isRequestedMoveValid,
+	)
 
 	return isRequestedMoveValid
 }
 
 // ValidateMoveApCost Determines that the entity has the correct amount of AP to perform the requested move.
-func ValidateMoveApCost(activeEntity *deviant.Entity, requestedMoveAction *deviant.EntityMoveAction, encounter *deviant.Encounter, logger *zap.Logger) bool {
+func ValidateMoveApCost(activeEntity *deviant.Entity, requestedMoveAction *deviant.EntityMoveAction, encounter *deviant.Encounter, logger *zap.SugaredLogger) bool {
+	status := false
+
 	var totalApCost int32
 	var apCostX int32
 	var apCostY int32
@@ -94,35 +94,32 @@ func ValidateMoveApCost(activeEntity *deviant.Entity, requestedMoveAction *devia
 	totalApCost = apCostX + apCostY
 
 	if totalApCost <= activeEntity.Ap {
-
-		return true
+		status = true
 	}
 
-	if logger != nil {
-		logger.Debug("Validated New Move AP Cost",
-			zap.String("actionID", "ValidateMoveApCost"),
-			zap.String("entityID", encounter.ActiveEntity.Id),
-			zap.Bool("succeeded", false),
-		)
-	}
+	logger.Debugw("Validated New Move AP Cost",
+		"actionID", "ValidateMoveApCost",
+		"entityID", encounter.ActiveEntity.Id,
+		"succeeded", status,
+	)
 
-	return false
+	return status
 }
 
 // ValidateNewLocationEmpty Determines that the entity can actually move to this location on the board.
-func ValidateNewLocationEmpty(activeEntity *deviant.Entity, requestedMoveAction *deviant.EntityMoveAction, encounter *deviant.Encounter, logger *zap.Logger) bool {
+func ValidateNewLocationEmpty(activeEntity *deviant.Entity, requestedMoveAction *deviant.EntityMoveAction, encounter *deviant.Encounter, logger *zap.SugaredLogger) bool {
+	status := false
+
 	// Validate that the new location is empty
 	if encounter.Board.Entities.Entities[requestedMoveAction.FinalXPosition].Entities[requestedMoveAction.FinalYPosition].Id == "" {
-		return true
+		status = true
 	}
 
-	if logger != nil {
-		logger.Debug("Validated New Location Empty",
-			zap.String("actionID", "ValidateNewLocationEmpty"),
-			zap.String("entityID", encounter.ActiveEntity.Id),
-			zap.Bool("succeeded", false),
-		)
-	}
+	logger.Debug("Validated New Location Empty",
+		"actionID", "ValidateNewLocationEmpty",
+		"entityID", encounter.ActiveEntity.Id,
+		"succeeded", status,
+	)
 
-	return false
+	return status
 }

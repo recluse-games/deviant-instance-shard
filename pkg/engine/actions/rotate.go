@@ -6,16 +6,14 @@ import (
 )
 
 // Rotate Rotates an Entity Based on a Tile Selection
-func Rotate(encounter *deviant.Encounter, entityRotateAction *deviant.EntityRotateAction, logger *zap.Logger) bool {
+func Rotate(encounter *deviant.Encounter, entityRotateAction *deviant.EntityRotateAction, logger *zap.SugaredLogger) bool {
 	encounter.ActiveEntity.Rotation = entityRotateAction.Rotation
 
-	if logger != nil {
-		logger.Debug("Entity Rotation Processed",
-			zap.String("actionID", "Rotate"),
-			zap.String("entityID", encounter.ActiveEntity.Id),
-			zap.String("rotationID", encounter.ActiveEntity.Rotation.String()),
-		)
-	}
+	logger.Debug("Entity Rotation Processed",
+		"actionID", "Rotate",
+		"entityID", encounter.ActiveEntity.Id,
+		"rotationID", encounter.ActiveEntity.Rotation.String(),
+	)
 
 	return true
 }

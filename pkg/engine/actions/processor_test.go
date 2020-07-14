@@ -5,9 +5,13 @@ import (
 
 	"github.com/recluse-games/deviant-instance-shard/pkg/engine/enginetest"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	"go.uber.org/zap/zaptest"
 )
 
 func TestProcess(t *testing.T) {
+	logger := zaptest.NewLogger(t)
+	logger.Sync()
+
 	turn := &deviant.Turn{
 		Phase: deviant.TurnPhaseNames_PHASE_DRAW,
 	}
@@ -54,7 +58,7 @@ func TestProcess(t *testing.T) {
 	}
 
 	// Test Draw Turn Phase Action
-	if Process(encounter, deviant.EntityActionNames_NOTHING, nil, nil, nil, nil) != true {
+	if Process(encounter, deviant.EntityActionNames_NOTHING, nil, nil, nil, logger.Sugar()) != true {
 		t.Fail()
 	}
 
@@ -100,7 +104,7 @@ func TestProcess(t *testing.T) {
 	}
 
 	// Test GrantAP Turn Phase Action
-	if Process(encounter, deviant.EntityActionNames_NOTHING, nil, nil, nil, nil) != true {
+	if Process(encounter, deviant.EntityActionNames_NOTHING, nil, nil, nil, logger.Sugar()) != true {
 		t.Fail()
 	}
 
@@ -167,7 +171,7 @@ func TestProcess(t *testing.T) {
 	}
 
 	// Test GrantAP Turn Phase Action
-	if Process(encounter, deviant.EntityActionNames_NOTHING, nil, nil, nil, nil) != true {
+	if Process(encounter, deviant.EntityActionNames_NOTHING, nil, nil, nil, logger.Sugar()) != true {
 		t.Fail()
 	}
 

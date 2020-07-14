@@ -135,27 +135,23 @@ func processBlock(hp int32, target engineutil.Location, board *deviant.Board) {
 }
 
 // Play Processes a play.
-func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction, logger *zap.Logger) bool {
+func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction, logger *zap.SugaredLogger) bool {
 	card, err := getCard(playAction.CardId, encounter.ActiveEntity.Hand.Cards)
 	if err != nil {
-		if logger != nil {
-			logger.Error("Card does not exist in hand.",
-				zap.String("actionID", "Play"),
-				zap.String("entityID", encounter.ActiveEntity.Id),
-			)
-		}
+		logger.Error("Card does not exist in hand.",
+			zap.String("actionID", "Play"),
+			zap.String("entityID", encounter.ActiveEntity.Id),
+		)
 
 		return false
 	}
 
 	entityLocation, err := engineutil.LocateEntity(encounter.ActiveEntity.Id, encounter.Board)
 	if err != nil {
-		if logger != nil {
-			logger.Error("Unable to locate entity",
-				zap.String("actionID", "Play"),
-				zap.String("entityID", encounter.ActiveEntity.Id),
-			)
-		}
+		logger.Error("Unable to locate entity",
+			zap.String("actionID", "Play"),
+			zap.String("entityID", encounter.ActiveEntity.Id),
+		)
 
 		return false
 	}
@@ -189,23 +185,19 @@ func Play(encounter *deviant.Encounter, playAction *deviant.EntityPlayAction, lo
 
 	cardHandIndex, err := locateCard(card.InstanceId, encounter.ActiveEntity.Hand.Cards)
 	if err != nil {
-		if logger != nil {
-			logger.Error("Unable to get locate card in hand",
-				zap.String("actionID", "Play"),
-				zap.String("entityID", encounter.ActiveEntity.Id),
-			)
-		}
+		logger.Error("Unable to get locate card in hand",
+			zap.String("actionID", "Play"),
+			zap.String("entityID", encounter.ActiveEntity.Id),
+		)
 
 		return false
 	}
 	encounter.ActiveEntity.Hand.Cards = removeCard(*cardHandIndex, encounter.ActiveEntity.Hand.Cards)
 
-	if logger != nil {
-		logger.Debug("Entity Play Processed",
-			zap.String("actionID", "Play"),
-			zap.String("entityID", encounter.ActiveEntity.Id),
-		)
-	}
+	logger.Debug("Entity Play Processed",
+		zap.String("actionID", "Play"),
+		zap.String("entityID", encounter.ActiveEntity.Id),
+	)
 
 	return true
 }

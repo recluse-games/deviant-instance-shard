@@ -6,7 +6,7 @@ import (
 )
 
 // Move Moves the active entity to a desired location and updates the AP to reflect the cost.
-func Move(encounter *deviant.Encounter, moveAction *deviant.EntityMoveAction, logger *zap.Logger) bool {
+func Move(encounter *deviant.Encounter, moveAction *deviant.EntityMoveAction, logger *zap.SugaredLogger) bool {
 	var apCostX int32
 	var apCostY int32
 
@@ -32,12 +32,10 @@ func Move(encounter *deviant.Encounter, moveAction *deviant.EntityMoveAction, lo
 	encounter.Board.Entities.Entities[moveAction.StartXPosition].Entities[moveAction.StartYPosition] = &deviant.Entity{}
 	encounter.Board.Entities.Entities[moveAction.FinalXPosition].Entities[moveAction.FinalYPosition] = encounter.ActiveEntity
 
-	if logger != nil {
-		logger.Debug("Entity Move Processed",
-			zap.String("actionID", "Move"),
-			zap.String("entityID", encounter.ActiveEntity.Id),
-		)
-	}
+	logger.Debug("Entity Move Processed",
+		zap.String("actionID", "Move"),
+		zap.String("entityID", encounter.ActiveEntity.Id),
+	)
 
 	return true
 }

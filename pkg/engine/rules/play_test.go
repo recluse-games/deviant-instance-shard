@@ -4,9 +4,13 @@ import (
 	"testing"
 
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	"go.uber.org/zap/zaptest"
 )
 
 func TestValidatePlayApCost(t *testing.T) {
+	logger := zaptest.NewLogger(t)
+	logger.Sync()
+
 	entity := &deviant.Entity{
 		Hp: 5,
 		Ap: 5,
@@ -43,7 +47,7 @@ func TestValidatePlayApCost(t *testing.T) {
 		ActiveEntity: entity,
 	}
 
-	result := ValidatePlayApCost(entity, playAction, encounter, nil)
+	result := ValidatePlayApCost(entity, playAction, encounter, logger.Sugar())
 
 	if result != true {
 		t.Fail()
@@ -51,6 +55,9 @@ func TestValidatePlayApCost(t *testing.T) {
 }
 
 func TestValidateCardInHand(t *testing.T) {
+	logger := zaptest.NewLogger(t)
+	logger.Sync()
+
 	entity := &deviant.Entity{
 		Hp: 5,
 		Ap: 5,
@@ -87,7 +94,7 @@ func TestValidateCardInHand(t *testing.T) {
 		ActiveEntity: entity,
 	}
 
-	result := ValidateCardInHand(entity, playAction, encounter, nil)
+	result := ValidateCardInHand(entity, playAction, encounter, logger.Sugar())
 	if result != true {
 		t.Logf("Failed to validate that card that should be in hand.")
 		t.Fail()
@@ -98,7 +105,7 @@ func TestValidateCardInHand(t *testing.T) {
 		CardId: "1111",
 	}
 
-	result = ValidateCardInHand(entity, playAction, encounter, nil)
+	result = ValidateCardInHand(entity, playAction, encounter, logger.Sugar())
 	if result != false {
 		t.Logf("Failed to detect card that shouldn't be in hand")
 		t.Fail()
@@ -107,6 +114,9 @@ func TestValidateCardInHand(t *testing.T) {
 }
 
 func TestValidateCardConstraints(t *testing.T) {
+	logger := zaptest.NewLogger(t)
+	logger.Sync()
+
 	entity := &deviant.Entity{
 		Hp: 5,
 		Ap: 5,
@@ -154,7 +164,7 @@ func TestValidateCardConstraints(t *testing.T) {
 		},
 	}
 
-	result := ValidateCardConstraints(entity, playAction, encounter, nil)
+	result := ValidateCardConstraints(entity, playAction, encounter, logger.Sugar())
 	if result != true {
 		t.Logf("Failed to validate that card that should be in hand.")
 		t.Fail()

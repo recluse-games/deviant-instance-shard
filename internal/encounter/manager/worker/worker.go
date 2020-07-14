@@ -2,26 +2,61 @@ package worker
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/go-redis/redis/v7"
-	"github.com/golang/glog"
 	"github.com/recluse-games/deviant-instance-shard/internal/encounter/matchmaker"
 	"github.com/recluse-games/deviant-instance-shard/pkg/engine/actions"
 	"github.com/recluse-games/deviant-instance-shard/pkg/engine/rules"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	"go.uber.org/zap"
 	"google.golang.org/protobuf/encoding/protojson"
 )
+
+var logger *zap.Logger
+
+func getLogger() *zap.Logger {
+	// Return early if the logger has already been boostrapped.
+	if logger != nil {
+		return logger
+	}
+
+	loggerType := os.Getenv("LOGGER_TYPE")
+
+	switch loggerType {
+	case "DEVELOPMENT":
+		devLogger, err := zap.NewDevelopment()
+		if err != nil {
+			panic("Invalid attempt to create new development logger.")
+		}
+
+		logger = devLogger
+
+		return logger
+	default:
+		prodLogger, err := zap.NewProduction()
+		if err != nil {
+			panic("Invalid attempt to create new development logger.")
+		}
+		logger = prodLogger
+
+		return logger
+	}
+}
 
 // NewCacheClient accss the cache
 func NewCacheClient() *redis.Client {
 	client := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     os.Getenv("REDIS_HOST") + ":" + os.Getenv("REDIS_PORT"),
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
 
-	pong, err := client.Ping().Result()
-	fmt.Println(pong, err)
+	_, err := client.Ping().Result()
+	if err != nil {
+		fmt.Println("Error attempting to ping Redis cache")
+	}
+
 	return client
 }
 
@@ -42,6 +77,9 @@ func NewIncomingWorker(id int) IncomingWorker {
 
 // ProcessWork Processing any incoming work to the worker.
 func (w *IncomingWorker) ProcessWork(work *deviant.EncounterRequest) *deviant.EncounterResponse {
+	logger := getLogger().Sugar()
+	defer logger.Sync()
+
 	var redisClient = NewCacheClient()
 
 	// Setup Options for Marshalling and Unmarshalling JSON
@@ -61,16 +99,16 @@ func (w *IncomingWorker) ProcessWork(work *deviant.EncounterRequest) *deviant.En
 	var encounterFromDisk = &deviant.EncounterResponse{}
 
 	in, err := redisClient.Get("encounter_0000").Result()
-
 	if err == nil {
 		unmarshalError := protojson.UnmarshalOptions(unmarshalOptions).Unmarshal([]byte(in), encounterFromDisk)
 		if unmarshalError != nil {
 			panic(unmarshalError)
 		}
 	}
+
 	if work.EncounterCreateAction != nil {
 		actionResponse = matchmaker.GenerateMatch()
-		actions.Process(actionResponse.Encounter, deviant.EntityActionNames_NOTHING, nil, nil, nil, nil)
+		actions.Process(actionResponse.Encounter, deviant.EntityActionNames_NOTHING, nil, nil, nil, logger)
 
 		encounterFromDisk = actionResponse
 	} else if work.EntityGetAction != nil {
@@ -105,7 +143,7 @@ func (w *IncomingWorker) ProcessWork(work *deviant.EncounterRequest) *deviant.En
 			Encounter: encounterFromDisk.Encounter,
 		}
 	} else if work.EntityRotateAction != nil {
-		actions.Process(encounterFromDisk.Encounter, work.EntityActionName, nil, nil, work.EntityRotateAction, nil)
+		actions.Process(encounterFromDisk.Encounter, work.EntityActionName, nil, nil, work.EntityRotateAction, logger)
 
 		// Apply all state changes to entity in encounter as well as the activeEntity
 		for outerIndex, outerValue := range encounterFromDisk.Encounter.Board.Entities.Entities {
@@ -124,9 +162,9 @@ func (w *IncomingWorker) ProcessWork(work *deviant.EncounterRequest) *deviant.En
 	} else {
 		// AuthZ the Player <- This should be migrated to a different layer of the codebase
 		if work.PlayerId == encounterFromDisk.Encounter.ActiveEntity.OwnerId {
-			isActionValid := rules.Process(encounterFromDisk.Encounter, work.EntityActionName, work.EntityMoveAction, work.EntityPlayAction, nil)
+			isActionValid := rules.Process(encounterFromDisk.Encounter, work.EntityActionName, work.EntityMoveAction, work.EntityPlayAction, logger)
 			if isActionValid == true {
-				actions.Process(encounterFromDisk.Encounter, work.EntityActionName, work.EntityMoveAction, work.EntityPlayAction, nil, nil)
+				actions.Process(encounterFromDisk.Encounter, work.EntityActionName, work.EntityMoveAction, work.EntityPlayAction, nil, logger)
 
 				// Apply all state changes to entity in encounter as well as the activeEntity
 				for outerIndex, outerValue := range encounterFromDisk.Encounter.Board.Entities.Entities {
@@ -155,8 +193,8 @@ func (w *IncomingWorker) ProcessWork(work *deviant.EncounterRequest) *deviant.En
 		panic(writeErr)
 	}
 
-	message := fmt.Sprintf("Actions Processed: %s\n", work.EntityActionName)
-	glog.Info(message)
+	message := fmt.Sprintf("Actions Processed: %s", work.EntityActionName)
+	logger.Info(message)
 
 	return actionResponse
 }

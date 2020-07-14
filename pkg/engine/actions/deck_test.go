@@ -5,17 +5,22 @@ import (
 
 	"github.com/recluse-games/deviant-instance-shard/pkg/engine/enginetest"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	"go.uber.org/zap/zaptest"
 )
 
 func TestDrawCard(t *testing.T) {
+	logger := zaptest.NewLogger(t)
+	logger.Sync()
+
 	entityWithOneCardInDeckAndHand := &deviant.Encounter{
 		ActiveEntity: &deviant.Entity{
+			Id:   "0001",
 			Deck: enginetest.GenerateDeckLiteral(1),
 			Hand: enginetest.GenerateHandLiteral(1),
 		},
 	}
 
-	if DrawCard(entityWithOneCardInDeckAndHand, nil) != true {
+	if DrawCard(entityWithOneCardInDeckAndHand, logger.Sugar()) != true {
 		t.Fail()
 	}
 
@@ -29,12 +34,13 @@ func TestDrawCard(t *testing.T) {
 
 	entityWithTwoCardsInDeckAndNoneInHand := &deviant.Encounter{
 		ActiveEntity: &deviant.Entity{
+			Id:   "0001",
 			Deck: enginetest.GenerateDeckLiteral(2),
 			Hand: enginetest.GenerateHandLiteral(0),
 		},
 	}
 
-	if DrawCard(entityWithTwoCardsInDeckAndNoneInHand, nil) != true {
+	if DrawCard(entityWithTwoCardsInDeckAndNoneInHand, logger.Sugar()) != true {
 		t.Fail()
 	}
 
@@ -46,7 +52,7 @@ func TestDrawCard(t *testing.T) {
 		t.Fail()
 	}
 
-	if DrawCard(entityWithTwoCardsInDeckAndNoneInHand, nil) != true {
+	if DrawCard(entityWithTwoCardsInDeckAndNoneInHand, logger.Sugar()) != true {
 		t.Fail()
 	}
 
