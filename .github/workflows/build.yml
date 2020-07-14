@@ -52,16 +52,6 @@ jobs:
         ls $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard
         echo "!! PROTOBUFF"
         ls $GITHUB_WORKSPACE/go/src/github.com/deviant-protobuf
-
-    - name: go get dependencies
-      run: |
-        export GOPATH=$GITHUB_WORKSPACE/go
-        export GOPRIVATE="github.com/recluse-games"
-
-        cd $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard
-        rm go.mod go.sum
-        go mod init
-        go get -v -t -d ./...
   
     - name: Build deviant-instance-shard
       run: |
@@ -70,22 +60,6 @@ jobs:
       env:
         GOPATH: ${{ github.workspace }}/go
         GOPRIVATE: "github.com/recluse-games"
-        
-    - name: Get Windows Dependencies
-      run: |
-        export GOPATH=$GITHUB_WORKSPACE/go
-        export GOPRIVATE="github.com/recluse-games"
-        export GOOS=windows 
-        export GOARCH=amd64 
-
-        cd $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard
-
-        go install ./...
-        
-    - name: Build For Windows
-      run: |
-        cd $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard   
-        go build -o deviant-instance-shard.exe -v ./cmd/deviant-instance-shard.go
         
     # Copy Build Artifact to Artifact Upload Directory
     # This just help verifies the artifact is a file
