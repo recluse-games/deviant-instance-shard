@@ -18,3 +18,4 @@ jobs:
         repository: reclusegames/deviant-instance-shard
         tags: latest
         build_args: GITHUB_TOKEN=${{ secrets.RECLUSE_CI_ROBOT_TOKEN }}
+        dockerfile: ${{ github.workspace }}/Dockerfile 
