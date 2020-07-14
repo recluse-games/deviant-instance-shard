@@ -12,13 +12,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@master
+    - name: Check out Instance Shard into the Go module directory
+      uses: actions/checkout@v2
+      with:
+        path: go/src/github.com/recluse-games/deviant-instance-shard
+        token: ${{ secrets.CI_ROBOT }}
+
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
       with:
         go-version: ^1.13
       id: go
-    - run: make test
+
+      run: |
+        make test
+      working-directory: go/src/github.com/recluse-games/deviant-instance-shard
+      env:
+        GOPATH: ${{ github.workspace }}/go
+        GOPRIVATE: "github.com/recluse-games"
   build:
     needs: test
     name: Build
