@@ -41,7 +41,7 @@ jobs:
     - name: Build deviant-instance-shard
       run: |
         make
-      working-directory: go/src/github.com/recluse-games/deviant-protobuf
+      working-directory: go/src/github.com/recluse-games/deviant-instance-shard
       env:
         GOPATH: ${{ github.workspace }}/go
         GOPRIVATE: "github.com/recluse-games"
