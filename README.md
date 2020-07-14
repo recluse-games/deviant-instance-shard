@@ -22,6 +22,9 @@ hosted Redis server on the default port is enough for now but this is subject to
 6. Setup and configure Golang
 7. Setup and configure Git
 8. Configure a Github Developer Access Token
+9. Setup an environmental variable called GITHUB_TOKEN to store your PAT
+10. Setup an environmental variable called LOG_LEVEL to store the log level.
+9. Update your credsStore for docker it's broken on windows add an _ to the credsStore key in ~/.docker/config.json
 ```
 
 ## Using Docker
