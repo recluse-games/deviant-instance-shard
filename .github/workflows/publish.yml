@@ -22,9 +22,6 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: reclusegames/deviant-instance-shard
         tags: latest
-        build_args: GITHUB_TOKEN=${{ secrets.CI_ROBOT }}
+        build_args: GITHUB_TOKEN=${{ secrets.CI_ROBOT }},GITHUB_USER=recluse-ci-robot
         dockerfile: ${{ github.workspace }}/Dockerfile 
         path: ${{ github.workspace }}
-      env:
-        GOPATH: ${{ github.workspace }}/go
-        GOPRIVATE: "github.com/recluse-games"
