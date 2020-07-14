@@ -5,9 +5,13 @@ import (
 
 	"github.com/google/uuid"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	"go.uber.org/zap/zaptest"
 )
 
 func TestPlay(t *testing.T) {
+	logger := zaptest.NewLogger(t)
+	logger.Sync()
+
 	mockHand := &deviant.Hand{
 		Cards: []*deviant.Card{
 			{
@@ -120,7 +124,7 @@ func TestPlay(t *testing.T) {
 		CardId: "12345",
 	}
 
-	if Play(mockEncounter, mockPlayAction, nil) != true {
+	if Play(mockEncounter, mockPlayAction, logger.Sugar()) != true {
 		t.Fail()
 	}
 

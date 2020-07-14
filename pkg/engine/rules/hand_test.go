@@ -5,9 +5,13 @@ import (
 
 	"github.com/recluse-games/deviant-instance-shard/pkg/engine/enginetest"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	"go.uber.org/zap/zaptest"
 )
 
 func TestValidateSize(t *testing.T) {
+	logger := zaptest.NewLogger(t)
+	logger.Sync()
+
 	entity := &deviant.Entity{
 		Hand: &deviant.Hand{
 			Id:    "0000",
@@ -19,7 +23,7 @@ func TestValidateSize(t *testing.T) {
 		ActiveEntity: entity,
 	}
 
-	isHandSizeValid := ValidateSize(encounter, nil)
+	isHandSizeValid := ValidateSize(encounter, logger.Sugar())
 
 	if isHandSizeValid != true {
 		t.Logf("Failed to detect valid hand size.")
@@ -37,7 +41,7 @@ func TestValidateSize(t *testing.T) {
 		ActiveEntity: entity,
 	}
 
-	isHandSizeInvalid := ValidateSize(encounter, nil)
+	isHandSizeInvalid := ValidateSize(encounter, logger.Sugar())
 
 	if isHandSizeInvalid != false {
 		t.Logf("Failed to detect invalid hand size.")

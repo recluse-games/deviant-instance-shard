@@ -3,13 +3,12 @@ package actions
 import (
 	"fmt"
 
-	"github.com/golang/glog"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 	"go.uber.org/zap"
 )
 
 // Process Processes all actions.
-func Process(encounter *deviant.Encounter, entityActionName deviant.EntityActionNames, entityMoveAction *deviant.EntityMoveAction, entityPlayAction *deviant.EntityPlayAction, entityRotateAction *deviant.EntityRotateAction, logger *zap.Logger) bool {
+func Process(encounter *deviant.Encounter, entityActionName deviant.EntityActionNames, entityMoveAction *deviant.EntityMoveAction, entityPlayAction *deviant.EntityPlayAction, entityRotateAction *deviant.EntityRotateAction, logger *zap.SugaredLogger) bool {
 	entityActions := map[deviant.EntityActionNames][]interface{}{
 		deviant.EntityActionNames_PLAY:         {Play},
 		deviant.EntityActionNames_MOVE:         {Move},
@@ -29,7 +28,7 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 		deviant.TurnPhaseNames_PHASE_END:     {UpdateActiveEntity, ChangePhase},
 	}
 
-	encounterActions := []func(*deviant.Encounter, *zap.Logger) bool{
+	encounterActions := []func(*deviant.Encounter, *zap.SugaredLogger) bool{
 		ProcessWinConditions,
 	}
 
@@ -38,29 +37,29 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 			for _, entityActionFunction := range val {
 				switch entityActionName {
 				case deviant.EntityActionNames_PLAY:
-					if entityActionFunction.(func(*deviant.Encounter, *deviant.EntityPlayAction, *zap.Logger) bool)(encounter, entityPlayAction, logger) == false {
+					if entityActionFunction.(func(*deviant.Encounter, *deviant.EntityPlayAction, *zap.SugaredLogger) bool)(encounter, entityPlayAction, logger) == false {
 						return false
 					}
 				case deviant.EntityActionNames_MOVE:
-					if entityActionFunction.(func(*deviant.Encounter, *deviant.EntityMoveAction, *zap.Logger) bool)(encounter, entityMoveAction, logger) == false {
+					if entityActionFunction.(func(*deviant.Encounter, *deviant.EntityMoveAction, *zap.SugaredLogger) bool)(encounter, entityMoveAction, logger) == false {
 						return false
 					}
 				case deviant.EntityActionNames_CHANGE_PHASE:
-					if entityActionFunction.(func(*deviant.Encounter, *zap.Logger) bool)(encounter, logger) == false {
+					if entityActionFunction.(func(*deviant.Encounter, *zap.SugaredLogger) bool)(encounter, logger) == false {
 						return false
 					}
 				case deviant.EntityActionNames_ROTATE:
-					if entityActionFunction.(func(*deviant.Encounter, *deviant.EntityRotateAction, *zap.Logger) bool)(encounter, entityRotateAction, logger) == false {
+					if entityActionFunction.(func(*deviant.Encounter, *deviant.EntityRotateAction, *zap.SugaredLogger) bool)(encounter, entityRotateAction, logger) == false {
 						return false
 					}
 				default:
 					message := fmt.Sprintf("No actions implemented for EntityActionName: %s", entityActionName.String())
-					glog.Error(message)
+					logger.Error(message)
 				}
 			}
 		} else {
 			message := fmt.Sprintf("Invalid EntityActionName: %s", entityActionName)
-			glog.Error(message)
+			logger.Error(message)
 			return false
 		}
 	}
@@ -82,32 +81,32 @@ ProcessTurnActions:
 				for _, turnActionFunction := range val {
 					switch encounter.Turn.Phase {
 					case deviant.TurnPhaseNames_PHASE_POINT:
-						if turnActionFunction.(func(*deviant.Encounter, *zap.Logger) bool)(encounter, logger) == false {
+						if turnActionFunction.(func(*deviant.Encounter, *zap.SugaredLogger) bool)(encounter, logger) == false {
 							return false
 						}
 					case deviant.TurnPhaseNames_PHASE_EFFECT:
-						if turnActionFunction.(func(*deviant.Encounter, *zap.Logger) bool)(encounter, logger) == false {
+						if turnActionFunction.(func(*deviant.Encounter, *zap.SugaredLogger) bool)(encounter, logger) == false {
 							return false
 						}
 					case deviant.TurnPhaseNames_PHASE_DRAW:
-						if turnActionFunction.(func(*deviant.Encounter, *zap.Logger) bool)(encounter, logger) == false {
+						if turnActionFunction.(func(*deviant.Encounter, *zap.SugaredLogger) bool)(encounter, logger) == false {
 							return false
 						}
 					case deviant.TurnPhaseNames_PHASE_ACTION:
-						if turnActionFunction.(func(*deviant.Encounter, *zap.Logger) bool)(encounter, logger) == false {
+						if turnActionFunction.(func(*deviant.Encounter, *zap.SugaredLogger) bool)(encounter, logger) == false {
 							return false
 						}
 					case deviant.TurnPhaseNames_PHASE_DISCARD:
-						if turnActionFunction.(func(*deviant.Encounter, *zap.Logger) bool)(encounter, logger) == false {
+						if turnActionFunction.(func(*deviant.Encounter, *zap.SugaredLogger) bool)(encounter, logger) == false {
 							return false
 						}
 					case deviant.TurnPhaseNames_PHASE_END:
-						if turnActionFunction.(func(*deviant.Encounter, *zap.Logger) bool)(encounter, logger) == false {
+						if turnActionFunction.(func(*deviant.Encounter, *zap.SugaredLogger) bool)(encounter, logger) == false {
 							return false
 						}
 					default:
 						message := fmt.Sprintf("No actions implemented for EntityActionName: %s", entityActionName.String())
-						glog.Error(message)
+						logger.Error(message)
 					}
 
 					// If one of our previously executed actions killed the ActiveEntity we skip to the end phase.
@@ -135,7 +134,7 @@ ProcessTurnActions:
 				break ProcessTurnActions
 			} else {
 				message := fmt.Sprintf("Invalid EntityActionName: %s", entityActionName)
-				glog.Error(message)
+				logger.Error(message)
 				return false
 			}
 		}

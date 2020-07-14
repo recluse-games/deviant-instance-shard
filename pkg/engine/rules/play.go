@@ -7,8 +7,9 @@ import (
 )
 
 // ValidatePlayApCost Determines that the entity has the correct amount of AP to perform the requested move.
-func ValidatePlayApCost(activeEntity *deviant.Entity, requestedPlayAction *deviant.EntityPlayAction, encounter *deviant.Encounter, logger *zap.Logger) bool {
-	var totalApCost = int32(0)
+func ValidatePlayApCost(activeEntity *deviant.Entity, requestedPlayAction *deviant.EntityPlayAction, encounter *deviant.Encounter, logger *zap.SugaredLogger) bool {
+	status := false
+	totalApCost := int32(0)
 
 	for _, card := range encounter.ActiveEntity.Hand.Cards {
 		if card.InstanceId == requestedPlayAction.CardId {
@@ -17,41 +18,46 @@ func ValidatePlayApCost(activeEntity *deviant.Entity, requestedPlayAction *devia
 	}
 
 	if totalApCost <= activeEntity.Ap {
-		return true
+		status = true
 	}
 
-	if logger != nil {
-		logger.Debug("Validated Play AP Cost",
-			zap.String("actionID", "ValidatePlayApCost"),
-			zap.String("entityID", encounter.ActiveEntity.Id),
-		)
-	}
+	logger.Debug("Validated Play AP Cost",
+		"actionID", "ValidatePlayApCost",
+		"entityID", encounter.ActiveEntity.Id,
+		"status", status,
+	)
 
-	return false
+	return status
 }
 
 // ValidateCardInHand Determines if the request card is in the entities hand.
-func ValidateCardInHand(activeEntity *deviant.Entity, requestedPlayAction *deviant.EntityPlayAction, encounter *deviant.Encounter, logger *zap.Logger) bool {
+func ValidateCardInHand(activeEntity *deviant.Entity, requestedPlayAction *deviant.EntityPlayAction, encounter *deviant.Encounter, logger *zap.SugaredLogger) bool {
+	status := false
+
 	for _, card := range encounter.ActiveEntity.Hand.Cards {
 		if card.InstanceId == requestedPlayAction.CardId {
-			return true
+			status = true
 		}
 	}
 
-	if logger != nil {
-		logger.Debug("ValidateCardInHand Card is not in hand",
-			zap.String("actionID", "ValidatePlayApCost"),
-			zap.String("entityID", encounter.ActiveEntity.Id),
-		)
-	}
+	logger.Debug("ValidateCardInHand Card is not in hand",
+		"actionID", "ValidatePlayApCost",
+		"entityID", encounter.ActiveEntity.Id,
+		"status", status,
+	)
 
-	return false
+	return status
 }
 
 // ValidateCardConstraints Validates specific sub rules for particular types of cards I.E. Block/Attack/Heal.
-func ValidateCardConstraints(activeEntity *deviant.Entity, requestedPlayAction *deviant.EntityPlayAction, encounter *deviant.Encounter, logger *zap.Logger) bool {
+func ValidateCardConstraints(activeEntity *deviant.Entity, requestedPlayAction *deviant.EntityPlayAction, encounter *deviant.Encounter, logger *zap.SugaredLogger) bool {
 	activeEntityLocationPoint, err := engineutil.LocateEntity(encounter.ActiveEntity.Id, encounter.Board)
 	if err != nil {
+		logger.Debug("Validated Card Type Specific Constraints",
+			"actionID", "ValidateCardTypeSpecificConstraints",
+			"entityID", encounter.ActiveEntity.Id,
+			"status", false,
+		)
 		return false
 	}
 
@@ -75,12 +81,10 @@ func ValidateCardConstraints(activeEntity *deviant.Entity, requestedPlayAction *
 		}
 	}
 
-	if logger != nil {
-		logger.Debug("Validated Card Type Specific Constraints",
-			zap.String("actionID", "ValidateCardTypeSpecificConstraints"),
-			zap.String("entityID", encounter.ActiveEntity.Id),
-		)
-	}
+	logger.Debug("Validated Card Type Specific Constraints",
+		"actionID", "ValidateCardTypeSpecificConstraints",
+		"entityID", encounter.ActiveEntity.Id,
+	)
 
 	return true
 }

@@ -4,7 +4,7 @@ LABEL maintainer="The deviant authors <deviant-dev@recluse-games.com>"
 # Take in the GITHUB_TOKEN from the compose environment.
 ARG GITHUB_TOKEN
 
-RUN apk update && apk add --no-cache git openssh make redis
+RUN apk update && apk add --no-cache git openssh make
 RUN GOCACHE=OFF
 
 # Setup GIT related configuration to work in Docker + Private Go Repository

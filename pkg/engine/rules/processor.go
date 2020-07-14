@@ -3,13 +3,12 @@ package rules
 import (
 	"fmt"
 
-	"github.com/golang/glog"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
 	"go.uber.org/zap"
 )
 
 // Process Processes validates an incoming action against the Deviant ruleset to determine if it's validity
-func Process(encounter *deviant.Encounter, entityActionName deviant.EntityActionNames, entityMoveAction *deviant.EntityMoveAction, entityPlayAction *deviant.EntityPlayAction, logger *zap.Logger) bool {
+func Process(encounter *deviant.Encounter, entityActionName deviant.EntityActionNames, entityMoveAction *deviant.EntityMoveAction, entityPlayAction *deviant.EntityPlayAction, logger *zap.SugaredLogger) bool {
 	entityRuleSet := map[deviant.EntityActionNames][]interface{}{
 		deviant.EntityActionNames_PLAY:         {ValidatePlayApCost, ValidateCardConstraints, ValidateCardInHand},
 		deviant.EntityActionNames_MOVE:         {ValidateMoveApCost, ValidateNewLocationEmpty, ValidateMovePermissable},
@@ -65,25 +64,25 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 			for _, entityActionFunction := range val {
 				switch entityActionName {
 				case deviant.EntityActionNames_MOVE:
-					if entityActionFunction.(func(*deviant.Entity, *deviant.EntityMoveAction, *deviant.Encounter, *zap.Logger) bool)(encounter.ActiveEntity, entityMoveAction, encounter, logger) == false {
+					if entityActionFunction.(func(*deviant.Entity, *deviant.EntityMoveAction, *deviant.Encounter, *zap.SugaredLogger) bool)(encounter.ActiveEntity, entityMoveAction, encounter, logger) == false {
 						return false
 					}
 				case deviant.EntityActionNames_PLAY:
-					if entityActionFunction.(func(*deviant.Entity, *deviant.EntityPlayAction, *deviant.Encounter, *zap.Logger) bool)(encounter.ActiveEntity, entityPlayAction, encounter, logger) == false {
+					if entityActionFunction.(func(*deviant.Entity, *deviant.EntityPlayAction, *deviant.Encounter, *zap.SugaredLogger) bool)(encounter.ActiveEntity, entityPlayAction, encounter, logger) == false {
 						return false
 					}
 				case deviant.EntityActionNames_CHANGE_PHASE:
-					if entityActionFunction.(func(*deviant.Encounter, *zap.Logger) bool)(encounter, logger) == false {
+					if entityActionFunction.(func(*deviant.Encounter, *zap.SugaredLogger) bool)(encounter, logger) == false {
 						return false
 					}
 				default:
 					message := fmt.Sprintf("No rules implemented implemented for EntityActionName: %s", entityActionName.String())
-					glog.Error(message)
+					logger.Error(message)
 				}
 			}
 		} else {
 			message := fmt.Sprintf("Invalid EntityActionName: %s", entityActionName)
-			glog.Error(message)
+			logger.Error(message)
 			return false
 		}
 	}
@@ -96,7 +95,7 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 				case deviant.TurnPhaseNames_PHASE_POINT:
 				case deviant.TurnPhaseNames_PHASE_EFFECT:
 				case deviant.TurnPhaseNames_PHASE_DRAW:
-					if turnRuleFunction.(func(*deviant.Encounter, *zap.Logger) bool)(encounter, logger) == false {
+					if turnRuleFunction.(func(*deviant.Encounter, *zap.SugaredLogger) bool)(encounter, logger) == false {
 						return false
 					}
 				case deviant.TurnPhaseNames_PHASE_ACTION:
@@ -104,12 +103,12 @@ func Process(encounter *deviant.Encounter, entityActionName deviant.EntityAction
 				case deviant.TurnPhaseNames_PHASE_END:
 				default:
 					message := fmt.Sprintf("No rules implemented for TurnPhaseName: %s", entityActionName.String())
-					glog.Error(message)
+					logger.Error(message)
 				}
 			}
 		} else {
 			message := fmt.Sprintf("Invalid TurnPhaseName: %s", encounter.Turn.Phase)
-			glog.Error(message)
+			logger.Error(message)
 			return false
 		}
 	}

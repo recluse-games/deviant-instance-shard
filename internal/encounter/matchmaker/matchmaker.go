@@ -2,6 +2,7 @@ package matchmaker
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/go-redis/redis/v7"
 	enginetest "github.com/recluse-games/deviant-instance-shard/pkg/engine/enginetest"
@@ -12,13 +13,15 @@ import (
 // NewCacheClient Get a new cache client
 func NewCacheClient() *redis.Client {
 	client := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     os.Getenv("REDIS_HOST") + ":" + os.Getenv("REDIS_PORT"),
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
 
-	pong, err := client.Ping().Result()
-	fmt.Println(pong, err)
+	_, err := client.Ping().Result()
+	if err != nil {
+		fmt.Println("Error attempting to ping Redis cache")
+	}
 	return client
 }
 

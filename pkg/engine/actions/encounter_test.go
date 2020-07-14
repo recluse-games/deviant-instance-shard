@@ -4,9 +4,13 @@ import (
 	"testing"
 
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	"go.uber.org/zap/zaptest"
 )
 
 func TestProcessWinConditions(t *testing.T) {
+	logger := zaptest.NewLogger(t)
+	logger.Sync()
+
 	entity := &deviant.Entity{
 		Ap:        0,
 		MaxAp:     5,
@@ -27,7 +31,7 @@ func TestProcessWinConditions(t *testing.T) {
 		},
 	}
 
-	isEncounterComplete := ProcessWinConditions(encounter, nil)
+	isEncounterComplete := ProcessWinConditions(encounter, logger.Sugar())
 
 	if isEncounterComplete == false {
 		t.Fail()

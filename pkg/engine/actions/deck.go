@@ -17,7 +17,7 @@ func draw(slice []*deviant.Card) []*deviant.Card {
 }
 
 // DrawCard Draws a card for the currently active entity of an encounter.
-func DrawCard(encounter *deviant.Encounter, logger *zap.Logger) bool {
+func DrawCard(encounter *deviant.Encounter, logger *zap.SugaredLogger) bool {
 	if encounter.ActiveEntity.Deck == nil {
 		encounter.ActiveEntity.Hp = encounter.ActiveEntity.Hp - 1
 		return true
@@ -31,12 +31,10 @@ func DrawCard(encounter *deviant.Encounter, logger *zap.Logger) bool {
 	encounter.ActiveEntity.Deck.Cards = draw(encounter.ActiveEntity.Deck.Cards)
 	encounter.ActiveEntity.Hand.Cards = add(encounter.ActiveEntity.Hand.Cards, topCard)
 
-	if logger != nil {
-		logger.Debug("Card Drawn",
-			zap.String("actionID", "DrawCard"),
-			zap.String("entityID", encounter.ActiveEntity.Id),
-		)
-	}
+	logger.Debug("Card Drawn",
+		zap.String("actionID", "DrawCard"),
+		zap.String("entityID", encounter.ActiveEntity.Id),
+	)
 
 	return true
 }
