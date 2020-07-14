@@ -68,7 +68,7 @@ jobs:
         cd $GITHUB_WORKSPACE/go/src/github.com/deviant-instance-shard
         make
       env:
-        GOPATH: ${{ GITHUB_WORKSPACE }}
+        GOPATH: ${{ github.workspace }}/go
         GOPRIVATE: "github.com/recluse-games"
         
     - name: Get Windows Dependencies
