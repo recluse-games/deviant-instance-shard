@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-redis/redis/v7"
 	enginetest "github.com/recluse-games/deviant-instance-shard/pkg/engine/enginetest"
-	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	deviant "github.com/recluse-games/deviant-protobuf/genproto/go/instance_shard"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 

@@ -3,7 +3,7 @@ package engineutil
 import (
 	"math"
 
-	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	deviant "github.com/recluse-games/deviant-protobuf/genproto/go/instance_shard"
 )
 
 // Location represents a point in 2d space

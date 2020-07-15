@@ -3,7 +3,7 @@ package engineutil
 import (
 	"errors"
 
-	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	deviant "github.com/recluse-games/deviant-protobuf/genproto/go/instance_shard"
 )
 
 // Direction represents a direction

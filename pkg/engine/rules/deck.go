@@ -1,7 +1,7 @@
 package rules
 
 import (
-	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	deviant "github.com/recluse-games/deviant-protobuf/genproto/go/instance_shard"
 	"go.uber.org/zap"
 )
 

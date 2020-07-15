@@ -8,7 +8,7 @@ import (
 	"github.com/recluse-games/deviant-instance-shard/internal/encounter/matchmaker"
 	"github.com/recluse-games/deviant-instance-shard/pkg/engine/actions"
 	"github.com/recluse-games/deviant-instance-shard/pkg/engine/rules"
-	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	deviant "github.com/recluse-games/deviant-protobuf/genproto/go/instance_shard"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/encoding/protojson"
 )

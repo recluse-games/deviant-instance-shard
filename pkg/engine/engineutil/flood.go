@@ -1,6 +1,6 @@
 package engineutil
 
-import deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+import deviant "github.com/recluse-games/deviant-protobuf/genproto/go/instance_shard"
 
 //FloodFill Flood fills a grid of tiles from one location to another.
 func FloodFill(startx int32, starty int32, x int32, y int32, filledID string, blockedID string, limit int32, tiles []*[]*deviant.Tile) {

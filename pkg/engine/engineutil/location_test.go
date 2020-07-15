@@ -3,7 +3,7 @@ package engineutil
 import (
 	"testing"
 
-	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	deviant "github.com/recluse-games/deviant-protobuf/genproto/go/instance_shard"
 )
 
 func TestAdd(t *testing.T) {
