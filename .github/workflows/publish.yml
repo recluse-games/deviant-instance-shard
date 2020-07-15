@@ -14,7 +14,7 @@ jobs:
     - name: Check out Instance Shard into the Go module directory
       uses: actions/checkout@v2
       with:
-        token: ${{ secrets.CI_ROBOT }}
+        token: ${{ secrets.RECLUSE_CI_ROBOT_TOKEN }}
 
     - uses: docker/build-push-action@v1
       with:
@@ -22,6 +22,6 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: reclusegames/deviant-instance-shard
         tags: latest
-        build_args: GITHUB_TOKEN=${{ secrets.CI_ROBOT }},GITHUB_USER=recluse-ci-robot
+        build_args: GITHUB_TOKEN=${{ secrets.RECLUSE_CI_ROBOT_TOKEN }},GITHUB_USER=recluse-ci-robot
         dockerfile: ${{ github.workspace }}/Dockerfile 
         path: ${{ github.workspace }}
