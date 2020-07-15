@@ -13,8 +13,8 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
+        GITHUB_USER: ${GITHUB_USER}
         GITHUB_TOKEN: ${GITHUB_TOKEN}
-        LOGGER_TYPE: ${LOGGER_TYPE}
     ports:
       - 50051:50051
     environment:
