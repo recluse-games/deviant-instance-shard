@@ -3,7 +3,7 @@ package engineutil
 import (
 	"errors"
 
-	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	deviant "github.com/recluse-games/deviant-protobuf/genproto/go/instance_shard"
 )
 
 //IndexString Finds the index of a given string in a slice of strings.

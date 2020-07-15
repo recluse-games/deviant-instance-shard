@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	deviant "github.com/recluse-games/deviant-protobuf/genproto/go/instance_shard"
 )
 
 func GenerateHandLiteral(size int32) *deviant.Hand {

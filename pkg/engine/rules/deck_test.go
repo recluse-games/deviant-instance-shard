@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/recluse-games/deviant-instance-shard/pkg/engine/enginetest"
-	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	deviant "github.com/recluse-games/deviant-protobuf/genproto/go/instance_shard"
 	"go.uber.org/zap/zaptest"
 )
 

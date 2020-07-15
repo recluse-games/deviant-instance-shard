@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/recluse-games/deviant-instance-shard/internal/encounter/manager/worker"
-	deviant "github.com/recluse-games/deviant-protobuf/genproto/go"
+	deviant "github.com/recluse-games/deviant-protobuf/genproto/go/instance_shard"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/reflection"
