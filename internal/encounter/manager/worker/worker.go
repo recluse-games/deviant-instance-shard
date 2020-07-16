@@ -118,7 +118,7 @@ func (w *IncomingWorker) ProcessWork(work *deviant.EncounterRequest) *deviant.En
 		}
 	} else if work.EntityTargetAction != nil {
 		// Update overlay tiles to the new tiles
-		encounterFromDisk.Encounter.Board.OverlayTiles = work.EntityTargetAction.Tiles
+		//encounterFromDisk.Encounter.Board.OverlayTiles = work.EntityTargetAction.Tiles
 
 		actionResponse = &deviant.EncounterResponse{
 			PlayerId:  work.PlayerId,

@@ -38,13 +38,11 @@ func GenerateCardLiterals(size int32) []*deviant.Card {
 			Flavor:      "Test Flavor",
 			Description: "Test Description",
 			Type:        deviant.CardType_ATTACK,
-			Action: &deviant.CardAction{
-				Id: "0000",
-				Pattern: []*deviant.Pattern{
-					{
-						Direction: deviant.Direction_DOWN,
-						Distance:  0,
-					},
+			Actions: []*deviant.CardAction{
+				{
+					Id:     uuid.New().String(),
+					Origin: true,
+					Status: deviant.CardActionStatusTypes_EMPTY,
 				},
 			},
 		}
@@ -89,63 +87,6 @@ func generateCardLiterals(size int32, class deviant.Classes) []*deviant.Card {
 	case deviant.Classes_WARRIOR:
 		for i := int32(0); i < size; i++ {
 			card := &deviant.Card{
-				Id:          "attack_bash_0000",
-				BackId:      "back_0000",
-				InstanceId:  uuid.New().String(),
-				Cost:        3,
-				Damage:      2,
-				Title:       "Bash",
-				Flavor:      "OP Area Move",
-				Description: "Something Too Broken to Be Real",
-				Type:        deviant.CardType_ATTACK,
-				Action: &deviant.CardAction{
-					Id: uuid.New().String(),
-					Pattern: []*deviant.Pattern{
-						{
-							Direction: deviant.Direction_DOWN,
-							Distance:  3,
-							Offset: []*deviant.Offset{
-								{
-									Direction: deviant.Direction_DOWN,
-									Distance:  1,
-								},
-							},
-						},
-						{
-							Direction: deviant.Direction_DOWN,
-							Distance:  1,
-							Offset: []*deviant.Offset{
-								{
-									Direction: deviant.Direction_LEFT,
-									Distance:  1,
-								},
-								{
-									Direction: deviant.Direction_DOWN,
-									Distance:  3,
-								},
-							},
-						},
-						{
-							Direction: deviant.Direction_DOWN,
-							Distance:  1,
-							Offset: []*deviant.Offset{
-								{
-									Direction: deviant.Direction_RIGHT,
-									Distance:  1,
-								},
-								{
-									Direction: deviant.Direction_DOWN,
-									Distance:  3,
-								},
-							},
-						},
-					},
-				},
-			}
-
-			cardLiterals = append(cardLiterals, card)
-
-			card = &deviant.Card{
 				Id:          "attack_slash_0000",
 				BackId:      "back_0000",
 				InstanceId:  uuid.New().String(),
@@ -155,16 +96,32 @@ func generateCardLiterals(size int32, class deviant.Classes) []*deviant.Card {
 				Flavor:      "Downward Dog",
 				Description: "A Simple Slash",
 				Type:        deviant.CardType_ATTACK,
-				Action: &deviant.CardAction{
-					Id: uuid.New().String(),
-					Pattern: []*deviant.Pattern{
-						{
-							Direction: deviant.Direction_DOWN,
-							Distance:  3,
-							Offset: []*deviant.Offset{
-								{
-									Direction: deviant.Direction_DOWN,
-									Distance:  1,
+				Actions: []*deviant.CardAction{
+					{
+						Id:     uuid.New().String(),
+						Status: deviant.CardActionStatusTypes_EMPTY,
+						Down: []*deviant.CardAction{
+							{
+								Id:            uuid.New().String(),
+								Type:          deviant.CardType_ATTACK,
+								Status:        deviant.CardActionStatusTypes_UNBLOCKED,
+								TargetingType: deviant.CardActionTargetingTypes_GROUND,
+								Origin:        true,
+								Down: []*deviant.CardAction{
+									{
+										Id:            uuid.New().String(),
+										Type:          deviant.CardType_ATTACK,
+										Status:        deviant.CardActionStatusTypes_UNBLOCKED,
+										TargetingType: deviant.CardActionTargetingTypes_GROUND,
+										Down: []*deviant.CardAction{
+											{
+												Id:            uuid.New().String(),
+												Type:          deviant.CardType_ATTACK,
+												Status:        deviant.CardActionStatusTypes_UNBLOCKED,
+												TargetingType: deviant.CardActionTargetingTypes_GROUND,
+											},
+										},
+									},
 								},
 							},
 						},
@@ -186,99 +143,17 @@ func generateCardLiterals(size int32, class deviant.Classes) []*deviant.Card {
 				Flavor:      "A Basic Heal",
 				Description: "A Simple Heal",
 				Type:        deviant.CardType_HEAL,
-				Action: &deviant.CardAction{
-					Id: uuid.New().String(),
-					Pattern: []*deviant.Pattern{
-						{
-							Direction: deviant.Direction_DOWN,
-							Distance:  1,
-							Offset: []*deviant.Offset{
-								{
-									Direction: deviant.Direction_DOWN,
-									Distance:  1,
-								},
-							},
-						},
-					},
-				},
-			}
-
-			cardLiterals = append(cardLiterals, card)
-
-			card = &deviant.Card{
-				Id:          "cast_self_heal_0000",
-				BackId:      "back_0000",
-				InstanceId:  uuid.New().String(),
-				Cost:        2,
-				Damage:      2,
-				Title:       "Bandage",
-				Flavor:      "A Basic Self Heal",
-				Description: "A Simple Self Heal",
-				Type:        deviant.CardType_HEAL,
-				Action: &deviant.CardAction{
-					Id: uuid.New().String(),
-					Pattern: []*deviant.Pattern{
-						{
-							Direction: deviant.Direction_DOWN,
-							Distance:  1,
-							Offset:    []*deviant.Offset{},
-						},
-					},
-				},
-			}
-
-			cardLiterals = append(cardLiterals, card)
-
-			card = &deviant.Card{
-				Id:          "cast_healing_ray_0000",
-				BackId:      "back_0000",
-				InstanceId:  uuid.New().String(),
-				Cost:        3,
-				Damage:      2,
-				Title:       "Healing Ray",
-				Flavor:      "A Basic Heal",
-				Description: "A Ranged Heal",
-				Type:        deviant.CardType_HEAL,
-				Action: &deviant.CardAction{
-					Id: uuid.New().String(),
-					Pattern: []*deviant.Pattern{
-						{
-							Direction: deviant.Direction_DOWN,
-							Distance:  3,
-							Offset: []*deviant.Offset{
-								{
-									Direction: deviant.Direction_DOWN,
-									Distance:  1,
-								},
-							},
-						},
-					},
-				},
-			}
-
-			cardLiterals = append(cardLiterals, card)
-
-			card = &deviant.Card{
-				Id:          "cast_healing_lob_0000",
-				BackId:      "back_0000",
-				InstanceId:  uuid.New().String(),
-				Cost:        2,
-				Damage:      1,
-				Title:       "Healing Lob",
-				Flavor:      "A Basic Heal",
-				Description: "A Ranged Lob Heal",
-				Type:        deviant.CardType_HEAL,
-				Action: &deviant.CardAction{
-					Id: uuid.New().String(),
-					Pattern: []*deviant.Pattern{
-						{
-							Direction: deviant.Direction_DOWN,
-							Distance:  1,
-							Offset: []*deviant.Offset{
-								{
-									Direction: deviant.Direction_DOWN,
-									Distance:  3,
-								},
+				Actions: []*deviant.CardAction{
+					{
+						Id:     uuid.New().String(),
+						Status: deviant.CardActionStatusTypes_EMPTY,
+						Down: []*deviant.CardAction{
+							{
+								Id:            uuid.New().String(),
+								Origin:        true,
+								Type:          deviant.CardType_HEAL,
+								Status:        deviant.CardActionStatusTypes_EMPTY,
+								TargetingType: deviant.CardActionTargetingTypes_PATH,
 							},
 						},
 					},
@@ -299,91 +174,28 @@ func generateCardLiterals(size int32, class deviant.Classes) []*deviant.Card {
 				Flavor:      "Dunking",
 				Description: "A Simple Fireball",
 				Type:        deviant.CardType_ATTACK,
-				Action: &deviant.CardAction{
-					Id: uuid.New().String(),
-					Pattern: []*deviant.Pattern{
-						{
-							Direction: deviant.Direction_DOWN,
-							Distance:  1,
-							Offset: []*deviant.Offset{
-								{
-									Direction: deviant.Direction_DOWN,
-									Distance:  3,
-								},
-							},
-						},
-					},
-				},
-			}
-
-			cardLiterals = append(cardLiterals, card)
-
-			card = &deviant.Card{
-				Id:          "attack_searing_touch_0000",
-				BackId:      "back_0000",
-				InstanceId:  uuid.New().String(),
-				Cost:        2,
-				Damage:      3,
-				Title:       "Searing Touch",
-				Flavor:      "Burn Baby",
-				Description: "A Cross Attack",
-				Type:        deviant.CardType_ATTACK,
-				Action: &deviant.CardAction{
-					Id: uuid.New().String(),
-					Pattern: []*deviant.Pattern{
-						{
-							Direction: deviant.Direction_RIGHT,
-							Distance:  1,
-							Offset: []*deviant.Offset{
-								{
-									Direction: deviant.Direction_UP,
-									Distance:  2,
-								},
-								{
-									Direction: deviant.Direction_RIGHT,
-									Distance:  2,
-								},
-							},
-						},
-						{
-							Direction: deviant.Direction_RIGHT,
-							Distance:  1,
-							Offset: []*deviant.Offset{
-								{
-									Direction: deviant.Direction_DOWN,
-									Distance:  2,
-								},
-								{
-									Direction: deviant.Direction_RIGHT,
-									Distance:  2,
-								},
-							},
-						},
-						{
-							Direction: deviant.Direction_LEFT,
-							Distance:  1,
-							Offset: []*deviant.Offset{
-								{
-									Direction: deviant.Direction_UP,
-									Distance:  2,
-								},
-								{
-									Direction: deviant.Direction_LEFT,
-									Distance:  2,
-								},
-							},
-						},
-						{
-							Direction: deviant.Direction_LEFT,
-							Distance:  1,
-							Offset: []*deviant.Offset{
-								{
-									Direction: deviant.Direction_DOWN,
-									Distance:  2,
-								},
-								{
-									Direction: deviant.Direction_LEFT,
-									Distance:  2,
+				Actions: []*deviant.CardAction{
+					{
+						Id:     uuid.New().String(),
+						Status: deviant.CardActionStatusTypes_EMPTY,
+						Down: []*deviant.CardAction{
+							{
+								Id:     uuid.New().String(),
+								Status: deviant.CardActionStatusTypes_EMPTY,
+								Down: []*deviant.CardAction{
+									{
+										Id:     uuid.New().String(),
+										Status: deviant.CardActionStatusTypes_EMPTY,
+										Down: []*deviant.CardAction{
+											{
+												Id:            uuid.New().String(),
+												Origin:        true,
+												Type:          deviant.CardType_ATTACK,
+												Status:        deviant.CardActionStatusTypes_UNBLOCKED,
+												TargetingType: deviant.CardActionTargetingTypes_GROUND,
+											},
+										},
+									},
 								},
 							},
 						},

@@ -3,6 +3,7 @@ package rules
 import (
 	"testing"
 
+	"github.com/google/uuid"
 	deviant "github.com/recluse-games/deviant-protobuf/genproto/go/instance_shard"
 	"go.uber.org/zap/zaptest"
 )
@@ -24,13 +25,11 @@ func TestValidatePlayApCost(t *testing.T) {
 					Flavor:      "Test Flavor",
 					Description: "Test Description",
 					Type:        deviant.CardType_ATTACK,
-					Action: &deviant.CardAction{
-						Id: "0000",
-						Pattern: []*deviant.Pattern{
-							{
-								Direction: deviant.Direction_DOWN,
-								Distance:  0,
-							},
+					Actions: []*deviant.CardAction{
+						{
+							Id:     uuid.New().String(),
+							Origin: true,
+							Status: deviant.CardActionStatusTypes_EMPTY,
 						},
 					},
 				},
@@ -71,13 +70,11 @@ func TestValidateCardInHand(t *testing.T) {
 					Flavor:      "Test Flavor",
 					Description: "Test Description",
 					Type:        deviant.CardType_ATTACK,
-					Action: &deviant.CardAction{
-						Id: "0000",
-						Pattern: []*deviant.Pattern{
-							{
-								Direction: deviant.Direction_DOWN,
-								Distance:  0,
-							},
+					Actions: []*deviant.CardAction{
+						{
+							Id:     uuid.New().String(),
+							Origin: true,
+							Status: deviant.CardActionStatusTypes_EMPTY,
 						},
 					},
 				},
@@ -130,13 +127,11 @@ func TestValidateCardConstraints(t *testing.T) {
 					Flavor:      "Test Flavor",
 					Description: "Test Description",
 					Type:        deviant.CardType_ATTACK,
-					Action: &deviant.CardAction{
-						Id: "0000",
-						Pattern: []*deviant.Pattern{
-							{
-								Direction: deviant.Direction_DOWN,
-								Distance:  0,
-							},
+					Actions: []*deviant.CardAction{
+						{
+							Id:     uuid.New().String(),
+							Origin: true,
+							Status: deviant.CardActionStatusTypes_EMPTY,
 						},
 					},
 				},

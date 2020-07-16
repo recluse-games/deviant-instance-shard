@@ -42,6 +42,22 @@ func (l *Location) Move(direction Direction, distance int32) {
 		for i := int32(0); i < distance; i++ {
 			l.Add(RIGHT.Location())
 		}
+	case UPRIGHT:
+		for i := int32(0); i < distance; i++ {
+			l.Add(UPRIGHT.Location())
+		}
+	case UPLEFT:
+		for i := int32(0); i < distance; i++ {
+			l.Add(UPLEFT.Location())
+		}
+	case DOWNRIGHT:
+		for i := int32(0); i < distance; i++ {
+			l.Add(DOWNRIGHT.Location())
+		}
+	case DOWNLEFT:
+		for i := int32(0); i < distance; i++ {
+			l.Add(DOWNLEFT.Location())
+		}
 	}
 }
 
@@ -94,11 +110,19 @@ func GetDegree(rotation deviant.EntityRotationNames) float64 {
 	return 0.00
 }
 
-// RotateLocations Generated a list of rotated locations around an origin based on a degree
-func RotateLocations(origin Location, locations []*Location, rotation deviant.EntityRotationNames) {
+// RotatePlays Generated a list of rotated plays around an origin based on a degree
+func RotatePlays(origin Location, plays []*deviant.Play, rotation deviant.EntityRotationNames) {
 	rotationDegree := GetDegree(rotation)
 
-	for _, location := range locations {
+	for _, play := range plays {
+		location := Location{
+			X: play.X,
+			Y: play.Y,
+		}
+
 		location.Rotate(origin, rotationDegree)
+
+		play.X = location.X
+		play.Y = location.Y
 	}
 }

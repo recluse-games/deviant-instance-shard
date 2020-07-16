@@ -71,6 +71,7 @@ func Start() {
 
 	s := grpc.NewServer(grpc.KeepaliveEnforcementPolicy(kaep),
 		grpc.KeepaliveParams(kasp))
+
 	deviant.RegisterEncounterServiceServer(s, &server{})
 
 	reflection.Register(s)
