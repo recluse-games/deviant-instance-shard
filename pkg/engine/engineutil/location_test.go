@@ -96,20 +96,20 @@ func TestConvertLocation(t *testing.T) {
 	}
 }
 
-func TestRotateLocations(t *testing.T) {
+func TestRotatePlays(t *testing.T) {
 	origin := Location{X: 0, Y: 0}
-	locations := []*Location{}
+	plays := []*deviant.Play{}
 	rotation := deviant.EntityRotationNames_NORTH
 
 	for i := 1; i < 4; i++ {
-		location := Location{X: int32(i), Y: 0}
-		locations = append(locations, &location)
+		play := deviant.Play{X: int32(i), Y: 0}
+		plays = append(plays, &play)
 	}
 
-	RotateLocations(origin, locations, rotation)
+	RotatePlays(origin, plays, rotation)
 
-	for i := 0; i < len(locations); i++ {
-		if locations[i].X != int32(-(i + 1)) {
+	for i := 0; i < len(plays); i++ {
+		if plays[i].X != int32(-(i + 1)) {
 			t.Logf("Failed to rotate location in locations")
 			t.Fail()
 		}

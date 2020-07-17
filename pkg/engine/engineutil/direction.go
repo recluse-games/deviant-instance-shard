@@ -14,18 +14,22 @@ const (
 	DOWN
 	LEFT
 	RIGHT
+	UPLEFT
+	UPRIGHT
+	DOWNLEFT
+	DOWNRIGHT
 )
 
 // String returns the string value of the Direction
 func (s Direction) String() string {
-	strings := [...]string{"UP", "DOWN", "LEFT", "RIGHT"}
+	strings := [...]string{"UP", "DOWN", "LEFT", "RIGHT", "UPLEFT", "UPRIGHT", "DOWNLEFT", "DOWNRIGHT"}
 
 	return strings[s]
 }
 
 // Location returns the Location value of the Direction
 func (s Direction) Location() Location {
-	locations := [...]Location{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}
+	locations := [...]Location{{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}}
 
 	return locations[s]
 }

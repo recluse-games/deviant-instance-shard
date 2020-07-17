@@ -24,16 +24,32 @@ func TestPlay(t *testing.T) {
 				Flavor:      "Downward Dog",
 				Description: "A Simple Slash",
 				Type:        deviant.CardType_ATTACK,
-				Action: &deviant.CardAction{
-					Id: uuid.New().String(),
-					Pattern: []*deviant.Pattern{
-						{
-							Direction: deviant.Direction_DOWN,
-							Distance:  3,
-							Offset: []*deviant.Offset{
-								{
-									Direction: deviant.Direction_DOWN,
-									Distance:  1,
+				Actions: []*deviant.CardAction{
+					{
+						Id:     uuid.New().String(),
+						Status: deviant.CardActionStatusTypes_EMPTY,
+						Down: []*deviant.CardAction{
+							{
+								Id:            uuid.New().String(),
+								Type:          deviant.CardType_ATTACK,
+								Status:        deviant.CardActionStatusTypes_UNBLOCKED,
+								TargetingType: deviant.CardActionTargetingTypes_GROUND,
+								Origin:        true,
+								Down: []*deviant.CardAction{
+									{
+										Id:            uuid.New().String(),
+										Type:          deviant.CardType_ATTACK,
+										Status:        deviant.CardActionStatusTypes_UNBLOCKED,
+										TargetingType: deviant.CardActionTargetingTypes_GROUND,
+										Down: []*deviant.CardAction{
+											{
+												Id:            uuid.New().String(),
+												Type:          deviant.CardType_ATTACK,
+												Status:        deviant.CardActionStatusTypes_UNBLOCKED,
+												TargetingType: deviant.CardActionTargetingTypes_GROUND,
+											},
+										},
+									},
 								},
 							},
 						},
@@ -90,7 +106,7 @@ func TestPlay(t *testing.T) {
 					},
 					{
 						Entities: []*deviant.Entity{
-							{},
+							mockedEnemy,
 							{},
 							{},
 							{},
